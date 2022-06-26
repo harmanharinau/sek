@@ -12,8 +12,8 @@ from datetime import datetime
 from typing import List
 from pyrogram.types import InlineKeyboardButton
 from database.users_chats_db import db
-from plugins.advance_filters import namelist, linklist
-from Sewlink import *
+#from plugins.advance_filters import namelist, linklist
+#from Sewlink import *
 from bs4 import BeautifulSoup
 import requests
 
@@ -97,7 +97,7 @@ async def get_poster(query, bulk=False, id=False, file=None):
     else:
         date = "N/A"
     plot = ""
-    if LONG_IMDB_DESCRIPTION:
+    if not LONG_IMDB_DESCRIPTION:
         plot = movie.get('plot')
         if plot and len(plot) > 0:
             plot = plot[0]
