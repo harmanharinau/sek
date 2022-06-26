@@ -6,6 +6,7 @@ import ast
 from pyrogram.errors.exceptions.bad_request_400 import MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty
 from Script import script
 import pyrogram
+import pyshorteners
 from database.connections_mdb import active_connection, all_connections, delete_connection, if_active, make_active, \
     make_inactive
 from info import ADMINS, AUTH_CHANNEL, AUTH_USERS, CUSTOM_FILE_CAPTION, AUTH_GROUPS, P_TTI_SHOW_OFF, IMDB, \
@@ -25,6 +26,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.ERROR)
+
+url_shortener = pyshorteners.Shortener()
 
 BUTTONS = {}
 SPELL_CHECK = {}
@@ -64,7 +67,7 @@ async def next_page(bot, query):
         btn = [
             [
                 InlineKeyboardButton(
-                    text=f"[{get_size(file.file_size)}] {get_name(file.file_name)}", callback_data=f'files#{file.file_id}'
+                    text=f"[{get_size(file.file_size)}] {get_name(file.file_name)}", url = get_url(file.file_id)
                 ),
             ]
             for file in files
