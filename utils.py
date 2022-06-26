@@ -7,10 +7,13 @@ from pyrogram.types import Message
 from typing import Union
 import re
 import os
+import pyshorteners
 from datetime import datetime
 from typing import List
 from pyrogram.types import InlineKeyboardButton
 from database.users_chats_db import db
+from plugins.advance_filters import namelist, linklist
+from Sewlink import *
 from bs4 import BeautifulSoup
 import requests
 
@@ -22,11 +25,13 @@ BTN_URL_REGEX = re.compile(
 )
 
 imdb = IMDb() 
+url_shortener = pyshorteners.Shortener()
 
 BANNED = {}
 SMART_OPEN = '“'
 SMART_CLOSE = '”'
 START_CHAR = ('\'', '"', SMART_OPEN)
+btns = []
 
 # temp db for banned 
 class temp(object):
@@ -38,7 +43,6 @@ class temp(object):
     MELCOW = {}
     U_NAME = None
     B_NAME = None
-    SETTINGS = {}
 
 async def is_subscribed(bot, query):
     try:
@@ -52,10 +56,10 @@ async def is_subscribed(bot, query):
             return True
 
     return False
+ 
 
 async def get_poster(query, bulk=False, id=False, file=None):
     if not id:
-        # https://t.me/GetTGLink/4183
         query = (query.strip()).lower()
         title = query
         year = re.findall(r'[1-2]\d{3}$', query, re.IGNORECASE)
@@ -93,7 +97,7 @@ async def get_poster(query, bulk=False, id=False, file=None):
     else:
         date = "N/A"
     plot = ""
-    if not LONG_IMDB_DESCRIPTION:
+    if LONG_IMDB_DESCRIPTION:
         plot = movie.get('plot')
         if plot and len(plot) > 0:
             plot = plot[0]
@@ -105,24 +109,10 @@ async def get_poster(query, bulk=False, id=False, file=None):
     return {
         'title': movie.get('title'),
         'votes': movie.get('votes'),
-        "aka": list_to_str(movie.get("akas")),
-        "seasons": movie.get("number of seasons"),
-        "box_office": movie.get('box office'),
-        'localized_title': movie.get('localized title'),
-        'kind': movie.get("kind"),
-        "imdb_id": f"tt{movie.get('imdbID')}",
-        "cast": list_to_str(movie.get("cast")),
         "runtime": list_to_str(movie.get("runtimes")),
-        "countries": list_to_str(movie.get("countries")),
-        "certificates": list_to_str(movie.get("certificates")),
         "languages": list_to_str(movie.get("languages")),
         "director": list_to_str(movie.get("director")),
         "writer":list_to_str(movie.get("writer")),
-        "producer":list_to_str(movie.get("producer")),
-        "composer":list_to_str(movie.get("composer")) ,
-        "cinematographer":list_to_str(movie.get("cinematographer")),
-        "music_team": list_to_str(movie.get("music department")),
-        "distributors": list_to_str(movie.get("distributors")),
         'release_date': date,
         'year': movie.get('year'),
         'genres': list_to_str(movie.get("genres")),
@@ -131,12 +121,12 @@ async def get_poster(query, bulk=False, id=False, file=None):
         'rating': str(movie.get("rating")),
         'url':f'https://www.imdb.com/title/tt{movieid}'
     }
-# https://github.com/odysseusmax/animated-lamp/blob/2ef4730eb2b5f0596ed6d03e7b05243d93e3415b/bot/utils/broadcast.py#L37
+
 
 async def broadcast_messages(user_id, message):
     try:
         await message.copy(chat_id=user_id)
-        return True, "Success"
+        return True, "Succes"
     except FloodWait as e:
         await asyncio.sleep(e.x)
         return await broadcast_messages(user_id, message)
@@ -168,19 +158,6 @@ async def search_gagala(text):
     return [title.getText() for title in titles]
 
 
-async def get_settings(group_id):
-    settings = temp.SETTINGS.get(group_id)
-    if not settings:
-        settings = await db.get_settings(group_id)
-        temp.SETTINGS[group_id] = settings
-    return settings
-    
-async def save_group_settings(group_id, key, value):
-    current = await get_settings(group_id)
-    current[key] = value
-    temp.SETTINGS[group_id] = current
-    await db.update_settings(group_id, current)
-    
 def get_size(size):
     """Get size in readable format"""
 
@@ -192,9 +169,205 @@ def get_size(size):
         size /= 1024.0
     return "%.2f %s" % (size, units[i])
 
+def get_name(name):
+    name = name.lower()
+    name = name.replace("@cc", '')
+    name = name.replace("telegram", '')
+    name = name.replace("www", '')
+    name = name.replace("join", '')
+    name = name.replace("tg", '')
+    name = name.replace("link", '') 
+    name = name.replace("@", '')
+    name = name.replace("massmovies0", '')
+    name = name.replace("bullmoviee", '')
+    name = name.replace("massmovies", '')
+    name = name.replace("filmy4cab", '')
+    name = name.replace("maassmovies",'')
+    name = name.replace("theproffesorr",'')
+    name = name.replace("primeroom",'')
+    name = name.replace("team_hdt",'')
+    name = name.replace("telugudubbing", '')
+    name = name.replace("rickychannel", '')
+    name = name.replace("tif", '')
+    name = name.replace("cvm", '')
+    name = name.replace("playtk", '')
+    name = name.replace("tel", '')
+    name = name.replace("hw", '')
+    name = name.replace("f&t", '')
+    name = name.replace("fimy", '')
+    name = name.replace("film", '')
+    name = name.replace("xyz", '')
+    name = name.replace("fbm", '')
+    name = name.replace("mwkott", '')
+    name = name.replace("team_hdt", '')
+    name = name.replace("worldcinematoday", '')
+    name = name.replace("cinematic_world", '')
+    name = name.replace("cinema", '')
+    name = name.replace("hotstar", '')
+    name = name.replace("jesseverse", '')
+    name = name.replace("apdackup", '')
+    name = name.replace("streamersHub", '')
+    name = name.replace("tg", '')
+    name = name.replace("movies", '')
+    name = name.replace("[ava]", '')
+    name = name.replace("tamilrockers", '')
+    name = name.replace("imax5", '')
+    name = name.replace("kerala rock", '')
+    name = name.replace("ott", '')
+    name = name.replace("rarefilms", '')
+    name = name.replace("linkzz", '')
+    name = name.replace("movems", '')
+    name = name.replace("moviezz", '')
+    name = name.replace("clipmate", '')
+    name = name.replace("southtamilall", '')
+    name = name.replace("apdbackup", '')
+    name = name.replace("wmr", '')
+    name = name.replace("web", '')
+    name = name.replace("rowdystudios", '')
+    name = name.replace("alpacinodump", '')
+    name = name.replace("fans", '')
+    name = name.replace("movie", '')
+    name = name.replace("mlf", '')
+    name = name.replace("[rmk]", '')
+    name = name.replace("[mc]", '')
+    name = name.replace("[mfa]", '')
+    name = name.replace("[mm]", '')
+    name = name.replace("[me]", '')
+    name = name.replace("[", '')
+    name = name.replace("]", '')
+    name = name.replace("mlm", '')
+    name = name.replace("RMK", '')
+    name = name.replace("1tamilmv", '')
+    name = name.replace("linkz", '')
+    name = name.replace("tamilMob", '')
+    name = name.replace("tg", '')
+    name = name.replace("bollyarchives", '')
+    name = name.replace("🎞", '')
+    name = name.replace("🎬", '')
+    name = name.replace("(", '')
+    name = name.replace(")", '')
+    name = name.replace(" ", '.')
+    name = name.replace("_", '.')
+    name = name.replace("...", '.')
+    name = name.replace("..", '.')
+
+    if name[0] == '.':
+        name = name[1:]
+    name = name.capitalize()
+    return name
+
+def getseries(name):
+    name = name.lower()
+    name = name.replace("season", "")
+    name = name.replace("series", "")
+    name = name.replace("tv", "")
+    name = name.replace("episode", "")
+    name = name.replace("480p", "")
+    name = name.replace("720p", "")
+    name = name.replace("1080p", "")
+    name = name.replace("hindi", "")
+    name = name.replace("tamil", "")
+    name = name.replace("english", "")
+    name = name.replace("web", "")
+    name = ''.join([i for i in name if not i.isdigit()])
+    name = name.replace(" ","")
+
+    return name
+
+def statusLinks(name):
+    if name in namelist:     
+        return True
+    else:
+        return False
+
+def gettitle(name):
+    if name == 'e4':
+        name = '『    English |  480p    』'
+    elif name == 'e7':
+        name = '『    English |  720p    』'
+    elif name == 'e108':
+        name = '『    English |  1080p    』'
+    elif name == 'h4':
+        name = '『    Hindi |  480p    』'
+    elif name == 'h7':
+        name = '『    Hindi |  720p    』'
+    elif name == 'h108':
+        name = '『    Hindi |  1080p    』'
+    elif name == 's4':
+        name = '『    Spanish |  480p    』'
+    elif name == 's7':
+        name = '『    Spanish |  720p    』'
+    elif name == 's108':
+        name = '『    Spanish |  1080p    』'
+    elif name == 't4':
+        name = '『    Tamil |  480p    』'
+    elif name == 't7':
+        name = '『    Tamil |  720p    』'
+    elif name == 't108':
+        name = '『    Tamil |  1080p    』'
+    elif name == 'k4':
+        name = '『    Korean |  480p    』'
+    elif name == 'k7':
+        name = '『    Korean |  720p    』'
+    elif name == 'k108':
+        name = '『    Korean |  1080p    』'
+
+    return name
+
+def getbtn(name):
+    btns = []
+    bn = []
+    index = namelist.index(name)
+    links = linklist[index]
+    x = 1
+    s = 0
+
+    for i in links:
+        for j in i:
+            if j in ['e4','h4','s4','t4','e7','h7','t7','s7','e108', 'h108','t108','s108']:
+                if x > 1:
+                    btns.append(bn)
+                    bn = []
+                    s = 0
+
+                btns.append(
+                    [
+                        InlineKeyboardButton(
+                            text=f"{gettitle(j)}", callback_data="seriestitle"
+                            )
+                    ]
+                )
+
+            else:
+                link = Links[f'{j}']
+                url1 = 'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url='
+                urllink = f'{url1}{link}'                  
+                urllink = url_shortener.tinyurl.short(urllink)
+                bn.append(
+                     InlineKeyboardButton(
+                        text=f"Season {s}",
+                        url=urllink
+                    )
+                )
+
+                if (len(bn) > 2):
+                    btns.append(bn)
+                    bn = []
+            s += 1
+            x += 1 
+
+    btns.append(bn)
+
+    return btns
+                
+def geturl(fileid):
+    urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url=https://telegram.dog/SpaciousUniverseBot?start={fileid}'   
+    urllink = url_shortener.tinyurl.short(urllink)
+    return urllink
+
 def split_list(l, n):
     for i in range(0, len(l), n):
-        yield l[i:i + n]  
+        yield l[i:i + n] 
 
 def get_file_id(msg: Message):
     if msg.media:
