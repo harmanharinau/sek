@@ -282,7 +282,7 @@ def get_name(name):
     name = name.capitalize()
     return name
 
-def geturl(fileid):
+def get_url(fileid):
     urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url=https://telegram.dog/SpaciousUniverseBot?start={fileid}'   
     urllink = url_shortener.tinyurl.short(urllink)
     return urllink
