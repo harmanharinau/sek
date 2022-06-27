@@ -14,7 +14,7 @@ from info import ADMINS, AUTH_CHANNEL, AUTH_USERS, CUSTOM_FILE_CAPTION, AUTH_GRO
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 from pyrogram import Client, filters
 from pyrogram.errors import FloodWait, UserIsBlocked, MessageNotModified, PeerIdInvalid
-from utils import get_size, is_subscribed, get_poster, search_gagala, temp, get_settings, save_group_settings, get_name, get_url
+from utils import get_size, is_subscribed, get_poster, search_gagala, temp, get_settings, save_group_settings, get_name, get_url, statusLinks, getseries
 from database.users_chats_db import db
 from database.ia_filterdb import Media, get_file_details, get_search_results
 from database.filters_mdb import (
@@ -37,7 +37,9 @@ SPELL_CHECK = {}
 async def give_filter(client, message):
     k = await manual_filters(client, message)
     if k == False:
-        await auto_filter(client, message)
+        t = await tvseries_filters(client, message)
+        if not t:
+            await auto_filter(client, message)
 
 
 @Client.on_callback_query(filters.regex(r"^next"))
@@ -828,5 +830,42 @@ async def manual_filters(client, message, text=False):
                 except Exception as e:
                     logger.exception(e)
                 break
+    else:
+        return False
+    
+async def tvseries_filters(client, message, text=False):
+    name = getseries(message.text)
+    linklist = statusLinks(name)
+    
+    if linklist:
+        name = name.lower()
+        btns = getbtn(name)
+        imdb = await get_poster(message.text) if IMDB else None #, file=(files[0]).file_name
+        if imdb:
+            cap = IMDB_TEMPLATE.format(
+                title = imdb['title'],
+                votes = imdb['votes'],
+                year = imdb['year'],
+                genres = imdb['genres'],
+                poster = imdb['poster'],
+                plot = imdb['plot'],
+                rating = imdb['rating'],
+                url = imdb['url']
+            )
+
+            try:
+                await message.reply_photo(photo=imdb.get('poster'), caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btns))
+            except (MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty):
+                pic = imdb.get('poster')
+                poster = pic.replace('.jpg', "._V1_UX360.jpg")
+                await message.reply_photo(photo=poster, caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btns))
+            except Exception as e:
+                logger.exception(e)
+                cap = f"Here is what i found for your Request"
+                await message.reply_text(cap, reply_markup=InlineKeyboardMarkup(btns))
+        else:
+            cap = f"Here is what i found for your Request"
+            await message.reply_text(cap, reply_markup=InlineKeyboardMarkup(btns))
+   
     else:
         return False
