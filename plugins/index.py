@@ -12,6 +12,7 @@ import re
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 lock = asyncio.Lock()
+import time
 
 
 @Client.on_callback_query(filters.regex(r'^index'))
@@ -178,6 +179,8 @@ async def index_files_to_db(lst_msg_id, chat, msg, bot):
                     duplicate += 1
                 elif vnay == 2:
                     errors += 1
+                time.sleep(1)
+                
         except Exception as e:
             logger.exception(e)
             await msg.edit(f'Error: {e}')
