@@ -393,11 +393,6 @@ def getbtn(name):
     btns.append(bn)
 
     return btns
-                
-def geturl(fileid):
-    urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url=https://telegram.dog/SpaciousUniverseBot?start={fileid}'   
-    urllink = url_shortener.tinyurl.short(urllink)
-    return urllink
 
 def split_list(l, n):
     for i in range(0, len(l), n):
