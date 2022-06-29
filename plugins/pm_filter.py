@@ -69,7 +69,7 @@ async def next_page(bot, query):
         btn = [
             [
                 InlineKeyboardButton(
-                    text=f"[{get_size(file.file_size)}] {get_name(file.file_name)}", url=get_url(file.file_id)
+                    text=f"[{get_size(file.file_size)}] {get_name(file.file_name)}", url=get_url(f'files#{file.file_id}')
                 ),
             ]
             for file in files
@@ -646,7 +646,7 @@ async def auto_filter(client, msg, spoll=False):
         btn = [
             [
                 InlineKeyboardButton(
-                    text=f"[{get_size(file.file_size)}] {get_name(file.file_name)}", url = get_url(file.file_id)
+                    text=f"[{get_size(file.file_size)}] {get_name(file.file_name)}", url = get_url(f'files#{file.file_id}')
                 ),
             ]
             for file in files
