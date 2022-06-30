@@ -286,8 +286,8 @@ def get_name(name):
 
 def get_url(fileid):
     ident, file_id = fileid.split("#")
-    urllink = f'https://playdisk.xyz/st?api=3ba547cddecb2156a75b2ab37c9fecdbf5655d7f&url=https://telegram.dog/SpaciousUniverseBot?start={ident}_{file_id}'
-    #urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url=https://telegram.dog/SpaciousUniverseBot?start={ident}_{file_id}'   
+    #urllink = f'https://playdisk.xyz/st?api=3ba547cddecb2156a75b2ab37c9fecdbf5655d7f&url=https://telegram.dog/SpaciousUniverseBot?start={ident}_{file_id}'
+    urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url=https://telegram.dog/SpaciousUniverseBot?start={ident}_{file_id}'   
     urllink = url_shortener.tinyurl.short(urllink)
     return urllink
 
@@ -375,8 +375,8 @@ def getbtn(name):
 
             else:
                 link = Links[f'{j}']
-                url1 = 'https://playdisk.xyz/st?api=3ba547cddecb2156a75b2ab37c9fecdbf5655d7f&url='
-                #url1 = 'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url='
+                #url1 = 'https://playdisk.xyz/st?api=3ba547cddecb2156a75b2ab37c9fecdbf5655d7f&url='
+                url1 = 'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url='
                 urllink = f'{url1}{link}'                  
                 urllink = url_shortener.tinyurl.short(urllink)
                 bn.append(
