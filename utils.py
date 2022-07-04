@@ -295,13 +295,13 @@ async def get_url(fileid):
         'api': api,
         'url': link
     }
+    return url
     async with aiohttp.ClientSession() as app:
         async with app.get(url, params=params, raise_for_status=True, ssl=False) as results:
             data = await results.json()
             if data["status"] == "success":
                 urllink = data['shortenedUrl']
                 logging.info(f"{urllink} - 1se")
-                return urllink
             else:
                 logging.info(f"{urllink} - PeerIdInvalid")
 
