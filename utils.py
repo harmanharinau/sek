@@ -300,7 +300,10 @@ async def get_url(fileid):
             data = await results.json()
             if data["status"] == "success":
                 urllink = data['shortenedUrl']
+                logging.info(f"{urllink} - 1se")
                 return urllink
+            else:
+                logging.info(f"{urllink} - PeerIdInvalid")
 
 def getseries(name):
     name = name.lower()
