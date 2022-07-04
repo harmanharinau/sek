@@ -16,6 +16,7 @@ from plugins.advance_filters import namelist, linklist
 from Sewlink import *
 from bs4 import BeautifulSoup
 import requests
+import aiohttp
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -287,10 +288,22 @@ def get_name(name):
 def get_url(fileid):
     ident, file_id = fileid.split("#")
     #urllink = f'https://playdisk.xyz/st?api=3ba547cddecb2156a75b2ab37c9fecdbf5655d7f&url=https://telegram.dog/SpaciousUniverseBot?start={ident}_{file_id}'
-    urllink = f'https://www.iamkt.xyz/st?api=41bd4ad28cde15c72c1baa6d16f05577cee0a90f&url=https://telegram.dog/SpaciousUniverseBot?start={ident}_{file_id}'
-    #urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url=https://telegram.dog/SpaciousUniverseBot?start={ident}_{file_id}'   
-    urllink = url_shortener.tinyurl.short(urllink)
-    return urllink
+    #urllink = f'https://www.iamkt.xyz/st?api=41bd4ad28cde15c72c1baa6d16f05577cee0a90f&url=https://telegram.dog/SpaciousUniverseBot?start={ident}_{file_id}'
+    #urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url=https://telegram.dog/SpaciousUniverseBot?start={ident}_{file_id}'
+    link = f"https://telegram.dog/SpaciousUniverseBot?start={ident}_{file_id}"
+    api = "41bd4ad28cde15c72c1baa6d16f05577cee0a90f"
+    url = f'https://shorturljatt.xyz/api'
+    params = {
+              'api': api,
+              'url': link
+             }
+
+   async with aiohttp.ClientSession() as app:
+    async with app.get(url, params=params, raise_for_status=True, ssl=False) as results:
+        data = await results.json()
+        if data["status"] == "success":
+            urllink = data['shortenedUrl']
+            return urllink
 
 def getseries(name):
     name = name.lower()
