@@ -290,7 +290,7 @@ async def get_url(fileid):
     ident, file_id = fileid.split("#")
     link = f"https://telegram.dog/SpaciousUniverseBot?start={ident}_{file_id}"
     api = "41bd4ad28cde15c72c1baa6d16f05577cee0a90f"
-    url = f'https://shorturljatt.xyz/api'
+    url = f'https://www.iamkt.xyz/api'
     params = {
         'api': api,
         'url': link
