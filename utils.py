@@ -16,8 +16,8 @@ from plugins.advance_filters import namelist, linklist
 from Sewlink import *
 from bs4 import BeautifulSoup
 import requests
-import aiohttp
-import json
+# import aiohttp
+# import json
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -286,16 +286,17 @@ def get_name(name):
     name = name.capitalize()
     return name
 
-async def get_url(fileid):
-    ident, file_id = fileid.split("#")
-    link = f"https://telegram.dog/SpaciousUniverseBot?start={ident}_{file_id}"
-    api = "41bd4ad28cde15c72c1baa6d16f05577cee0a90f"
-    url = f'https://www.iamkt.xyz/api'
-    params = {
-        'api': api,
-        'url': link
-    }
-    return url
+
+# async def get_url(fileid):
+#     ident, file_id = fileid.split("#")
+#     link = f"https://telegram.dog/SpaciousUniverseBot?start={ident}_{file_id}"
+#     api = "41bd4ad28cde15c72c1baa6d16f05577cee0a90f"
+#     url = f'https://www.iamkt.xyz/api'
+#     params = {
+#         'api': api,
+#         'url': link
+#     }
+#     return url
 #     async with aiohttp.ClientSession() as app:
 #         async with app.get(url, params=params, raise_for_status=True, ssl=False) as results:
 #             data = await results.json()
