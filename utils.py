@@ -296,14 +296,14 @@ async def get_url(fileid):
         'url': link
     }
     return url
-    async with aiohttp.ClientSession() as app:
-        async with app.get(url, params=params, raise_for_status=True, ssl=False) as results:
-            data = await results.json()
-            if data["status"] == "success":
-                urllink = data['shortenedUrl']
-                logging.info(f"{urllink} - 1se")
-            else:
-                logging.info(f"{urllink} - PeerIdInvalid")
+#     async with aiohttp.ClientSession() as app:
+#         async with app.get(url, params=params, raise_for_status=True, ssl=False) as results:
+#             data = await results.json()
+#             if data["status"] == "success":
+#                 urllink = data['shortenedUrl']
+#                 logging.info(f"{urllink} - 1se")
+#             else:
+#                 logging.info(f"{urllink} - PeerIdInvalid")
 
 def getseries(name):
     name = name.lower()
