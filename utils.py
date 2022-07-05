@@ -294,7 +294,7 @@ def get_url(fileid):
     #urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url=https://telegram.dog/SpaciousUniverseBot?start={ident}_{file_id}'   
     urllink = url_shortener.tinyurl.short(urllink)
     return urllink
-
+"""
 def getii_url(fileid):
     ident, file_id = fileid.split("#")
     urllink = f'https://telegram.dog/SpaciousUniverseBot?start={ident}_{file_id}'   
@@ -309,7 +309,7 @@ def getii_url(fileid):
           if data["status"] == "success":
               return data['shortenedUrl']
           
-
+"""
 def getseries(name):
     name = name.lower()
     name = name.replace("season", "")
