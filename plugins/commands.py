@@ -20,14 +20,6 @@ BATCH_FILES = {}
 
 @Client.on_message(filters.command("start") & filters.incoming & ~filters.edited)
 async def start(client, message):
-    data = message.command[1]
-    try:
-        pre, file_id = data.split('_', 1)
-    except:
-        file_id = data
-        pre = ""
-    if data.split("-", 1)[0] == "ALL":
-        return await message.reply("Please wait")
     
     if message.chat.type in ['group', 'supergroup']:
         buttons = [
@@ -113,6 +105,13 @@ async def start(client, message):
             parse_mode='html'
         )
         return
+    
+    data = message.command[1]
+    try:
+        pre, file_id = data.split('_', 1)
+    except:
+        file_id = data
+        pre = ""
         
     if data.split("-", 1)[0] == "BATCH":
         sts = await message.reply("Please wait")
