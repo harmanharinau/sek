@@ -115,7 +115,7 @@ async def start(client, message):
         file_id = file_id.split("#")
         sts = await message.reply("Please wait")
         for file in file_id:
-            await client.send_message( chat_id=message.from_user.id, file)
+            await client.send_message( chat_id=message.from_user.id, text = f"{file}")
             try:
                 await client.send_cached_media(
                     chat_id=message.from_user.id,
