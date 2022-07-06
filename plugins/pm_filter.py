@@ -94,18 +94,13 @@ async def next_page(bot, query):
         off_set = None
     else:
         off_set = offset - 10
-    file_ids = '#'.join([str(file.file_id) for file in files])
     if n_offset == 0:
         btn.append(
             [InlineKeyboardButton("⏪ BACK", callback_data=f"next_{req}_{key}_{off_set}"),
              InlineKeyboardButton(f"📃 Pages {round(int(offset) / 10) + 1} / {round(total / 10)}",
                                   callback_data="pages")]
         )
-        btn.insert(0, 
-                    [
-                        InlineKeyboardButton(text=f"Get All Files", url=f"https://t.me/{temp.U_NAME}?start=ALL-{file_ids}")
-                    ]
-                   )
+
     elif off_set is None:
         btn.append(
             [InlineKeyboardButton(f"🗓 {round(int(offset) / 10) + 1} / {round(total / 10)}", callback_data="pages"),
@@ -123,11 +118,6 @@ async def next_page(bot, query):
                 InlineKeyboardButton("NEXT ⏩", callback_data=f"next_{req}_{key}_{n_offset}")
             ],
         )
-        btn.insert(0, 
-                    [
-                        InlineKeyboardButton(text=f"Get All Files", url=f"https://t.me/{temp.U_NAME}?start=ALL-{file_ids}")
-                    ]
-                   )
     try:
         await query.edit_message_reply_markup(
             reply_markup=InlineKeyboardMarkup(btn)
@@ -682,7 +672,6 @@ async def auto_filter(client, msg, spoll=False):
             for file in files
         ]
     
-    file_ids = '#'.join([str(file.file_id) for file in files])
     if offset != "":
         key = f"{message.chat.id}-{message.message_id}"
         BUTTONS[key] = search
@@ -700,11 +689,7 @@ async def auto_filter(client, msg, spoll=False):
         btn.append(
             [InlineKeyboardButton(text="🗓 1/1", callback_data="pages")]
         )
-        btn.insert(0, 
-                    [
-                        InlineKeyboardButton(text=f"Get All Files", url=f"https://t.me/{temp.U_NAME}?start=ALL-{file_ids}")
-                    ]
-                   )
+        
     imdb = await get_poster(search, file=(files[0]).file_name) if settings["imdb"] else None
     TEMPLATE = settings['template']
     if imdb:
