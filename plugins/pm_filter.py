@@ -103,9 +103,7 @@ async def next_page(bot, query):
         )
         btn.insert(0, 
                     [
-                        InlineKeyboardButton(
-                            text=f"Get All Files", url=f"https://t.me/{temp.U_NAME}?start=ALL-{file_ids}")
-                        )
+                        InlineKeyboardButton(text=f"Get All Files", url=f"https://t.me/{temp.U_NAME}?start=ALL-{file_ids}")
                     ]
                    )
     elif off_set is None:
@@ -114,9 +112,7 @@ async def next_page(bot, query):
              InlineKeyboardButton("NEXT ⏩", callback_data=f"next_{req}_{key}_{n_offset}")])
         btn.insert(0, 
                     [
-                        InlineKeyboardButton(
-                            text=f"Get All Files", url=f"https://t.me/{temp.U_NAME}?start=ALL-{file_ids}")
-                        )
+                        InlineKeyboardButton(text=f"Get All Files", url=f"https://t.me/{temp.U_NAME}?start=ALL-{file_ids}")
                     ]
                    )
     else:
@@ -129,9 +125,7 @@ async def next_page(bot, query):
         )
         btn.insert(0, 
                     [
-                        InlineKeyboardButton(
-                            text=f"Get All Files", url=f"https://t.me/{temp.U_NAME}?start=ALL-{file_ids}")
-                        )
+                        InlineKeyboardButton(text=f"Get All Files", url=f"https://t.me/{temp.U_NAME}?start=ALL-{file_ids}")
                     ]
                    )
     try:
@@ -699,9 +693,7 @@ async def auto_filter(client, msg, spoll=False):
         )
         btn.insert(0, 
                     [
-                        InlineKeyboardButton(
-                            text=f"Get All Files", url=f"https://t.me/{temp.U_NAME}?start=ALL-{file_ids}")
-                        )
+                        InlineKeyboardButton(text=f"Get All Files", url=f"https://t.me/{temp.U_NAME}?start=ALL-{file_ids}")
                     ]
                    )
     else:
@@ -710,9 +702,7 @@ async def auto_filter(client, msg, spoll=False):
         )
         btn.insert(0, 
                     [
-                        InlineKeyboardButton(
-                            text=f"Get All Files", url=f"https://t.me/{temp.U_NAME}?start=ALL-{file_ids}")
-                        )
+                        InlineKeyboardButton(text=f"Get All Files", url=f"https://t.me/{temp.U_NAME}?start=ALL-{file_ids}")
                     ]
                    )
     imdb = await get_poster(search, file=(files[0]).file_name) if settings["imdb"] else None
