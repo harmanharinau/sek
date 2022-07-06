@@ -112,7 +112,7 @@ async def start(client, message):
         pre = ""
     if data.split("-", 1)[0] == "ALL":
         file_id = data.split("-", 1)[1]
-        file_id = file_id.split("_")
+        file_id = file_id.split("#")
         
         for file in file_id:
             try:
