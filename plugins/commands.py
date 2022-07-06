@@ -110,6 +110,30 @@ async def start(client, message):
     except:
         file_id = data
         pre = ""
+    if data.split("-", 1)[0] == "ALL":
+        file_id = data.split("-", 1)[1]
+        file_id = file_id.split("_")
+        
+        for file in file_id:
+            try:
+                await client.send_cached_media(
+                    chat_id=message.from_user.id,
+                    file_id=file,
+                    protect_content=msg.get('protect', False),
+                    )
+            except FloodWait as e:
+                await asyncio.sleep(e.x)
+                logger.warning(f"Floodwait of {e.x} sec.")
+                await client.send_cached_media(
+                    chat_id=message.from_user.id,
+                    file_id=file,
+                    protect_content=msg.get('protect', False),
+                    )
+            except Exception as e:
+                logger.warning(e, exc_info=True)
+                continue
+            await asyncio.sleep(1) 
+        
     if data.split("-", 1)[0] == "BATCH":
         sts = await message.reply("Please wait")
         file_id = data.split("-", 1)[1]
