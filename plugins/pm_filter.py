@@ -94,7 +94,7 @@ async def next_page(bot, query):
         off_set = None
     else:
         off_set = offset - 10
-    file_ids = ' '.join([str(file.file_id) for file in files])
+    file_ids = '_'.join([str(file.file_id) for file in files])
     if n_offset == 0:
         btn.append(
             [InlineKeyboardButton("⏪ BACK", callback_data=f"next_{req}_{key}_{off_set}"),
@@ -682,7 +682,7 @@ async def auto_filter(client, msg, spoll=False):
             for file in files
         ]
     
-    file_ids = ' '.join([str(file.file_id) for file in files])
+    file_ids = '_'.join([str(file.file_id) for file in files])
     if offset != "":
         key = f"{message.chat.id}-{message.message_id}"
         BUTTONS[key] = search
