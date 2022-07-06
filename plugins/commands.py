@@ -20,6 +20,15 @@ BATCH_FILES = {}
 
 @Client.on_message(filters.command("start") & filters.incoming & ~filters.edited)
 async def start(client, message):
+    data = message.command[1]
+    try:
+        pre, file_id = data.split('_', 1)
+    except:
+        file_id = data
+        pre = ""
+    if data.split("-", 1)[0] == "ALL":
+        return await message.reply("Please wait")
+    
     if message.chat.type in ['group', 'supergroup']:
         buttons = [
             [
@@ -104,36 +113,6 @@ async def start(client, message):
             parse_mode='html'
         )
         return
-    data = message.command[1]
-    try:
-        pre, file_id = data.split('_', 1)
-    except:
-        file_id = data
-        pre = ""
-    if data.split("-", 1)[0] == "ALL":
-        file_id = data.split("-", 1)[1]
-        file_id = file_id.split("#")
-        sts = await message.reply("Please wait")
-        for file in file_id:
-            await client.send_message( chat_id=message.from_user.id, text = f"{file}")
-            try:
-                await client.send_cached_media(
-                    chat_id=message.from_user.id,
-                    file_id=file,
-                    protect_content=msg.get('protect', False),
-                    )
-            except FloodWait as e:
-                await asyncio.sleep(e.x)
-                logger.warning(f"Floodwait of {e.x} sec.")
-                await client.send_cached_media(
-                    chat_id=message.from_user.id,
-                    file_id=file,
-                    protect_content=msg.get('protect', False),
-                    )
-            except Exception as e:
-                logger.warning(e, exc_info=True)
-                continue
-            await asyncio.sleep(1) 
         
     if data.split("-", 1)[0] == "BATCH":
         sts = await message.reply("Please wait")
