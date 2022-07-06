@@ -113,7 +113,7 @@ async def start(client, message):
     if data.split("-", 1)[0] == "ALL":
         file_id = data.split("-", 1)[1]
         file_id = file_id.split("#")
-        
+        sts = await message.reply("Please wait")
         for file in file_id:
             await client.send_message( chat_id=message.from_user.id, file)
             try:
