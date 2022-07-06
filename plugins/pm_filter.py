@@ -680,11 +680,7 @@ async def auto_filter(client, msg, spoll=False):
             [InlineKeyboardButton(text=f"🗓 1/{round(int(total_results) / 10)}", callback_data="pages"),
              InlineKeyboardButton(text="NEXT ⏩", callback_data=f"next_{req}_{key}_{offset}")]
         )
-        btn.insert(0, 
-                    [
-                        InlineKeyboardButton(text=f"Get All Files", url=f"https://t.me/{temp.U_NAME}?start=ALL-{file_ids}")
-                    ]
-                   )
+        
     else:
         btn.append(
             [InlineKeyboardButton(text="🗓 1/1", callback_data="pages")]
