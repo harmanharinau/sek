@@ -866,20 +866,21 @@ async def manual_filters(client, message, text=False):
 async def tvseries_filters(client, message, text=False):
     name = getseries(message.text)
     series = await find_tvseries_filter(name)
-    links = series['seasonlink']
-    links = links.split(",")
-    btns = [
-            InlineKeyboardButton(text=series['language'], callback_data="seriestitle"),
-            InlineKeyboardButton(text=series['quality'], callback_data="qulity")
-        ]
- 
-    btns.append([
-            [
-                InlineKeyboardButton(text=f'Season {links.index(link)+1}', url = link)
-            ]
-            for link in links
-        ])
+  
     if series:
+        links = series['seasonlink']
+        links = links.split(",")
+        btns = [
+                InlineKeyboardButton(text=series['language'], callback_data="seriestitle"),
+                InlineKeyboardButton(text=series['quality'], callback_data="qulity")
+            ]
+
+        btns.append([
+                [
+                    InlineKeyboardButton(text=f'Season {links.index(link)+1}', url = link)
+                ]
+                for link in links
+            ])
         imdb = await get_poster(message.text) if IMDB else None
         if imdb:
             cap = IMDB_TEMPLATE.format(
