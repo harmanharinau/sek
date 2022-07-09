@@ -327,7 +327,7 @@ def getseries(name):
     name = ''.join([i for i in name if not i.isdigit()])
     name = name.replace(" ","")
     
-    series = await find_tvseries_filter(name)
+    series = find_tvseries_filter(name)
     
     if series:
         btn = [
