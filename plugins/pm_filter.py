@@ -862,12 +862,9 @@ async def manual_filters(client, message, text=False):
         return False
     
 async def tvseries_filters(client, message, text=False):
-    name = getseries(message.text)
-    linklist = statusLinks(name)
+    btns = getseries(message.text)
     
-    if linklist:
-        name = name.lower()
-        btns = getbtn(name)
+    if btns:
         imdb = await get_poster(message.text) if IMDB else None #, file=(files[0]).file_name
         if imdb:
             cap = IMDB_TEMPLATE.format(
