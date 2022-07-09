@@ -864,7 +864,7 @@ async def manual_filters(client, message, text=False):
         return False
     
 async def tvseries_filters(client, message, text=False):
-    name = await getseries(message.text)
+    name = getseries(message.text)
     series = await find_tvseries_filter(name)
     links = series['seasonlink']
     links = links.split(",")
