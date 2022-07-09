@@ -37,7 +37,8 @@ SPELL_CHECK = {}
 @Client.on_message(filters.group & filters.text & ~filters.edited & filters.incoming)
 async def give_filter(client, message):
     k = await manual_filters(client, message)
-    if k == False:
+    t = await tvseries_filters(client, message)
+    if k == False & t == False:
         await auto_filter(client, message)
 #         t = await tvseries_filters(client, message)
 #         if not t:
@@ -863,7 +864,7 @@ async def manual_filters(client, message, text=False):
         return False
     
 async def tvseries_filters(client, message, text=False):
-    btns = getseries(message.text)
+    btns = await getseries(message.text)
     
     if btns:
         imdb = await get_poster(message.text) if IMDB else None #, file=(files[0]).file_name
