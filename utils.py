@@ -311,7 +311,7 @@ def getii_url(fileid):
               return data['shortenedUrl']
           
 """
-def getseries(name):
+def getseriesbb(name):
     name = name.lower()
     name = name.replace("season", "")
     name = name.replace("series", "")
@@ -346,7 +346,7 @@ def getseries(name):
         
         return btn
 
-def getseriesb(name):
+def getseries(name):
     name = name.lower()
     name = name.replace("season", "")
     name = name.replace("series", "")
