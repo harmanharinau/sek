@@ -37,7 +37,7 @@ SPELL_CHECK = {}
 @Client.on_message(filters.group & filters.text & ~filters.edited & filters.incoming)
 async def give_filter(client, message):
     k = await manual_filters(client, message)
-    #t = await tvseries_filters(client, message)
+    t = await tvseries_filters(client, message)
     if k == False:
         await auto_filter(client, message)
 #         t = await tvseries_filters(client, message)
@@ -864,10 +864,23 @@ async def manual_filters(client, message, text=False):
         return False
     
 async def tvseries_filters(client, message, text=False):
-    btns = await getseries(message.text)
-    
-    if btns:
-        imdb = await get_poster(message.text) if IMDB else None #, file=(files[0]).file_name
+    name = await getseries(message.text)
+    series = await find_tvseries_filter(name)
+    links = series['seasonlink']
+    links = links.split(",")
+    btns = [
+            InlineKeyboardButton(text=series['language'], callback_data="seriestitle"),
+            InlineKeyboardButton(text=series['quality'], callback_data="qulity")
+        ]
+ 
+    btns.append([
+            [
+                InlineKeyboardButton(text=f'Season {links.index(link)+1}', url = link)
+            ]
+            for link in links
+        ])
+    if series:
+        imdb = await get_poster(message.text) if IMDB else None
         if imdb:
             cap = IMDB_TEMPLATE.format(
                 title = imdb['title'],
