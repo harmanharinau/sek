@@ -327,7 +327,7 @@ def getseries(name):
     name = ''.join([i for i in name if not i.isdigit()])
     name = name.replace(" ","")
     
-    series = find_tvseries_filter(name)
+    series = await find_tvseries_filter(name)
     
     if series:
         btn = [
@@ -339,7 +339,7 @@ def getseries(name):
         
         btn.append([
             [
-                InlineKeyboardButton(text=f'Season {links.index(link)}', url = link)
+                InlineKeyboardButton(text=f'Season {links.index(link)+1}', url = link)
             ]
             for link in links
         ])
