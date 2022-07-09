@@ -873,7 +873,7 @@ async def tvseries_filters(client, message, text=False):
         texty = f"{series} \links: {links}"
         await message.reply_text(texty)
     else:
-        await message.reply_text("fail")
+        return False
         
 #         btns = [
 #                 InlineKeyboardButton(text=series['language'], callback_data="seriestitle"),
