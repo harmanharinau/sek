@@ -13,6 +13,7 @@ from typing import List
 from pyrogram.types import InlineKeyboardButton
 from database.users_chats_db import db
 from plugins.advance_filters import namelist, linklist
+from database.tvseriesfilters import find_tvseries_filter
 from Sewlink import *
 from bs4 import BeautifulSoup
 import requests
@@ -311,6 +312,41 @@ def getii_url(fileid):
           
 """
 def getseries(name):
+    name = name.lower()
+    name = name.replace("season", "")
+    name = name.replace("series", "")
+    name = name.replace("tv", "")
+    name = name.replace("episode", "")
+    name = name.replace("480p", "")
+    name = name.replace("720p", "")
+    name = name.replace("1080p", "")
+    name = name.replace("hindi", "")
+    name = name.replace("tamil", "")
+    name = name.replace("english", "")
+    name = name.replace("web", "")
+    name = ''.join([i for i in name if not i.isdigit()])
+    name = name.replace(" ","")
+    
+    series = find_tvseries_filter(name)
+    
+    if series:
+        btn = [
+            InlineKeyboardButton(text=series['language'], callback_data="seriestitle"),
+            InlineKeyboardButton(text=series['quality'], callback_data="qulity")
+        ]
+        links = series['seasonlink']
+        links = links.split(",")
+        
+        btn.append([
+            [
+                InlineKeyboardButton(text=f'Season {links.index(link)}', url = link)
+            ]
+            for link in links
+        ])
+        
+        return btn
+
+def getseriesb(name):
     name = name.lower()
     name = name.replace("season", "")
     name = name.replace("series", "")
