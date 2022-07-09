@@ -168,7 +168,7 @@ async def tvseries_get(bot, message):
     data = message.text.strip().split(" ")
     try:
         cmd, name = data
-        k = await getlinks(name)
+        k = await find_tvseries_filter(name)
         await message.reply(k)
     except:
         return await message.reply("mkt")
