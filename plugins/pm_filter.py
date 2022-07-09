@@ -38,9 +38,10 @@ SPELL_CHECK = {}
 async def give_filter(client, message):
     k = await manual_filters(client, message)
     if k == False:
-        t = await tvseries_filters(client, message)
-        if not t:
-            await auto_filter(client, message)
+        await auto_filter(client, message)
+#         t = await tvseries_filters(client, message)
+#         if not t:
+#             await auto_filter(client, message)
 
 
 @Client.on_callback_query(filters.regex(r"^next"))
