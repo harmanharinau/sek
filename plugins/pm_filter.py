@@ -156,16 +156,19 @@ async def tvseries_adder(bot, message):
     try:
         cmd, name, lang, quty, links = data
         await add_tvseries_filter(name, lang, quty, links)
+        await message.reply("your series added")
 
     except:
         return await message.reply("May Be Error is you puts space between links: \nUse correct format.<code>/addseries (name of series without space) (language eng/hindi/tamil/span) (quility 480/ 720/ 1080) (tv series batch links without space , use commas)</code>\n\n\nExample <code>/addseries strangerthings eng 480 https://tinyurl.com/23smxlh3,https://tinyurl.com/2yq2ghfh,https://tinyurl.com/27d9xyww,https://tinyurl.com/259az578</code>.")
-
+    await sts.delete()
+    
 @Client.on_message(filters.command("alltvs") & filters.incoming & ~filters.edited)
 async def tvseries_get(bot, message):
     data = message.text.strip().split(" ")
     try:
         cmd, name = data
-        await getlinks(name)
+        k = await getlinks(name)
+        await message.reply(k)
     except:
         return await message.reply("mkt")
     
