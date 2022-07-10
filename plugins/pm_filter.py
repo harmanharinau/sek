@@ -161,6 +161,7 @@ async def tvseries_adder(bot, message):
     data = message.text.strip().split(" ")
     try:
         cmd, name, lang, quty, links = data
+        name = f"{name}{lang}{quty}"
         await add_tvseries_filter(name, lang, quty, links)
         await message.reply("your series added")
 
