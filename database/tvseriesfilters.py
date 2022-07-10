@@ -22,7 +22,7 @@ async def update_tvseries_filter(name, language, seasonlink):
     newvalues = { "$set": { "language": str(language), "quality": str(quality), "seasonlink": str(seasonlink) } } 
     mycol.update_one(filter, newvalues)
 
-async def getlinks(name):
+async def getlinks():
     mycol = mydb["tvseries"]
     for x in mycol.find():
         return x  
