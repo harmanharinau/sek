@@ -12,9 +12,7 @@ from datetime import datetime
 from typing import List
 from pyrogram.types import InlineKeyboardButton
 from database.users_chats_db import db
-from plugins.advance_filters import namelist, linklist
 from database.tvseriesfilters import find_tvseries_filter
-from Sewlink import *
 from bs4 import BeautifulSoup
 import requests
 import json
@@ -310,7 +308,7 @@ def getii_url(fileid):
           if data["status"] == "success":
               return data['shortenedUrl']
           
-"""
+
 def getseriesbb(name):
     name = name.lower()
     name = name.replace("season", "")
@@ -450,7 +448,7 @@ def getbtn(name):
     btns.append(bn)
 
     return btns
-
+"""
 def split_list(l, n):
     for i in range(0, len(l), n):
         yield l[i:i + n] 
