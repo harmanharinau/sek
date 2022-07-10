@@ -881,7 +881,7 @@ async def tvseries_filters(client, message, text=False):
             ]
             for link in links
         ]
-        btn.append(0,
+        btn.append(
             [InlineKeyboardButton(text=f"{language} - {quality}", callback_data="pages")]
         )
         btn.append(btns)
