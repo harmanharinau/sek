@@ -170,13 +170,15 @@ async def tvseries_adder(bot, message):
     
 @Client.on_message(filters.command("alltvs") & filters.incoming & ~filters.edited)
 async def tvseries_get(bot, message):
-    data = message.text.strip().split(" ")
-    try:
-        cmd, name = data
-        k = await find_tvseries_filter(name)
-        await message.reply(k)
-    except:
-        return await message.reply("mkt")
+    k = getlinks()
+    await message.reply(k)
+#     data = message.text.strip().split(" ")
+#     try:
+#         cmd, name = data
+#         k = await find_tvseries_filter(name)
+#         await message.reply(k)
+#     except:
+#         return await message.reply("mkt")
     
 @Client.on_callback_query()
 async def cb_handler(client: Client, query: CallbackQuery):
