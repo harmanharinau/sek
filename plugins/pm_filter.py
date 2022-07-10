@@ -872,7 +872,6 @@ async def tvseries_filters(client, message, text=False):
         quality = series['quality']
         links = series['seasonlink']
         links = links.split(",")
-        btn = []
         btns = [
             [
                 InlineKeyboardButton(
@@ -881,10 +880,9 @@ async def tvseries_filters(client, message, text=False):
             ]
             for link in links
         ]
-        btn.append(
+        btns.insert(0, 
             [InlineKeyboardButton(text=f"{language} - {quality}", callback_data="pages")]
         )
-        btn.append(btns)
         imdb = await get_poster(message.text) if IMDB else None
         if imdb:
             cap = IMDB_TEMPLATE.format(
@@ -899,18 +897,18 @@ async def tvseries_filters(client, message, text=False):
             )
 
             try:
-                await message.reply_photo(photo=imdb.get('poster'), caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btn))
+                await message.reply_photo(photo=imdb.get('poster'), caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btns))
             except (MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty):
                 pic = imdb.get('poster')
                 poster = pic.replace('.jpg', "._V1_UX360.jpg")
-                await message.reply_photo(photo=poster, caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btn))
+                await message.reply_photo(photo=poster, caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btns))
             except Exception as e:
                 logger.exception(e)
                 cap = f"Here is what i found for your Request"
-                await message.reply_text(cap, reply_markup=InlineKeyboardMarkup(btn))
+                await message.reply_text(cap, reply_markup=InlineKeyboardMarkup(btns))
         else:
             cap = f"Here is what i found for your Request"
-            await message.reply_text(cap, reply_markup=InlineKeyboardMarkup(btn))
+            await message.reply_text(cap, reply_markup=InlineKeyboardMarkup(btns))
   
     else:
         return False
