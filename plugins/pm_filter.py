@@ -880,10 +880,7 @@ async def tvseries_filters(client, message, text=False):
             quality = series['quality']
             links = series['seasonlink']
             links = links.split(",")
-            btns.append(
-                [InlineKeyboardButton(text=f"{language} - {quality}", callback_data="pages")]
-            )
-            btns.append = [
+            btn = [
                 [
                     InlineKeyboardButton(
                         text=f'Season {links.index(link)+1}', url = gen_url(link)
@@ -891,6 +888,10 @@ async def tvseries_filters(client, message, text=False):
                 ]
                 for link in links
             ]
+            btns.append(
+                [InlineKeyboardButton(text=f"{language} - {quality}", callback_data="pages")]
+            )
+            btns.append(btn)
            
         imdb = await get_poster(message.text) if IMDB else None
         if imdb:
