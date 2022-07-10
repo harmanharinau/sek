@@ -24,9 +24,10 @@ async def update_tvseries_filter(name, language, seasonlink):
 
 async def getlinks():
     mycol = mydb["tvseries"]
+    list = []
     for x in mycol.find():
-        return x  
-    
+        list.append(x)
+    return list
 # async def getlinks(name):
 #     mycol = mydb["tvseries"]
 #     for x in mycol.find({},{ "_id": 0, "name": 1, "language": 1, "quality": 1,"seasonlink": 1}):
