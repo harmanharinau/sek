@@ -872,6 +872,7 @@ async def tvseries_filters(client, message, text=False):
         quality = series['quality']
         links = series['seasonlink']
         links = links.split(",")
+        btn = []
         btns = [
             [
                 InlineKeyboardButton(
@@ -880,7 +881,8 @@ async def tvseries_filters(client, message, text=False):
             ]
             for link in links
         ]
-        btns.insert(0,
+        btn.append(btns)
+        btn.insert(0,
             [InlineKeyboardButton(text=f"{language} - {quality}", callback_data="pages")]
         )
         imdb = await get_poster(message.text) if IMDB else None
@@ -897,32 +899,18 @@ async def tvseries_filters(client, message, text=False):
             )
 
             try:
-                await message.reply_photo(photo=imdb.get('poster'), caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btns))
+                await message.reply_photo(photo=imdb.get('poster'), caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btn))
             except (MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty):
                 pic = imdb.get('poster')
                 poster = pic.replace('.jpg', "._V1_UX360.jpg")
-                await message.reply_photo(photo=poster, caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btns))
+                await message.reply_photo(photo=poster, caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btn))
             except Exception as e:
                 logger.exception(e)
                 cap = f"Here is what i found for your Request"
-                await message.reply_text(cap, reply_markup=InlineKeyboardMarkup(btns))
+                await message.reply_text(cap, reply_markup=InlineKeyboardMarkup(btn))
         else:
             cap = f"Here is what i found for your Request"
-            await message.reply_text(cap, reply_markup=InlineKeyboardMarkup(btns))
+            await message.reply_text(cap, reply_markup=InlineKeyboardMarkup(btn))
   
     else:
         return False
-        
-#         btns = [
-#                 InlineKeyboardButton(text=series['language'], callback_data="seriestitle"),
-#                 InlineKeyboardButton(text=series['quality'], callback_data="qulity")
-#             ]
-
-#         btns.append([
-#                 [
-#                     InlineKeyboardButton(text=f'Season {links.index(link)+1}', url = link)
-#                 ]
-#                 for link in links
-#             ])
-#         imdb = await get_poster(message.text) if IMDB else None
-        
