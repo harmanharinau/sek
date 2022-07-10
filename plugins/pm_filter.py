@@ -170,7 +170,7 @@ async def tvseries_adder(bot, message):
     
 @Client.on_message(filters.command("alltvs") & filters.incoming & ~filters.edited)
 async def tvseries_get(bot, message):
-    k = getlinks()
+    k = await getlinks()
     await message.reply(k)
 #     data = message.text.strip().split(" ")
 #     try:
