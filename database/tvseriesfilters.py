@@ -29,8 +29,10 @@ async def getlinks(name):
 
 async def find_tvseries_filter(name): 
     mycol = mydb["tvseries"]
-#     myquery = { "name": str(name) }
-    myquery = { "name": { "$regex": str(name) } }
-    mydoc = mycol.find(myquery)
-    for x in mydoc:
+    for x in mycol.find({"name": str(name)}):
         return x
+#     myquery = { "name": str(name) }
+#     myquery = { "name": { "$regex": str(name) } } 
+#     mydoc = mycol.find(myquery)
+#     for x in mydoc:
+#         return x
