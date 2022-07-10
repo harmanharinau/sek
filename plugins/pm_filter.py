@@ -881,10 +881,10 @@ async def tvseries_filters(client, message, text=False):
             ]
             for link in links
         ]
-        btn.append(btns)
-        btn.insert(0,
+        btn.append(0,
             [InlineKeyboardButton(text=f"{language} - {quality}", callback_data="pages")]
         )
+        btn.append(btns)
         imdb = await get_poster(message.text) if IMDB else None
         if imdb:
             cap = IMDB_TEMPLATE.format(
