@@ -873,14 +873,17 @@ async def manual_filters(client, message, text=False):
 async def tvseries_filters(client, message, text=False):
     name = getseries(message.text)
     seriess = await find_tvseries_filter(name)
-
+    btns = []
     if seriess:
         for series in seriess:
             language = series['language']
             quality = series['quality']
             links = series['seasonlink']
             links = links.split(",")
-            btns = [
+            btns.append(
+                [InlineKeyboardButton(text=f"{language} - {quality}", callback_data="pages")]
+            )
+            btns.append = [
                 [
                     InlineKeyboardButton(
                         text=f'Season {links.index(link)+1}', url = gen_url(link)
@@ -888,35 +891,33 @@ async def tvseries_filters(client, message, text=False):
                 ]
                 for link in links
             ]
-            btns.insert(0, 
-                [InlineKeyboardButton(text=f"{language} - {quality}", callback_data="pages")]
+           
+        imdb = await get_poster(message.text) if IMDB else None
+        if imdb:
+            cap = IMDB_TEMPLATE.format(
+                title = imdb['title'],
+                votes = imdb['votes'],
+                year = imdb['year'],
+                genres = imdb['genres'],
+                poster = imdb['poster'],
+                plot = imdb['plot'],
+                rating = imdb['rating'],
+                url = imdb['url']
             )
-            imdb = await get_poster(message.text) if IMDB else None
-            if imdb:
-                cap = IMDB_TEMPLATE.format(
-                    title = imdb['title'],
-                    votes = imdb['votes'],
-                    year = imdb['year'],
-                    genres = imdb['genres'],
-                    poster = imdb['poster'],
-                    plot = imdb['plot'],
-                    rating = imdb['rating'],
-                    url = imdb['url']
-                )
 
-                try:
-                    await message.reply_photo(photo=imdb.get('poster'), caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btns))
-                except (MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty):
-                    pic = imdb.get('poster')
-                    poster = pic.replace('.jpg', "._V1_UX360.jpg")
-                    await message.reply_photo(photo=poster, caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btns))
-                except Exception as e:
-                    logger.exception(e)
-                    cap = f"Here is what i found for your Request"
-                    await message.reply_text(cap, reply_markup=InlineKeyboardMarkup(btns))
-            else:
+            try:
+                await message.reply_photo(photo=imdb.get('poster'), caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btns))
+            except (MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty):
+                pic = imdb.get('poster')
+                poster = pic.replace('.jpg', "._V1_UX360.jpg")
+                await message.reply_photo(photo=poster, caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btns))
+            except Exception as e:
+                logger.exception(e)
                 cap = f"Here is what i found for your Request"
                 await message.reply_text(cap, reply_markup=InlineKeyboardMarkup(btns))
+        else:
+            cap = f"Here is what i found for your Request"
+            await message.reply_text(cap, reply_markup=InlineKeyboardMarkup(btns))
   
     else:
         return False
