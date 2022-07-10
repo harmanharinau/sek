@@ -31,6 +31,6 @@ async def find_tvseries_filter(name):
     mycol = mydb["tvseries"]
 #     myquery = { "name": str(name) }
     myquery = { "name": { "$regex": f"^{name}" } }
-    return mycol.find(myquery)
-#     for x in mydoc:
-#         return x
+    mydoc = mycol.find(myquery)
+    for x in mydoc:
+        return x
