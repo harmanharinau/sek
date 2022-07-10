@@ -285,6 +285,23 @@ def get_name(name):
     name = name.capitalize()
     return name
 
+def getseries(name):
+    name = name.lower()
+    name = name.replace("season", "")
+    name = name.replace("series", "")
+    name = name.replace("tv", "")
+    name = name.replace("episode", "")
+    name = name.replace("480p", "")
+    name = name.replace("720p", "")
+    name = name.replace("1080p", "")
+    name = name.replace("hindi", "")
+    name = name.replace("tamil", "")
+    name = name.replace("english", "")
+    name = name.replace("web", "")
+    name = ''.join([i for i in name if not i.isdigit()])
+    name = name.replace(" ","")
+    return name
+
 def get_url(fileid):
     ident, file_id = fileid.split("#")
     #urllink = f'https://playdisk.xyz/st?api=3ba547cddecb2156a75b2ab37c9fecdbf5655d7f&url=https://telegram.dog/SpaciousUniverseBot?start={ident}_{file_id}'
