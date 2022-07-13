@@ -246,6 +246,7 @@ async def start(client, message):
             f_caption=f_caption
     if f_caption is None:
         f_caption = f"{files.file_name}"
+    await message.reply(files_)
     await client.send_cached_media(
         chat_id=message.from_user.id,
         file_id=file_id,
