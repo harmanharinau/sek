@@ -259,8 +259,7 @@ async def start(client, message):
     if files == "Northing Found":
         await message.reply(files)
     else:
-        for file in files:
-            await message.reply(file.file_id)
+        await message.reply(files)
     
                     
 
