@@ -246,13 +246,17 @@ async def start(client, message):
             f_caption=f_caption
     if f_caption is None:
         f_caption = f"{files.file_name}"
-    await message.reply(files_)
+        
     await client.send_cached_media(
         chat_id=message.from_user.id,
         file_id=file_id,
         caption=f_caption,
         protect_content=True if pre == 'filep' else False,
         )
+    
+    files = send_more_files(title)
+    await message.reply(files)
+    
                     
 
 @Client.on_message(filters.command('channel') & filters.user(ADMINS))
