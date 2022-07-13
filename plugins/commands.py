@@ -263,7 +263,7 @@ async def start(client, message):
             await client.send_cached_media(
                 chat_id=message.from_user.id,
                 file_id=file.file_id,
-                caption=files.file_name,
+                caption=file.file_name,
                 protect_content=True if pre == 'filep' else False,
                 )
                     
