@@ -255,8 +255,12 @@ async def start(client, message):
         )
     
     files = send_more_files(title)
-    for file in files:
-        await message.reply(file.file_id)
+    
+    if files == "Northing Found":
+        await message.reply(files)
+    else:
+        for file in files:
+            await message.reply(file.file_id)
     
                     
 
