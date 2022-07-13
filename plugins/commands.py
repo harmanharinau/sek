@@ -254,7 +254,7 @@ async def start(client, message):
         protect_content=True if pre == 'filep' else False,
         )
     
-    files = await send_more_files(title)
+    files = await send_more_files(f_caption)
     
     if files == "Northing Found":
         await message.reply(files)
