@@ -17,6 +17,7 @@ from bs4 import BeautifulSoup
 import requests
 import json
 import aiohttp
+from database.ia_filterdb import get_search_results
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -186,6 +187,13 @@ async def save_group_settings(group_id, key, value):
     current[key] = value
     temp.SETTINGS[group_id] = current
     await db.update_settings(group_id, current)
+
+async def send_more_files(name):
+    files, offset, total_results = await get_search_results(name.lower(), offset=0, filter=True)
+    if not files:
+        return    
+    else:
+        return files
     
 def get_size(size):
     """Get size in readable format"""
