@@ -189,6 +189,8 @@ async def save_group_settings(group_id, key, value):
     await db.update_settings(group_id, current)
 
 async def send_more_files(name):
+    name = get_name(name)
+    name = get_name_2(name)
     files, offset, total_results = await get_search_results(name.lower(), offset=0, filter=True)
     if not files:
         return "Northing Found"  
@@ -206,6 +208,32 @@ def get_size(size):
         size /= 1024.0
     return "%.2f %s" % (size, units[i])
 
+def get_name_2(name):
+    name = name.lower()
+    name = name.replace("season", "")
+    name = name.replace("series", "")
+    name = name.replace("tv", "")
+    name = name.replace("episode", "")
+    name = name.replace("480p", "")
+    name = name.replace("720p", "")
+    name = name.replace("1080p", "")
+    name = name.replace("hindi", "")
+    name = name.replace("tamil", "")
+    name = name.replace("english", "")
+    name = name.replace("web", "")
+    name = name.replace("bluray", "")
+    name = name.replace("x265", "")
+    name = name.replace("hevc", "")
+    name = name.replace("10bit", "")
+    name = name.replace("mkv", "")
+    name = name.replace("6ch", "")
+    name = name.replace("s01", "")
+    name = name.replace("e01", "")
+    
+    if name[0] == '.':
+        name = name[1:]
+    return name
+    
 def get_name(name):
     name = name.lower()
     name = name.replace("@cc", '')
