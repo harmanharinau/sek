@@ -257,10 +257,15 @@ async def start(client, message):
     files = await send_more_files(title)
     
     if files == "Northing Found":
-        await message.reply(files)
+        return
     else:
-        await message.reply(files)
-    
+        for file in files:
+            await client.send_cached_media(
+                chat_id=message.from_user.id,
+                file_id=file.file_id,
+                caption=files.file_name,
+                protect_content=True if pre == 'filep' else False,
+                )
                     
 
 @Client.on_message(filters.command('channel') & filters.user(ADMINS))
