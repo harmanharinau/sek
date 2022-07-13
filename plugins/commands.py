@@ -255,7 +255,8 @@ async def start(client, message):
         )
     
     files = send_more_files(title)
-    await message.reply(files)
+    for file in files:
+        await message.reply(file.file_id)
     
                     
 
