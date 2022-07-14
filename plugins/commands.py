@@ -264,6 +264,8 @@ async def start(client, message):
                 caption=f"<code>{file.file_name}</code>",
                 protect_content=True if pre == 'filep' else False,
                 )
+          
+        return await message.reply('𝕋𝕙𝕒𝕟𝕜 𝕐𝕠𝕦 𝔽𝕠𝕣 𝕌𝕤𝕚𝕟𝕘 𝕄𝕖 ')
                     
 
 @Client.on_message(filters.command('channel') & filters.user(ADMINS))
