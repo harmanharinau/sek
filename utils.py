@@ -189,7 +189,6 @@ async def save_group_settings(group_id, key, value):
     await db.update_settings(group_id, current)
 
 async def send_more_files(name):
-    name = get_name(name)
     name = get_name_2(name)
     files, offset, total_results = await get_search_results(name.lower(), offset=0, filter=True)
     if not files:
