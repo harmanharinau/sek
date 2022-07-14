@@ -36,14 +36,10 @@ SPELL_CHECK = {}
 
 @Client.on_message(filters.group & filters.text & ~filters.edited & filters.incoming)
 async def give_filter(client, message):
-    k = await manual_filters(client, message)
-    if k == False:
-        await auto_filter(client, message)
-        
-    t = await tvseries_filters(client, message)
-#         t = await tvseries_filters(client, message)
-#         if not t:
-#             await auto_filter(client, message)
+#     k = await manual_filters(client, message)
+#     if k == False:
+    await auto_filter(client, message)        
+    await tvseries_filters(client, message)
 
 
 @Client.on_callback_query(filters.regex(r"^next"))
@@ -173,13 +169,6 @@ async def tvseries_adder(bot, message):
 async def tvseries_get(bot, message):
     k = await getlinks()
     await message.reply(k)
-#     data = message.text.strip().split(" ")
-#     try:
-#         cmd, name = data
-#         k = await find_tvseries_filter(name)
-#         await message.reply(k)
-#     except:
-#         return await message.reply("mkt")
     
 @Client.on_callback_query()
 async def cb_handler(client: Client, query: CallbackQuery):
