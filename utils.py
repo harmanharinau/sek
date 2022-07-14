@@ -195,6 +195,8 @@ async def send_more_files(name):
     name = name.split(" ")[:3]
     name = ' '.join(name)
     files, offset, total_results = await get_search_results(name.lower(), offset=0, filter=True)
+    if len(files) > 15:
+        files = files[:15]
     if files:
         return files
     
