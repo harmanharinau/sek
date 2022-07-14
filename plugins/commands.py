@@ -257,7 +257,7 @@ async def start(client, message):
     files = await send_more_files(title)
     
     if files == "Northing Found":
-        return
+        return await message.reply('Thank You For Using Me')
     else:
         for file in files:
             await client.send_cached_media(
