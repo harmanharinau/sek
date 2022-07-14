@@ -191,9 +191,7 @@ async def save_group_settings(group_id, key, value):
 async def send_more_files(name):
     name = get_name_2(name)
     files, offset, total_results = await get_search_results(name, offset=0, filter=True)
-    if not files:
-        return "Northing Found"  
-    else:
+    if files:
         return files
     
 def get_size(size):
