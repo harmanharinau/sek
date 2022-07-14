@@ -248,16 +248,16 @@ async def start(client, message):
         f_caption = f"{files.file_name}"
     
     files = await send_more_files(title)
-    
-    if not files:
-        await client.send_cached_media(
-            chat_id=message.from_user.id,
-            file_id=file_id,
-            caption=f_caption,
-            protect_content=True if pre == 'filep' else False,
-            )
-    else:
-        for file in files:
+
+    await client.send_cached_media(
+        chat_id=message.from_user.id,
+        file_id=file_id,
+        caption=f_caption,
+        protect_content=True if pre == 'filep' else False,
+        )
+    files = await send_more_files(title)
+    if files:
+        for file in files[1:]:
             await client.send_cached_media(
                 chat_id=message.from_user.id,
                 file_id=file.file_id,
