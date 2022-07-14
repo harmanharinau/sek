@@ -246,24 +246,22 @@ async def start(client, message):
             f_caption=f_caption
     if f_caption is None:
         f_caption = f"{files.file_name}"
-        
-    await client.send_cached_media(
-        chat_id=message.from_user.id,
-        file_id=file_id,
-        caption=f_caption,
-        protect_content=True if pre == 'filep' else False,
-        )
     
     files = await send_more_files(title)
     
-    if files == "Northing Found":
-        return await message.reply('Thank You For Using Me')
+    if not files:
+        await client.send_cached_media(
+            chat_id=message.from_user.id,
+            file_id=file_id,
+            caption=f_caption,
+            protect_content=True if pre == 'filep' else False,
+            )
     else:
         for file in files:
             await client.send_cached_media(
                 chat_id=message.from_user.id,
                 file_id=file.file_id,
-                caption=file.file_name,
+                caption=<code>file.file_name</code>,
                 protect_content=True if pre == 'filep' else False,
                 )
                     
