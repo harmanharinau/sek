@@ -861,7 +861,12 @@ async def manual_filters(client, message, text=False):
 async def tvseries_filters(client, message, text=False):
     name = getseries(message.text)
     seriess = await find_tvseries_filter(name)
-    await message.reply_text(seriess)
+    if seriess:
+        language = series['language']
+        quality = series['quality']
+        links = series['seasonlink']
+        links = links.split(",")
+        await message.reply_text(f"{language} | {quality} | {links}")
     """btns = []
     if seriess:
         for series in seriess:
