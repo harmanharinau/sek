@@ -17,7 +17,7 @@ from pyrogram.errors import FloodWait, UserIsBlocked, MessageNotModified, PeerId
 from utils import get_size, is_subscribed, get_poster, search_gagala, temp, get_settings, save_group_settings, get_name, get_url, gen_url, getseries
 from database.users_chats_db import db
 from database.ia_filterdb import Media, get_file_details, get_search_results
-from database.tvseriesfilters import add_tvseries_filter, update_tvseries_filter, getlinks, find_tvseries_filter, removeseries
+from database.tvseriesfilters import add_tvseries_filter, update_tvseries_filter, getlinks, find_tvseries_filter, remove_tvseries
 from database.filters_mdb import (
     del_all,
     find_filter,
