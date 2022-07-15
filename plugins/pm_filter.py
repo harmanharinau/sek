@@ -861,7 +861,8 @@ async def manual_filters(client, message, text=False):
 async def tvseries_filters(client, message, text=False):
     name = getseries(message.text)
     seriess = await find_tvseries_filter(name)
-    btns = []
+    await message.reply_text(seriess)
+    """btns = []
     if seriess:
         for series in seriess:
             language = series['language']
@@ -929,4 +930,4 @@ async def tvseries_filters(client, message, text=False):
             await message.reply_text(cap, reply_markup=InlineKeyboardMarkup(btns))
   
     else:
-        return False
+        return False"""
