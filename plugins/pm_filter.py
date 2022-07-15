@@ -891,6 +891,7 @@ async def manual_filters(client, message, text=False):
 async def tvseries_filters(client, message, text=False):
     name = getseries(message.text)
     seriess = await find_tvseries_filter(name)
+    btns = [InlineKeyboardButton(text=f"{name} TV Series", callback_data="pages")]
     if seriess:
         for series in seriess:
             language = series['language']
@@ -898,14 +899,15 @@ async def tvseries_filters(client, message, text=False):
             links = series['seasonlink']
             links = links.split(",")
         
-        btn = [[ InlineKeyboardButton(text=f'Season {link + 1}', url = gen_url(links[link])), InlineKeyboardButton(text=f'Season {link + 2}', url = gen_url(links[link + 1]))] for link in range(len(links) - 1) if link %2 != 1]
-        if len(links) % 2 == 1:
-            btn.append([InlineKeyboardButton(text=f'Season {len(links)}', url = gen_url(links[-1]))])
+            btn = [[ InlineKeyboardButton(text=f'Season {link + 1}', url = gen_url(links[link])), InlineKeyboardButton(text=f'Season {link + 2}', url = gen_url(links[link + 1]))] for link in range(len(links) - 1) if link %2 != 1]
+            if len(links) % 2 == 1:
+                btn.append([InlineKeyboardButton(text=f'Season {len(links)}', url = gen_url(links[-1]))])
 
-        btn.insert(0,
-                [InlineKeyboardButton(text=f"{language} - {quality}", callback_data="pages")]
-            )
-           
+            btn.insert(0,
+                    [InlineKeyboardButton(text=f"{language} - {quality}", callback_data="pages")]
+                )
+            btns = btns.append(btn)
+            
         imdb = await get_poster(message.text) if IMDB else None
         if imdb:
             cap = IMDB_TEMPLATE.format(
