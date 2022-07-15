@@ -44,7 +44,7 @@ async def getlinks():
 async def find_tvseries_filter(name): 
     mycol = mydb["tvseries"]
     list = []
-    for x in mycol.find({"name": str(name)}):
+    for x in mycol.find({ "name": { "$gt": str(name) } }):
         list.append(x)
     return list
 #     myquery = { "name": str(name) }
@@ -52,3 +52,5 @@ async def find_tvseries_filter(name):
 #     mydoc = mycol.find(myquery)
 #     for x in mydoc:
 #         return x
+
+# https://www.w3schools.com/python/python_mongodb_query.asp
