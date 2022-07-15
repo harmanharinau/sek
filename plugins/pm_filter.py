@@ -909,7 +909,7 @@ async def tvseries_filters(client, message, text=False):
                     [InlineKeyboardButton(text=f"{language} - {quality}", callback_data="pages")]
                 )
             await message.reply_text("2nd", reply_markup=InlineKeyboardMarkup(btn))
-            btns.append(btn)
+            btns.extend(btn)
             await message.reply_text("3rd", reply_markup=InlineKeyboardMarkup(btns))
             
         imdb = await get_poster(message.text) if IMDB else None
