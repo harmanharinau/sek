@@ -871,7 +871,7 @@ async def tvseries_filters(client, message, text=False):
         btn = [
             [
                 InlineKeyboardButton(
-                    text=f'Season {links.index(link)+1}', url = gen_url(link))
+                    text=f'Season {links.index(link)+1}', url = gen_url(link)
                 ),
             ]
             for link in links
