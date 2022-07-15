@@ -163,7 +163,8 @@ async def start(client, message):
                 continue
             await asyncio.sleep(1) 
         await sts.delete()
-        return
+        return await message.reply('𝕋𝕙𝕒𝕟𝕜 𝕐𝕠𝕦 𝔽𝕠𝕣 𝕌𝕤𝕚𝕟𝕘 𝕄𝕖 ')
+    
     elif data.split("-", 1)[0] == "DSTORE":
         sts = await message.reply("Please wait")
         b_string = data.split("-", 1)[1]
@@ -207,7 +208,8 @@ async def start(client, message):
                     logger.exception(e)
                     continue
             await asyncio.sleep(1) 
-        return await sts.delete()
+        await sts.delete()
+        return await message.reply('𝕋𝕙𝕒𝕟𝕜 𝕐𝕠𝕦 𝔽𝕠𝕣 𝕌𝕤𝕚𝕟𝕘 𝕄𝕖 ')
         
 
     files_ = await get_file_details(file_id)           
