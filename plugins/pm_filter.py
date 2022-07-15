@@ -867,7 +867,19 @@ async def tvseries_filters(client, message, text=False):
             quality = series['quality']
             links = series['seasonlink']
             links = links.split(",")
-        await message.reply_text(f"{language} | {quality} | {links}")
+            
+        btn = [
+            [
+                InlineKeyboardButton(
+                    text=f'Season {links.index(link)+1}', url = gen_url(link))
+                ),
+            ]
+            for link in links
+        ]
+        btn.insert(0,
+                [InlineKeyboardButton(text=f"{language} - {quality}", callback_data="pages")]
+            )
+        await message.reply_text(f"{language} | {quality} | {links}", reply_markup=InlineKeyboardMarkup(btn))
     """btns = []
     if seriess:
         for series in seriess:
