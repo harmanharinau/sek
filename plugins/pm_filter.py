@@ -867,15 +867,11 @@ async def tvseries_filters(client, message, text=False):
             quality = series['quality']
             links = series['seasonlink']
             links = links.split(",")
-            
-        btn = [
-            [
-                InlineKeyboardButton(
-                    text=f'Season {links.index(link)+1}', url = gen_url(link)
-                ),
-            ]
-            for link in links
-        ]
+        
+        btn = [[ InlineKeyboardButton(text=f'Season {link}', url = gen_url(links[link])), InlineKeyboardButton(text=f'Season int({link} + 1)', url = gen_url(links[link + 1]))] for link in range(len(links) - 1) if link %2 != 1]
+        if len(links) % 2 == 1:
+            btn.append([InlineKeyboardButton(text=f'Season {len(links)}', url = gen_url(links[-1]))])
+
         btn.insert(0,
                 [InlineKeyboardButton(text=f"{language} - {quality}", callback_data="pages")]
             )
