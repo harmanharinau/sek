@@ -16,11 +16,14 @@ async def add_tvseries_filter(name, language, quality, seasonlink):
     except:
         logger.exception('Some error occured!', exc_info=True)
 
-async def update_tvseries_filter(name, language, seasonlink):
+async def update_tvseries_filter(name, language, quality, seasonlink):
     mycol = mydb["tvseries"]
     filter = { 'name': str(name) }
-    newvalues = { "$set": { "language": str(language), "quality": str(quality), "seasonlink": str(seasonlink) } } 
-    mycol.update_one(filter, newvalues)
+    newvalues = { "$set": { "language": str(language), "quality": str(quality), "seasonlink": str(seasonlink) } }
+    try:
+        mycol.update_one(filter, newvalues)
+    except:
+        logger.exception('Some error occured!', exc_info=True)
 
 async def getlinks():
     mycol = mydb["tvseries"]
