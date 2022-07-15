@@ -36,8 +36,6 @@ SPELL_CHECK = {}
 
 @Client.on_message(filters.group & filters.text & ~filters.edited & filters.incoming)
 async def give_filter(client, message):
-#     k = await manual_filters(client, message)
-#     if k == False:
     await auto_filter(client, message)        
     await tvseries_filters(client, message)
     await manual_filters(client, message)
@@ -47,7 +45,7 @@ async def give_filter(client, message):
 async def next_page(bot, query):
     ident, req, key, offset = query.data.split("_")
     if int(req) not in [query.from_user.id, 0]:
-        return await query.answer("oKda", show_alert=True)
+        return await query.answer("This is Not For You !!!", show_alert=True)
     try:
         offset = int(offset)
     except:
