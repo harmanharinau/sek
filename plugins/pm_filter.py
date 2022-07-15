@@ -894,6 +894,7 @@ async def tvseries_filters(client, message, text=False):
     
     if seriess:
         btns = [[InlineKeyboardButton(text=f"{name} TV Series", callback_data="pages")]]
+        await message.reply_text("1st", reply_markup=InlineKeyboardMarkup(btns))
         for series in seriess:
             language = series['language']
             quality = series['quality']
@@ -907,7 +908,9 @@ async def tvseries_filters(client, message, text=False):
             btn.insert(0,
                     [InlineKeyboardButton(text=f"{language} - {quality}", callback_data="pages")]
                 )
+            await message.reply_text("2nd", reply_markup=InlineKeyboardMarkup(btn))
             btns.append(btn)
+            await message.reply_text("3rd", reply_markup=InlineKeyboardMarkup(btns))
             
         imdb = await get_poster(message.text) if IMDB else None
         if imdb:
