@@ -884,7 +884,6 @@ async def tvseries_filters(client, message, text=False):
         imdb = await get_poster(message.text) if IMDB else None
         if imdb:
             cap = IMDB_TEMPLATE.format(
-                query=search,
                 title=imdb['title'],
                 votes=imdb['votes'],
                 aka=imdb["aka"],
