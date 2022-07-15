@@ -25,6 +25,11 @@ async def update_tvseries_filter(name, language, quality, seasonlink):
     except:
         logger.exception('Some error occured!', exc_info=True)
 
+async def remove_tvseries(name):
+    mycol = mydb["tvseries"]
+    myquery = { 'name': str(name) }
+    mycol.delete_one(myquery)
+    
 async def getlinks():
     mycol = mydb["tvseries"]
     list = []
