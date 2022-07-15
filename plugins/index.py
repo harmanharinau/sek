@@ -161,20 +161,16 @@ async def index_files_to_db(lst_msg_id, chat, msg, bot):
                         reply_markup=reply)
                 if message.empty:
                     deleted += 1
-                    time.sleep(1)
                     continue
                 elif not message.media:
                     no_media += 1
-                    time.sleep(1)
                     continue
                 elif message.media not in ['audio', 'video', 'document']:
                     unsupported += 1
-                    time.sleep(1)
                     continue
                 media = getattr(message, message.media, None)
                 if not media:
                     unsupported += 1
-                    time.sleep(1)
                     continue
                 media.file_type = message.media
                 media.caption = message.caption
@@ -183,10 +179,8 @@ async def index_files_to_db(lst_msg_id, chat, msg, bot):
                     total_files += 1
                 elif vnay == 0:
                     duplicate += 1
-                    time.sleep(1)
                 elif vnay == 2:
                     errors += 1
-                    time.sleep(1)
     
                 
         except Exception as e:
