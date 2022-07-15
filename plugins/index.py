@@ -184,7 +184,7 @@ async def index_files_to_db(lst_msg_id, chat, msg, bot):
                 elif vnay == 2:
                     errors += 1
                 if mytot > 300:
-                    time.sleep(20)
+                    time.sleep(60)
                     mytot = 0
                     
     
