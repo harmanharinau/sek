@@ -17,7 +17,7 @@ from pyrogram.errors import FloodWait, UserIsBlocked, MessageNotModified, PeerId
 from utils import get_size, is_subscribed, get_poster, search_gagala, temp, get_settings, save_group_settings, get_name, get_url, gen_url, getseries
 from database.users_chats_db import db
 from database.ia_filterdb import Media, get_file_details, get_search_results
-from database.tvseriesfilters import add_tvseries_filter, update_tvseries_filter, getlinks, find_tvseries_filter
+from database.tvseriesfilters import add_tvseries_filter, update_tvseries_filter, getlinks, find_tvseries_filter, removeseries
 from database.filters_mdb import (
     del_all,
     find_filter,
@@ -177,6 +177,21 @@ async def tvseries_updater(bot, message):
 
     except:
         return await message.reply("May Be Error is you puts space between links: \nUse correct format.<code>/addseries (name of series without space) (language eng/hindi/tamil/span) (quility 480/ 720/ 1080) (tv series batch links without space , use commas)</code>\n\n\nExample <code>/addseries strangerthings eng 480 https://tinyurl.com/23smxlh3,https://tinyurl.com/2yq2ghfh,https://tinyurl.com/27d9xyww,https://tinyurl.com/259az578</code>.")
+    await sts.delete()
+
+@Client.on_message(filters.command("removeseries") & filters.incoming & ~filters.edited & filters.user(ADMINS))
+async def tvseries_remover(bot, message):
+    sts = await message.reply("Checking Your Request...")
+    if " " not in message.text:
+        return await message.reply("Use correct format.<code>/removeseries (name of series without space)")
+    data = message.text.strip().split(" ")
+    try:
+        cmd, name = data
+        await remove_tvseries(name)
+        await message.reply("your series removed")
+
+    except:
+        return await message.reply("Not Found.")
     await sts.delete()
     
 @Client.on_message(filters.command("alltvs") & filters.incoming & ~filters.edited)
