@@ -868,33 +868,13 @@ async def tvseries_filters(client, message, text=False):
             links = series['seasonlink']
             links = links.split(",")
         
-        btn = [[ InlineKeyboardButton(text=f'Season {link}', url = gen_url(links[link])), InlineKeyboardButton(text=f'Season int({link} + 1)', url = gen_url(links[link + 1]))] for link in range(len(links) - 1) if link %2 != 1]
+        btn = [[ InlineKeyboardButton(text=f'Season {link + 1}', url = gen_url(links[link])), InlineKeyboardButton(text=f'Season {link + 2}', url = gen_url(links[link + 1]))] for link in range(len(links) - 1) if link %2 != 1]
         if len(links) % 2 == 1:
             btn.append([InlineKeyboardButton(text=f'Season {len(links)}', url = gen_url(links[-1]))])
 
         btn.insert(0,
                 [InlineKeyboardButton(text=f"{language} - {quality}", callback_data="pages")]
             )
-        await message.reply_text(f"{language} | {quality} | {links}", reply_markup=InlineKeyboardMarkup(btn))
-    """btns = []
-    if seriess:
-        for series in seriess:
-            language = series['language']
-            quality = series['quality']
-            links = series['seasonlink']
-            links = links.split(",")
-            btn = [
-                [
-                    InlineKeyboardButton(
-                        text=f'Season {links.index(link)+1}', url = gen_url(link)
-                    )
-                ]
-                for link in links
-            ]
-            btns.append(
-                [InlineKeyboardButton(text=f"{language} - {quality}", callback_data="pages")]
-            )
-            btns.append(btn)
            
         imdb = await get_poster(message.text) if IMDB else None
         if imdb:
@@ -930,18 +910,18 @@ async def tvseries_filters(client, message, text=False):
             )
 
             try:
-                await message.reply_photo(photo=imdb.get('poster'), caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btns))
+                await message.reply_photo(photo=imdb.get('poster'), caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btn))
             except (MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty):
                 pic = imdb.get('poster')
                 poster = pic.replace('.jpg', "._V1_UX360.jpg")
-                await message.reply_photo(photo=poster, caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btns))
+                await message.reply_photo(photo=poster, caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btn))
             except Exception as e:
                 logger.exception(e)
                 cap = f"Here is what i found for your Request"
-                await message.reply_text(cap, reply_markup=InlineKeyboardMarkup(btns))
+                await message.reply_text(cap, reply_markup=InlineKeyboardMarkup(btn))
         else:
             cap = f"Here is what i found for your Request"
-            await message.reply_text(cap, reply_markup=InlineKeyboardMarkup(btns))
+            await message.reply_text(cap, reply_markup=InlineKeyboardMarkup(btn))
   
     else:
-        return False"""
+        return False
