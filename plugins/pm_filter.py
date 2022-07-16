@@ -907,7 +907,7 @@ async def tvseries_filters(client, message, text=False):
     seriess = await find_tvseries_filter(name)
     
     if seriess:
-        btns = [[InlineKeyboardButton(text=f"{name} TV Series", callback_data="pages")]]
+        btns = [[InlineKeyboardButton(text=f"{name.capitalize()} TV Series", callback_data="pages")]]
         for series in seriess:
             language = series['language']
             quality = series['quality']
