@@ -257,6 +257,9 @@ async def start(client, message):
                 file_id=file_id,
                 caption=f_caption,
                 )
+
+        return
+        
     files_ = await get_file_details(file_id)           
     if not files_:
         pre, file_id = ((base64.urlsafe_b64decode(data + "=" * (-len(data) % 4))).decode("ascii")).split("_", 1)
@@ -302,6 +305,7 @@ async def start(client, message):
         caption=f_caption,
         protect_content=True if pre == 'filep' else False,
         )
+
     files = await send_more_files(title)
     if files:
         for file in files[1:]:
