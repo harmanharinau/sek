@@ -11,6 +11,7 @@ from database.users_chats_db import db
 from info import CHANNELS, ADMINS, AUTH_CHANNEL, LOG_CHANNEL, PICS, BATCH_FILE_CAPTION, CUSTOM_FILE_CAPTION, PROTECT_CONTENT
 from utils import get_settings, get_size, is_subscribed, save_group_settings, temp, send_more_files
 from database.connections_mdb import active_connection
+from database.quickdb import add_inst_filter, remove_inst, get_ids, get
 import re
 import json
 import base64
@@ -211,7 +212,51 @@ async def start(client, message):
         await sts.delete()
         return await message.reply('𝕋𝕙𝕒𝕟𝕜 𝕐𝕠𝕦 𝔽𝕠𝕣 𝕌𝕤𝕚𝕟𝕘 𝕄𝕖 ')
         
-
+    idstring = await get_ids(file_id)
+    
+    if idstring:
+        await remove_inst(file_id)
+        idstring = idstring['links']
+        fileids = idstring.split("L_I_N_K")
+        for file_id in fileids:
+            files_ = await get_file_details(file_id)           
+            if not files_:
+                try:
+                    msg = await client.send_cached_media(
+                        chat_id=message.from_user.id,
+                        file_id=file_id
+                        )
+                    filetype = msg.media
+                    file = getattr(msg, filetype)
+                    title = file.file_name
+                    size=get_size(file.file_size)
+                    f_caption = f"<code>{title}</code>"
+                    if CUSTOM_FILE_CAPTION:
+                        try:
+                            f_caption=CUSTOM_FILE_CAPTION.format(file_name= '' if title is None else title, file_size='' if size is None else size, file_caption='')
+                        except:
+                            return
+                    await msg.edit_caption(f_caption)
+                    return
+                except:
+                    pass
+            files = files_[0]
+            title = files.file_name
+            size=get_size(files.file_size)
+            f_caption=files.caption
+            if CUSTOM_FILE_CAPTION:
+                try:
+                    f_caption=CUSTOM_FILE_CAPTION.format(file_name= '' if title is None else title, file_size='' if size is None else size, file_caption='' if f_caption is None else f_caption)
+                except Exception as e:
+                    logger.exception(e)
+                    f_caption=f_caption
+            if f_caption is None:
+                f_caption = f"{files.file_name}"
+            await client.send_cached_media(
+                chat_id=message.from_user.id,
+                file_id=file_id,
+                caption=f_caption,
+                )
     files_ = await get_file_details(file_id)           
     if not files_:
         pre, file_id = ((base64.urlsafe_b64decode(data + "=" * (-len(data) % 4))).decode("ascii")).split("_", 1)
