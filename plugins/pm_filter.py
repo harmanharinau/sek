@@ -14,10 +14,11 @@ from info import ADMINS, AUTH_CHANNEL, AUTH_USERS, CUSTOM_FILE_CAPTION, AUTH_GRO
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 from pyrogram import Client, filters
 from pyrogram.errors import FloodWait, UserIsBlocked, MessageNotModified, PeerIdInvalid
-from utils import get_size, is_subscribed, get_poster, search_gagala, temp, get_settings, save_group_settings, get_name, get_url, gen_url, getseries
+from utils import get_size, is_subscribed, get_poster, search_gagala, temp, get_settings, save_group_settings, get_name, get_url, gen_url, getseries, geny_url
 from database.users_chats_db import db
 from database.ia_filterdb import Media, get_file_details, get_search_results
 from database.tvseriesfilters import add_tvseries_filter, update_tvseries_filter, getlinks, find_tvseries_filter, remove_tvseries
+from database.quickdb import add_inst_filter, remove_inst, get_ids
 from database.filters_mdb import (
     del_all,
     find_filter,
@@ -63,6 +64,12 @@ async def next_page(bot, query):
 
     if not files:
         return
+    
+    fileids = [file.file_id for file in files]
+    dbid = fileids[0]
+    fileids = "L_I_N_K".join(fileids)
+    await add_inst_filter(dbid, fileids)
+    
     settings = await get_settings(query.message.chat.id)
     if settings['button']:
         btn = [
@@ -102,6 +109,9 @@ async def next_page(bot, query):
         btn.append(
             [InlineKeyboardButton("◈ How To Download ◈", url="https://t.me/SpaciousUniverseBot?start=ZmlsZV9CQUFEQlFBREt3VUFBcmRVR0ZXbjBuU3dkdEVHM1JZRQ")]
         )
+        btn.insert(0, 
+            [InlineKeyboardButton("◈ All Files ◈", url=geny_url(dbid))]
+        )
 
     elif off_set is None:
         btn.append(
@@ -110,6 +120,10 @@ async def next_page(bot, query):
         btn.append(
             [InlineKeyboardButton("◈ How To Download ◈", url="https://t.me/SpaciousUniverseBot?start=ZmlsZV9CQUFEQlFBREt3VUFBcmRVR0ZXbjBuU3dkdEVHM1JZRQ")]
         )
+        btn.insert(0, 
+            [InlineKeyboardButton("◈ All Files ◈", url=geny_url(dbid))]
+        )
+        
     else:
         btn.append(
             [
@@ -121,6 +135,10 @@ async def next_page(bot, query):
         btn.append(
             [InlineKeyboardButton("◈ How To Download ◈", url="https://t.me/SpaciousUniverseBot?start=ZmlsZV9CQUFEQlFBREt3VUFBcmRVR0ZXbjBuU3dkdEVHM1JZRQ")]
         )
+        btn.insert(0, 
+            [InlineKeyboardButton("◈ All Files ◈", url=geny_url(dbid))]
+        )
+        
     try:
         await query.edit_message_reply_markup(
             reply_markup=InlineKeyboardMarkup(btn)
@@ -704,6 +722,12 @@ async def auto_filter(client, msg, spoll=False):
         message = msg.message.reply_to_message  # msg will be callback query
         search, files, offset, total_results = spoll
     pre = 'filep' if settings['file_secure'] else 'file'
+    
+    fileids = [file.file_id for file in files]
+    dbid = fileids[0]
+    fileids = "L_I_N_K".join(fileids)
+    await add_inst_filter(dbid, fileids)
+    
     if settings["button"]:
         btn = [
             [
@@ -739,6 +763,9 @@ async def auto_filter(client, msg, spoll=False):
         btn.append(
             [InlineKeyboardButton("◈ How To Download ◈", url="https://t.me/SpaciousUniverseBot?start=ZmlsZV9CQUFEQlFBREt3VUFBcmRVR0ZXbjBuU3dkdEVHM1JZRQ")]
         )
+        btn.insert(0, 
+            [InlineKeyboardButton("◈ All Files ◈", url=geny_url(dbid))]
+        )
         
     else:
         btn.append(
@@ -746,6 +773,9 @@ async def auto_filter(client, msg, spoll=False):
         )
         btn.append(
             [InlineKeyboardButton("◈ How To Download ◈", url="https://t.me/SpaciousUniverseBot?start=ZmlsZV9CQUFEQlFBREt3VUFBcmRVR0ZXbjBuU3dkdEVHM1JZRQ")]
+        )
+        btn.insert(0, 
+            [InlineKeyboardButton("◈ All Files ◈", url=geny_url(dbid))]
         )
         
     imdb = await get_poster(search, file=(files[0]).file_name) if settings["imdb"] else None
