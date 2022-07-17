@@ -329,6 +329,11 @@ def gen_url(link):
     urllink = url_shortener.tinyurl.short(urllink)
     return urllink
 
+def geny_url(file_id):
+    urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url=https://telegram.dog/SpaciousUniverseBot?start={file_id}'
+    urllink = url_shortener.tinyurl.short(urllink)
+    return urllink
+
 def split_list(l, n):
     for i in range(0, len(l), n):
         yield l[i:i + n] 
