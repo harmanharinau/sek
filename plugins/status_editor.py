@@ -23,13 +23,9 @@ prev_day_total_users = 35531
 prev_day_total_files = 577448
 
 
-@Client.on_message(filters.command("broadcast") & filters.user(ADMINS))
+@Client.on_message(filters.command("updatech") & filters.user(ADMINS))
 async def set_channel_ststs(client, message):
     k = message.reply_text("processing...")
-    post = await client.get_messages(int(1001552600483), 12)
-    logger.exception(current_time, exc_info=True)
-    # if current_time == '03:17:10':
-    # logger.exception(current_time, exc_info=True)
     todaySentFiles = count_sent_files()
     total_users = await db.total_users_count()
     files = await Media.count_documents()
@@ -37,11 +33,11 @@ async def set_channel_ststs(client, message):
     todayFiles = files - prev_day_total_files
 
     try:
-        await post.edit(
+        await client.edit_message_text(
+            chat_id=int(1001552600483),
+            message_id=int(241287),
             text=script.POST_TEXT.format(
                 todaySentFiles, todayUsers, todayFiles, total_users, files),
-            disable_web_page_preview=True,
-            reply_markup=post.reply_markup
         )
     except:
         logger.exception('Some error occured!', exc_info=True)
