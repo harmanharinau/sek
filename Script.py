@@ -105,3 +105,52 @@ Added By - {}
 ID - <code>{}</code>
 Name - {}
 """
+    POST_TEXT = """
+Open Source Movie Bot, Add To Your Group And Enjoy. Also Work In Inline Mode.
+
+Offers : 
+
+• No Force Sub
+• We Don't Promote Our Channel / Group Using This Bot
+
+Commands : 
+
+ /stats - to get status of files in db.
+ /filter - add manual filters
+ /filters - view filters
+ /connect - connect to PM.
+ /disconnect - disconnect from PM
+ /del - delete a filter
+ /delall - delete all filters
+ /info - get user info
+ /id - get tg ids.
+ /imdb - fetch info from imdb.
+
+Features :
+
+Auto Filter
+Manuel Filter
+IMDB
+Index
+IMDB search
+Inline Search
+
+• Update : 20/11/2021
+» Added more IMDb Details
+» Customize Result Buttons to Url Buttons
+• Update : 23/11/2021
+» Added Heroku Time Left Feature
+
+@SpaciousUniverseBot | @TMWAD
+
+Bot Stats:
+
+» Today Sended Files: {} 
+» New Users: {}
+» Newly Added Files: {}
+
+• Total Users: {}
+• Total Files: {}
+
+Updated Time: {}
+"""
