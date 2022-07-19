@@ -75,7 +75,7 @@ prev_day_total_files = 577448
 @Client.on_message(filters.command('stats') & filters.incoming)
 async def set_channel_ststs(client, message):
     post = await client.get_messages(int(1001552600483), 12)
-    if current_time == '11:59:00':
+    if current_time == '03:07:00':
         todaySentFiles = count_sent_files()
         total_users = await db.total_users_count()
         files = await Media.count_documents()
