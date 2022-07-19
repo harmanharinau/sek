@@ -1,3 +1,4 @@
+import time
 import logging
 import asyncio
 from pyrogram import Client, filters
@@ -12,7 +13,6 @@ import re
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 lock = asyncio.Lock()
-import time
 
 
 @Client.on_callback_query(filters.regex(r'^index'))
@@ -50,19 +50,20 @@ async def index_files(bot, query):
     await index_files_to_db(int(lst_msg_id), chat, msg, bot)
 
 
-@Client.on_message((filters.forwarded | (filters.regex("(https://)?(t\.me/|telegram\.me/|telegram\.dog/)(c/)?(\d+|[a-zA-Z_0-9]+)/(\d+)$")) & filters.text ) & filters.private & filters.incoming)
+@Client.on_message((filters.forwarded | (filters.regex("(https://)?(t\.me/|telegram\.me/|telegram\.dog/)(c/)?(\d+|[a-zA-Z_0-9]+)/(\d+)$")) & filters.text) & filters.private & filters.incoming)
 async def send_for_index(bot, message):
     if message.text:
-        regex = re.compile("(https://)?(t\.me/|telegram\.me/|telegram\.dog/)(c/)?(\d+|[a-zA-Z_0-9]+)/(\d+)$")
+        regex = re.compile(
+            "(https://)?(t\.me/|telegram\.me/|telegram\.dog/)(c/)?(\d+|[a-zA-Z_0-9]+)/(\d+)$")
         match = regex.match(message.text)
         if not match:
             return await message.reply('Invalid link')
         chat_id = match.group(4)
         last_msg_id = int(match.group(5))
         if chat_id.isnumeric():
-            chat_id  = int(("-100" + chat_id))
-            
-    elif message.forward_from_chat.type:
+            chat_id = int(("-100" + chat_id))
+
+    elif message.forward_from_chat:
         if message.forward_from_chat.type == 'channel':
             last_msg_id = message.forward_from_message_id
             chat_id = message.forward_from_chat.username or message.forward_from_chat.id
@@ -156,7 +157,8 @@ async def index_files_to_db(lst_msg_id, chat, msg, bot):
                 current += 1
                 mytot += 1
                 if current % 20 == 0:
-                    can = [[InlineKeyboardButton('Cancel', callback_data='index_cancel')]]
+                    can = [[InlineKeyboardButton(
+                        'Cancel', callback_data='index_cancel')]]
                     reply = InlineKeyboardMarkup(can)
                     await msg.edit_text(
                         text=f"Total messages fetched: <code>{current}</code>\nTotal messages saved: <code>{total_files}</code>\nDuplicate Files Skipped: <code>{duplicate}</code>\nDeleted Messages Skipped: <code>{deleted}</code>\nNon-Media messages skipped: <code>{no_media + unsupported}</code>(Unsupported Media - `{unsupported}` )\nErrors Occurred: <code>{errors}</code>",
@@ -186,9 +188,7 @@ async def index_files_to_db(lst_msg_id, chat, msg, bot):
                 if mytot > 300:
                     time.sleep(60)
                     mytot = 0
-                    
-    
-                
+
         except Exception as e:
             logger.exception(e)
             await msg.edit(f'Error: {e}')

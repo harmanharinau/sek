@@ -11,7 +11,7 @@ from database.users_chats_db import db
 from info import CHANNELS, ADMINS, AUTH_CHANNEL, LOG_CHANNEL, PICS, BATCH_FILE_CAPTION, CUSTOM_FILE_CAPTION, PROTECT_CONTENT
 from utils import get_settings, get_size, is_subscribed, save_group_settings, temp, send_more_files
 from database.connections_mdb import active_connection
-from database.quickdb import add_inst_filter, remove_inst, get_ids, get
+from database.quickdb import remove_inst, get_ids, add_sent_files
 import re
 import json
 import base64
@@ -164,6 +164,8 @@ async def start(client, message):
                     protect_content=msg.get('protect', False),
                 )
                 sendmsglist.append(k)
+                await add_sent_files(message.from_user.id, msg.get("file_id"))
+
             except FloodWait as e:
                 await asyncio.sleep(e.x)
                 logger.warning(f"Floodwait of {e.x} sec.")
@@ -174,6 +176,7 @@ async def start(client, message):
                     protect_content=msg.get('protect', False),
                 )
                 sendmsglist.append(k)
+                await add_sent_files(message.from_user.id, msg.get("file_id"))
 
             except Exception as e:
                 logger.warning(e, exc_info=True)
@@ -222,9 +225,11 @@ async def start(client, message):
                     f_caption = getattr(msg, 'caption', file_name)
                 try:
                     k = await msg.copy(message.chat.id, caption=f_caption, protect_content=True if protect == "/pbatch" else False)
+                    await add_sent_files(message.from_user.id, msg.get("file_id"))
                 except FloodWait as e:
                     await asyncio.sleep(e.x)
                     k = await msg.copy(message.chat.id, caption=f_caption, protect_content=True if protect == "/pbatch" else False)
+                    await add_sent_files(message.from_user.id, msg.get("file_id"))
                 except Exception as e:
                     logger.exception(e)
                     continue
@@ -233,9 +238,11 @@ async def start(client, message):
             else:
                 try:
                     k = await msg.copy(message.chat.id, protect_content=True if protect == "/pbatch" else False)
+                    await add_sent_files(message.from_user.id, msg.get("file_id"))
                 except FloodWait as e:
                     await asyncio.sleep(e.x)
                     k = await msg.copy(message.chat.id, protect_content=True if protect == "/pbatch" else False)
+                    await add_sent_files(message.from_user.id, msg.get("file_id"))
                 except Exception as e:
                     logger.exception(e)
                     continue
@@ -301,6 +308,7 @@ async def start(client, message):
                 caption=f_caption,
             )
             sendmsglist.append(k)
+            await add_sent_files(message.from_user.id, file_id)
 
         await message.reply('𝕋𝕙𝕒𝕟𝕜 𝕐𝕠𝕦 𝔽𝕠𝕣 𝕌𝕤𝕚𝕟𝕘 𝕄𝕖')
         kk = await client.send_message(
@@ -367,6 +375,7 @@ async def start(client, message):
         protect_content=True if pre == 'filep' else False,
     )
     sendmsglist = [k]
+    await add_sent_files(message.from_user.id, file_id)
 
     files = await send_more_files(title)
     if files:
@@ -378,6 +387,7 @@ async def start(client, message):
                 protect_content=True if pre == 'filep' else False,
             )
             sendmsglist.append(k)
+            await add_sent_files(message.from_user.id, file.file_id)
 
         await message.reply('𝕋𝕙𝕒𝕟𝕜 𝕐𝕠𝕦 𝔽𝕠𝕣 𝕌𝕤𝕚𝕟𝕘 𝕄𝕖 ')
         kk = await client.send_message(
