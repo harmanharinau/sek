@@ -106,41 +106,28 @@ ID - <code>{}</code>
 Name - {}
 """
     POST_TEXT = """
-Open Source Movie Bot, Add To Your Group And Enjoy. Also Work In Inline Mode.
+𝗕𝗮𝗲 𝗦𝘂𝘇𝘆 𝗕𝗼𝘁 𝗨𝗽𝗱𝗮𝘁𝗲 🎶
 
-Offers : 
+🔹 New Features :
 
-• No Force Sub
-• We Don't Promote Our Channel / Group Using This Bot
+ - /batch Create Batch Link To Your Batch (File, Video, Stickers, Photo...) 
+- /link Generate Link To Your Post 
 
-Commands : 
+🔹 Step To Create Batch Link :
 
- /stats - to get status of files in db.
- /filter - add manual filters
- /filters - view filters
- /connect - connect to PM.
- /disconnect - disconnect from PM
- /del - delete a filter
- /delall - delete all filters
- /info - get user info
- /id - get tg ids.
- /imdb - fetch info from imdb.
+i) If Your Message Forwarding Channel Is Privet Channel, Add @SpaciousUniverseBot To Your Channel As Admin 
 
-Features :
+ii) Now Send /batch Commands 
+- Forward First Message of your batch from Channel 
+- Forward Last Message of your batch from same channel 
 
-Auto Filter
-Manuel Filter
-IMDB
-Index
-IMDB search
-Inline Search
+That's it for Create Batch 🎶.
 
-• Update : 20/11/2021
-» Added more IMDb Details
-» Customize Result Buttons to Url Buttons
-• Update : 23/11/2021
-» Added Heroku Time Left Feature
+🔹 Other Commands : 
 
+- /imdb : Get Movie /Tv Series /Anime Information From IMDB 
+- /search : Get Movie /Tv Series /Anime Information From Google 
+ 
 @SpaciousUniverseBot | @TMWAD
 
 Bot Stats:

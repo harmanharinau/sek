@@ -34,8 +34,8 @@ async def set_channel_ststs(client, message):
 
     try:
         await client.edit_message_text(
-            chat_id=int(1001552600483),
-            message_id=int(241287),
+            chat_id='TMWAD',
+            message_id=int(241290),
             text=script.POST_TEXT.format(
                 todaySentFiles, todayUsers, todayFiles, total_users, files, current_time),
         )
