@@ -3,7 +3,7 @@ import asyncio
 import re
 import ast
 
-from pyrogram.errors.exceptions.bad_request_400 import MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty
+from pyrogram.errors.exceptions.bad_request_400 import MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty, MessageEmpty
 from Script import script
 import pyrogram
 import pyshorteners
@@ -37,7 +37,7 @@ SPELL_CHECK = {}
 
 @Client.on_message(filters.group & filters.text & ~filters.edited & filters.incoming)
 async def give_filter(client, message):
-    await auto_filter(client, message)        
+    await auto_filter(client, message)
     await tvseries_filters(client, message)
     await manual_filters(client, message)
 
@@ -64,12 +64,12 @@ async def next_page(bot, query):
 
     if not files:
         return
-    
+
     fileids = [file.file_id for file in files]
     dbid = fileids[0]
     fileids = "L_I_N_K".join(fileids)
     await add_inst_filter(dbid, fileids)
-    
+
     settings = await get_settings(query.message.chat.id)
     if settings['button']:
         btn = [
@@ -107,38 +107,44 @@ async def next_page(bot, query):
                                   callback_data="pages")]
         )
         btn.append(
-            [InlineKeyboardButton("◈ How To Download ◈", url="https://t.me/SpaciousUniverseBot?start=ZmlsZV9CQUFEQlFBREt3VUFBcmRVR0ZXbjBuU3dkdEVHM1JZRQ")]
+            [InlineKeyboardButton(
+                "◈ How To Download ◈", url="https://t.me/SpaciousUniverseBot?start=ZmlsZV9CQUFEQlFBREt3VUFBcmRVR0ZXbjBuU3dkdEVHM1JZRQ")]
         )
-        btn.insert(0, 
-            [InlineKeyboardButton("◈ All Files ◈", url=geny_url(dbid))]
-        )
+        btn.insert(0,
+                   [InlineKeyboardButton("◈ All Files ◈", url=geny_url(dbid))]
+                   )
 
     elif off_set is None:
         btn.append(
             [InlineKeyboardButton(f"❏ {round(int(offset) / 10) + 1} / {round(total / 10)}", callback_data="pages"),
              InlineKeyboardButton("Next ►", callback_data=f"next_{req}_{key}_{n_offset}")])
         btn.append(
-            [InlineKeyboardButton("◈ How To Download ◈", url="https://t.me/SpaciousUniverseBot?start=ZmlsZV9CQUFEQlFBREt3VUFBcmRVR0ZXbjBuU3dkdEVHM1JZRQ")]
+            [InlineKeyboardButton(
+                "◈ How To Download ◈", url="https://t.me/SpaciousUniverseBot?start=ZmlsZV9CQUFEQlFBREt3VUFBcmRVR0ZXbjBuU3dkdEVHM1JZRQ")]
         )
-        btn.insert(0, 
-            [InlineKeyboardButton("◈ All Files ◈", url=geny_url(dbid))]
-        )
-        
+        btn.insert(0,
+                   [InlineKeyboardButton("◈ All Files ◈", url=geny_url(dbid))]
+                   )
+
     else:
         btn.append(
             [
-                InlineKeyboardButton("◄ Back", callback_data=f"next_{req}_{key}_{off_set}"),
-                InlineKeyboardButton(f"❏ {round(int(offset) / 10) + 1} / {round(total / 10)}", callback_data="pages"),
-                InlineKeyboardButton("Next ►", callback_data=f"next_{req}_{key}_{n_offset}")
+                InlineKeyboardButton(
+                    "◄ Back", callback_data=f"next_{req}_{key}_{off_set}"),
+                InlineKeyboardButton(
+                    f"❏ {round(int(offset) / 10) + 1} / {round(total / 10)}", callback_data="pages"),
+                InlineKeyboardButton(
+                    "Next ►", callback_data=f"next_{req}_{key}_{n_offset}")
             ],
         )
         btn.append(
-            [InlineKeyboardButton("◈ How To Download ◈", url="https://t.me/SpaciousUniverseBot?start=ZmlsZV9CQUFEQlFBREt3VUFBcmRVR0ZXbjBuU3dkdEVHM1JZRQ")]
+            [InlineKeyboardButton(
+                "◈ How To Download ◈", url="https://t.me/SpaciousUniverseBot?start=ZmlsZV9CQUFEQlFBREt3VUFBcmRVR0ZXbjBuU3dkdEVHM1JZRQ")]
         )
-        btn.insert(0, 
-            [InlineKeyboardButton("◈ All Files ◈", url=geny_url(dbid))]
-        )
-        
+        btn.insert(0,
+                   [InlineKeyboardButton("◈ All Files ◈", url=geny_url(dbid))]
+                   )
+
     try:
         await query.edit_message_reply_markup(
             reply_markup=InlineKeyboardMarkup(btn)
@@ -171,9 +177,10 @@ async def advantage_spoll_choker(bot, query):
                 k = await query.message.edit('This Movie Not Found In DataBase')
                 await asyncio.sleep(10)
                 await k.delete()
-                
+
             except:
                 return
+
 
 @Client.on_message(filters.command("addseries") & filters.incoming & ~filters.edited)
 async def tvseries_adder(bot, message):
@@ -190,6 +197,7 @@ async def tvseries_adder(bot, message):
         return await message.reply("May Be Error is you puts space between links: \nUse correct format.<code>/addseries (name of series without space) (language eng/hindi/tamil/span) (quility 480/ 720/ 1080) (tv series batch links without space , use commas)</code>\n\n\nExample <code>/addseries strangerthings eng 480 https://tinyurl.com/23smxlh3,https://tinyurl.com/2yq2ghfh,https://tinyurl.com/27d9xyww,https://tinyurl.com/259az578</code>.")
     await sts.delete()
 
+
 @Client.on_message(filters.command("updateseries") & filters.incoming & ~filters.edited)
 async def tvseries_updater(bot, message):
     sts = await message.reply("Checking Your Request...")
@@ -205,6 +213,7 @@ async def tvseries_updater(bot, message):
         return await message.reply("May Be Error is you puts space between links: \nUse correct format.<code>/addseries (name of series without space) (language eng/hindi/tamil/span) (quility 480/ 720/ 1080) (tv series batch links without space , use commas)</code>\n\n\nExample <code>/addseries strangerthings eng 480 https://tinyurl.com/23smxlh3,https://tinyurl.com/2yq2ghfh,https://tinyurl.com/27d9xyww,https://tinyurl.com/259az578</code>.")
     await sts.delete()
 
+
 @Client.on_message(filters.command("removeseries") & filters.incoming & ~filters.edited & filters.user(ADMINS))
 async def tvseries_remover(bot, message):
     sts = await message.reply("Checking Your Request...")
@@ -219,12 +228,14 @@ async def tvseries_remover(bot, message):
     except:
         return await message.reply("Not Found.")
     await sts.delete()
-    
+
+
 @Client.on_message(filters.command("alltvs") & filters.incoming & ~filters.edited)
 async def tvseries_get(bot, message):
     k = await getlinks()
     await message.reply(k)
-    
+
+
 @Client.on_callback_query()
 async def cb_handler(client: Client, query: CallbackQuery):
     if query.data == "close_data":
@@ -447,7 +458,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                     chat_id=query.from_user.id,
                     file_id=file_id,
                     caption=f_caption,
-                    protect_content=True if ident == "filep" else False 
+                    protect_content=True if ident == "filep" else False
                 )
                 await query.answer('Check PM, I have sent files in pm', show_alert=True)
         except UserIsBlocked:
@@ -489,9 +500,11 @@ async def cb_handler(client: Client, query: CallbackQuery):
         await query.answer()
     elif query.data == "start":
         buttons = [[
-            InlineKeyboardButton('➕ Add Me To Your Groups ➕', url=f'http://t.me/{temp.U_NAME}?startgroup=true')
+            InlineKeyboardButton('➕ Add Me To Your Groups ➕',
+                                 url=f'http://t.me/{temp.U_NAME}?startgroup=true')
         ], [
-            InlineKeyboardButton('🔍 Search', switch_inline_query_current_chat=''),
+            InlineKeyboardButton(
+                '🔍 Search', switch_inline_query_current_chat=''),
             InlineKeyboardButton('🤖 Updates', url='https://t.me/TMWAD')
         ], [
             InlineKeyboardButton('ℹ️ Help', callback_data='help'),
@@ -499,14 +512,16 @@ async def cb_handler(client: Client, query: CallbackQuery):
         ]]
         reply_markup = InlineKeyboardMarkup(buttons)
         await query.message.edit_text(
-            text=script.START_TXT.format(query.from_user.mention, temp.U_NAME, temp.B_NAME),
+            text=script.START_TXT.format(
+                query.from_user.mention, temp.U_NAME, temp.B_NAME),
             reply_markup=reply_markup,
             parse_mode='html'
         )
         await query.answer('Piracy Is Crime')
     elif query.data == "help":
         buttons = [[
-            InlineKeyboardButton('Manual Filter', callback_data='manuelfilter'),
+            InlineKeyboardButton(
+                'Manual Filter', callback_data='manuelfilter'),
             InlineKeyboardButton('Auto Filter', callback_data='autofilter')
         ], [
             InlineKeyboardButton('Connection', callback_data='coct'),
@@ -668,7 +683,8 @@ async def cb_handler(client: Client, query: CallbackQuery):
                                          callback_data=f'setgs#button#{settings["button"]}#{str(grp_id)}')
                 ],
                 [
-                    InlineKeyboardButton('Bot PM', callback_data=f'setgs#botpm#{settings["botpm"]}#{str(grp_id)}'),
+                    InlineKeyboardButton(
+                        'Bot PM', callback_data=f'setgs#botpm#{settings["botpm"]}#{str(grp_id)}'),
                     InlineKeyboardButton('✅ Yes' if settings["botpm"] else '❌ No',
                                          callback_data=f'setgs#botpm#{settings["botpm"]}#{str(grp_id)}')
                 ],
@@ -679,7 +695,8 @@ async def cb_handler(client: Client, query: CallbackQuery):
                                          callback_data=f'setgs#file_secure#{settings["file_secure"]}#{str(grp_id)}')
                 ],
                 [
-                    InlineKeyboardButton('IMDB', callback_data=f'setgs#imdb#{settings["imdb"]}#{str(grp_id)}'),
+                    InlineKeyboardButton(
+                        'IMDB', callback_data=f'setgs#imdb#{settings["imdb"]}#{str(grp_id)}'),
                     InlineKeyboardButton('✅ Yes' if settings["imdb"] else '❌ No',
                                          callback_data=f'setgs#imdb#{settings["imdb"]}#{str(grp_id)}')
                 ],
@@ -690,7 +707,8 @@ async def cb_handler(client: Client, query: CallbackQuery):
                                          callback_data=f'setgs#spell_check#{settings["spell_check"]}#{str(grp_id)}')
                 ],
                 [
-                    InlineKeyboardButton('Welcome', callback_data=f'setgs#welcome#{settings["welcome"]}#{str(grp_id)}'),
+                    InlineKeyboardButton(
+                        'Welcome', callback_data=f'setgs#welcome#{settings["welcome"]}#{str(grp_id)}'),
                     InlineKeyboardButton('✅ Yes' if settings["welcome"] else '❌ No',
                                          callback_data=f'setgs#welcome#{settings["welcome"]}#{str(grp_id)}')
                 ]
@@ -704,7 +722,8 @@ async def auto_filter(client, msg, spoll=False):
     if not spoll:
         message = msg
         settings = await get_settings(message.chat.id)
-        if message.text.startswith("/"): return  # ignore commands
+        if message.text.startswith("/"):
+            return  # ignore commands
         if re.findall("((^\/|^,|^!|^\.|^[\U0001F600-\U000E007F]).*)", message.text):
             return
         if 2 < len(message.text) < 100:
@@ -722,17 +741,17 @@ async def auto_filter(client, msg, spoll=False):
         message = msg.message.reply_to_message  # msg will be callback query
         search, files, offset, total_results = spoll
     pre = 'filep' if settings['file_secure'] else 'file'
-    
+
     fileids = [file.file_id for file in files]
     dbid = fileids[0]
     fileids = "L_I_N_K".join(fileids)
     await add_inst_filter(dbid, fileids)
-    
+
     if settings["button"]:
         btn = [
             [
                 InlineKeyboardButton(
-                    text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", url = get_url(f'files#{file.file_id}')
+                    text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", url=get_url(f'files#{file.file_id}')
                 ),
             ]
             for file in files
@@ -751,7 +770,7 @@ async def auto_filter(client, msg, spoll=False):
             ]
             for file in files
         ]
-    
+
     if offset != "":
         key = f"{message.chat.id}-{message.message_id}"
         BUTTONS[key] = search
@@ -761,23 +780,25 @@ async def auto_filter(client, msg, spoll=False):
              InlineKeyboardButton(text="Next ►", callback_data=f"next_{req}_{key}_{offset}")]
         )
         btn.append(
-            [InlineKeyboardButton("◈ How To Download ◈", url="https://t.me/SpaciousUniverseBot?start=ZmlsZV9CQUFEQlFBREt3VUFBcmRVR0ZXbjBuU3dkdEVHM1JZRQ")]
+            [InlineKeyboardButton(
+                "◈ How To Download ◈", url="https://t.me/SpaciousUniverseBot?start=ZmlsZV9CQUFEQlFBREt3VUFBcmRVR0ZXbjBuU3dkdEVHM1JZRQ")]
         )
-        btn.insert(0, 
-            [InlineKeyboardButton("◈ All Files ◈", url=geny_url(dbid))]
-        )
-        
+        btn.insert(0,
+                   [InlineKeyboardButton("◈ All Files ◈", url=geny_url(dbid))]
+                   )
+
     else:
         btn.append(
             [InlineKeyboardButton(text="❏ 1/1", callback_data="pages")]
         )
         btn.append(
-            [InlineKeyboardButton("◈ How To Download ◈", url="https://t.me/SpaciousUniverseBot?start=ZmlsZV9CQUFEQlFBREt3VUFBcmRVR0ZXbjBuU3dkdEVHM1JZRQ")]
+            [InlineKeyboardButton(
+                "◈ How To Download ◈", url="https://t.me/SpaciousUniverseBot?start=ZmlsZV9CQUFEQlFBREt3VUFBcmRVR0ZXbjBuU3dkdEVHM1JZRQ")]
         )
-        btn.insert(0, 
-            [InlineKeyboardButton("◈ All Files ◈", url=geny_url(dbid))]
-        )
-        
+        btn.insert(0,
+                   [InlineKeyboardButton("◈ All Files ◈", url=geny_url(dbid))]
+                   )
+
     imdb = await get_poster(search, file=(files[0]).file_name) if settings["imdb"] else None
     TEMPLATE = settings['template']
     if imdb:
@@ -843,7 +864,8 @@ async def advantage_spell_chok(msg):
         await asyncio.sleep(8)
         await k.delete()
         return
-    regex = re.compile(r".*(imdb|wikipedia).*", re.IGNORECASE)  # look for imdb / wiki results
+    # look for imdb / wiki results
+    regex = re.compile(r".*(imdb|wikipedia).*", re.IGNORECASE)
     gs = list(filter(regex.match, g_s))
     gs_parsed = [re.sub(
         r'\b(\-([a-zA-Z-\s])\-\simdb|(\-\s)?imdb|(\-\s)?wikipedia|\(|\)|\-|reviews|full|all|episode(s)?|film|movie|series)',
@@ -857,15 +879,18 @@ async def advantage_spell_chok(msg):
                 gs_parsed.append(match.group(1))
     user = msg.from_user.id if msg.from_user else 0
     movielist = []
-    gs_parsed = list(dict.fromkeys(gs_parsed))  # removing duplicates https://stackoverflow.com/a/7961425
+    # removing duplicates https://stackoverflow.com/a/7961425
+    gs_parsed = list(dict.fromkeys(gs_parsed))
     if len(gs_parsed) > 3:
         gs_parsed = gs_parsed[:3]
     if gs_parsed:
         for mov in gs_parsed:
-            imdb_s = await get_poster(mov.strip(), bulk=True)  # searching each keyword in imdb
+            # searching each keyword in imdb
+            imdb_s = await get_poster(mov.strip(), bulk=True)
             if imdb_s:
                 movielist += [movie.get('title') for movie in imdb_s]
-    movielist += [(re.sub(r'(\-|\(|\)|_)', '', i, flags=re.IGNORECASE)).strip() for i in gs_parsed]
+    movielist += [(re.sub(r'(\-|\(|\)|_)', '', i, flags=re.IGNORECASE)).strip()
+                  for i in gs_parsed]
     movielist = list(dict.fromkeys(movielist))  # removing duplicates
     if not movielist:
         k = await msg.reply("I couldn't find anything related to that. Check your spelling")
@@ -879,7 +904,8 @@ async def advantage_spell_chok(msg):
             callback_data=f"spolling#{user}#{k}",
         )
     ] for k, movie in enumerate(movielist)]
-    btn.append([InlineKeyboardButton(text="Close", callback_data=f'spolling#{user}#close_spellcheck')])
+    btn.append([InlineKeyboardButton(
+        text="Close", callback_data=f'spolling#{user}#close_spellcheck')])
     await msg.reply("I couldn't find anything related to that\nDid you mean any one of these?",
                     reply_markup=InlineKeyboardMarkup(btn))
 
@@ -895,7 +921,8 @@ async def manual_filters(client, message, text=False):
             reply_text, btn, alert, fileid = await find_filter(group_id, keyword)
 
             if reply_text:
-                reply_text = reply_text.replace("\\n", "\n").replace("\\t", "\t")
+                reply_text = reply_text.replace(
+                    "\\n", "\n").replace("\\t", "\t")
 
             if btn is not None:
                 try:
@@ -926,36 +953,48 @@ async def manual_filters(client, message, text=False):
                             reply_markup=InlineKeyboardMarkup(button),
                             reply_to_message_id=reply_id
                         )
+                except (MessageEmpty, MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty):
+                    logger.exception(
+                        "Detect: The message sent is empty or contains invalid characters")
+                    pass
+
                 except Exception as e:
                     logger.exception(e)
+
                 break
     else:
         return False
-    
+
+
 async def tvseries_filters(client, message, text=False):
     name = getseries(message.text)
     seriess = await find_tvseries_filter(name)
-    
+
     if seriess:
-        btns = [[InlineKeyboardButton(text=f"{name.capitalize()} TV Series", callback_data="pages")]]
+        btns = [[InlineKeyboardButton(
+            text=f"{name.capitalize()} TV Series", callback_data="pages")]]
         for series in seriess:
             language = series['language']
             quality = series['quality']
             links = series['seasonlink']
             links = links.split(",")
-        
-            btn = [[ InlineKeyboardButton(text=f'Season {link + 1}', url = gen_url(links[link])), InlineKeyboardButton(text=f'Season {link + 2}', url = gen_url(links[link + 1]))] for link in range(len(links) - 1) if link %2 != 1]
+
+            btn = [[InlineKeyboardButton(text=f'Season {link + 1}', url=gen_url(links[link])), InlineKeyboardButton(
+                text=f'Season {link + 2}', url=gen_url(links[link + 1]))] for link in range(len(links) - 1) if link % 2 != 1]
             if len(links) % 2 == 1:
-                btn.append([InlineKeyboardButton(text=f'Season {len(links)}', url = gen_url(links[-1]))])
+                btn.append([InlineKeyboardButton(
+                    text=f'Season {len(links)}', url=gen_url(links[-1]))])
 
             btn.insert(0,
-                    [InlineKeyboardButton(text=f"{language} - {quality}", callback_data="pages")]
-                )
+                       [InlineKeyboardButton(
+                           text=f"{language} - {quality}", callback_data="pages")]
+                       )
             btns.extend(btn)
-            
+
         btns.append(
-            [InlineKeyboardButton("◈ How To Download ◈", url="https://t.me/SpaciousUniverseBot?start=ZmlsZV9CQUFEQlFBREt3VUFBcmRVR0ZXbjBuU3dkdEVHM1JZRQ")]
-        )   
+            [InlineKeyboardButton(
+                "◈ How To Download ◈", url="https://t.me/SpaciousUniverseBot?start=ZmlsZV9CQUFEQlFBREt3VUFBcmRVR0ZXbjBuU3dkdEVHM1JZRQ")]
+        )
         imdb = await get_poster(message.text) if IMDB else None
         if imdb:
             cap = IMDB_TEMPLATE.format(
@@ -1002,6 +1041,6 @@ async def tvseries_filters(client, message, text=False):
         else:
             cap = f"Here is what i found for your Request"
             await message.reply_text(cap, reply_markup=InlineKeyboardMarkup(btns))
-  
+
     else:
         return False
