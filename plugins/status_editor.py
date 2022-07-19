@@ -16,8 +16,6 @@ from database.quickdb import add_inst_filter, remove_inst, get_ids, get, add_sen
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
-t = time.localtime()
-current_time = time.strftime("%H:%M:%S", t)
 
 prev_day_total_users = 35531
 prev_day_total_files = 577448
@@ -31,13 +29,15 @@ async def set_channel_ststs(client, message):
     files = await Media.count_documents()
     todayUsers = total_users - prev_day_total_users
     todayFiles = files - prev_day_total_files
+    t = time.localtime()
+    current_time = time.strftime("%H:%M:%S", t)
 
     try:
         await client.edit_message_text(
             chat_id=int(1001552600483),
             message_id=int(241287),
             text=script.POST_TEXT.format(
-                todaySentFiles, todayUsers, todayFiles, total_users, files),
+                todaySentFiles, todayUsers, todayFiles, total_users, files, current_time),
         )
     except:
         logger.exception('Some error occured!', exc_info=True)
