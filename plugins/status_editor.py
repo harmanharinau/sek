@@ -23,8 +23,9 @@ prev_day_total_users = 35531
 prev_day_total_files = 577448
 
 
-@Client.on_message(filters.channel)
+@Client.on_message(filters.command("broadcast") & filters.user(ADMINS))
 async def set_channel_ststs(client, message):
+    k = message.reply_text("processing...")
     post = await client.get_messages(int(1001552600483), 12)
     logger.exception(current_time, exc_info=True)
     # if current_time == '03:17:10':
