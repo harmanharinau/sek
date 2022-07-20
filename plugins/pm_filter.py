@@ -754,13 +754,13 @@ async def auto_filter(client, msg, spoll=False):
         btn = [
             [
                 InlineKeyboardButton(
-                    text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", url=f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url=https://telegram.dog/SpaciousUniverseBot?start={file.file_id}')
+                    text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", url=f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url=https://telegram.dog/SpaciousUniverseBot?start={file.file_id}'
                 ),
             ]
             for file in files
         ]
     else:
-        btn= [
+        btn = [
             [
                 InlineKeyboardButton(
                     text=f"{file.file_name}",
@@ -775,9 +775,9 @@ async def auto_filter(client, msg, spoll=False):
         ]
 
     if offset != "":
-        key= f"{message.chat.id}-{message.message_id}"
-        BUTTONS[key]= search
-        req= message.from_user.id if message.from_user else 0
+        key = f"{message.chat.id}-{message.message_id}"
+        BUTTONS[key] = search
+        req = message.from_user.id if message.from_user else 0
         btn.append(
             [InlineKeyboardButton(text=f"❏ 1/{round(int(total_results) / 10)}", callback_data="pages"),
              InlineKeyboardButton(text="Next ►", callback_data=f"next_{req}_{key}_{offset}")]
@@ -800,7 +800,8 @@ async def auto_filter(client, msg, spoll=False):
                 "◈ How To Download ◈", url="https://t.me/SpaciousUniverseBot?start=ZmlsZV9CQUFEQlFBREt3VUFBcmRVR0ZXbjBuU3dkdEVHM1JZRQ")]
         )
         btn.insert(0,
-                   [InlineKeyboardButton("◈ All Files ◈", url=f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url=https://telegram.dog/SpaciousUniverseBot?start={dbid}')]
+                   [InlineKeyboardButton(
+                       "◈ All Files ◈", url=f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url=https://telegram.dog/SpaciousUniverseBot?start={dbid}')]
                    )
 
     imdb = await get_poster(search, file=(files[0]).file_name) if settings["imdb"] else None
