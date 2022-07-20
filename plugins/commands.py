@@ -141,7 +141,7 @@ async def start(client, message):
             reply_markup=InlineKeyboardMarkup(button)
         )
 
-    elif user_stats["stats"] == 'unverified' & user_stats["file"] != file_id:
+    elif str(user_stats["stats"]) == 'unverified' & str(user_stats["file"]) != file_id:
         button = [[
             InlineKeyboardButton(
                 '🔹 Verfiy 🔹', url=f'https://telegram.dog/SpaciousUniverseBot?start={data}')
@@ -164,7 +164,7 @@ async def start(client, message):
             reply_markup=InlineKeyboardMarkup(button)
         )
 
-    elif user_stats["stats"] == 'unverified' & user_stats["file"] == file_id:
+    elif str(user_stats["stats"]) == 'unverified' & str(user_stats["file"]) == file_id:
         t = time.time()
         await remove_verification(message.from_user.id)
         await add_verification(message.from_user.id, 'verified', file_id, t)
@@ -179,7 +179,7 @@ async def start(client, message):
             reply_markup=InlineKeyboardMarkup(button)
         )
 
-    elif user_stats["stats"] == 'verified':
+    elif str(user_stats["stats"]) == 'verified':
         if data.split("-", 1)[0] == "BATCH":
             sts = await message.reply("Please wait")
             file_id = data.split("-", 1)[1]
