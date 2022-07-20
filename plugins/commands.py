@@ -151,7 +151,7 @@ async def start(client, message):
             reply_markup=InlineKeyboardMarkup(button)
         )
 
-    elif (time.time() - int(user_stats["updat_time"])) > 86400:
+    elif (time.time() - int(float(user_stats["updat_time"]))) > 86400:
         t = time.time()
         await remove_verification(message.from_user.id)
         await add_verification(message.from_user.id, 'unverified', file_id, user_stats["updat_time"])
