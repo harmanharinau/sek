@@ -348,39 +348,39 @@ def getseries(name):
 #                 return link
 
 
-async def geny_url(file_id):
-    url = 'https://shorturllink.in/api'
-    link = f'https://telegram.dog/SpaciousUniverseBot?start={file_id}'
-    api = '3ef6a62253efbe7a63dd29201b2f9c661bd15795'
-    params = {
-        'api': api,
-        'url': link
-    }
-    async with aiohttp.ClientSession() as app:
-        async with app.get(url, params=params, raise_for_status=True, ssl=False) as results:
-            data = await results.json()
-            if data["status"] == "success":
-                urllink = data['shortenedUrl']
-                return urllink
-            else:
-                return link
+# async def geny_url(file_id):
+#     url = 'https://shorturllink.in/api'
+#     link = f'https://telegram.dog/SpaciousUniverseBot?start={file_id}'
+#     api = '3ef6a62253efbe7a63dd29201b2f9c661bd15795'
+#     params = {
+#         'api': api,
+#         'url': link
+#     }
+#     async with aiohttp.ClientSession() as app:
+#         async with app.get(url, params=params, raise_for_status=True, ssl=False) as results:
+#             data = await results.json()
+#             if data["status"] == "success":
+#                 urllink = data['shortenedUrl']
+#                 return urllink
+#             else:
+#                 return link
 
 
-async def gen_url(link):
-    url = 'https://shorturllink.in/api'
-    api = '3ef6a62253efbe7a63dd29201b2f9c661bd15795'
-    params = {
-        'api': api,
-        'url': link
-    }
-    async with aiohttp.ClientSession() as app:
-        async with app.get(url, params=params, raise_for_status=True, ssl=False) as results:
-            data = await results.json()
-            if data["status"] == "success":
-                urllink = data['shortenedUrl']
-                return urllink
-            else:
-                return link
+# async def gen_url(link):
+#     url = 'https://shorturllink.in/api'
+#     api = '3ef6a62253efbe7a63dd29201b2f9c661bd15795'
+#     params = {
+#         'api': api,
+#         'url': link
+#     }
+#     async with aiohttp.ClientSession() as app:
+#         async with app.get(url, params=params, raise_for_status=True, ssl=False) as results:
+#             data = await results.json()
+#             if data["status"] == "success":
+#                 urllink = data['shortenedUrl']
+#                 return urllink
+#             else:
+#                 return link
 
 
 def get_url(fileid):
@@ -394,18 +394,18 @@ def get_url(fileid):
     return urllink
 
 
-# def gen_url(link):
-#     urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url={link}'
-#     #urllink = f'https://semawur.com/st/?api=ee503477175b248fa734b0f2c0fa6f352bd8892d&url={link}'
-#     urllink = url_shortener.tinyurl.short(urllink)
-#     return urllink
+def gen_url(link):
+    urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url={link}'
+    #urllink = f'https://semawur.com/st/?api=ee503477175b248fa734b0f2c0fa6f352bd8892d&url={link}'
+    urllink = url_shortener.tinyurl.short(urllink)
+    return urllink
 
 
-# def geny_url(file_id):
-#     urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url=https://telegram.dog/SpaciousUniverseBot?start={file_id}'
-#     #urllink = f'https://semawur.com/st/?api=ee503477175b248fa734b0f2c0fa6f352bd8892d&url=https://telegram.dog/SpaciousUniverseBot?start={file_id}'
-#     urllink = url_shortener.tinyurl.short(urllink)
-#     return urllink
+def geny_url(file_id):
+    urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url=https://telegram.dog/SpaciousUniverseBot?start={file_id}'
+    #urllink = f'https://semawur.com/st/?api=ee503477175b248fa734b0f2c0fa6f352bd8892d&url=https://telegram.dog/SpaciousUniverseBot?start={file_id}'
+    urllink = url_shortener.tinyurl.short(urllink)
+    return urllink
 
 
 def split_list(l, n):
