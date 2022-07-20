@@ -26,7 +26,7 @@ BTN_URL_REGEX = re.compile(
     r"(\[([^\[]+?)\]\((buttonurl|buttonalert):(?:/{0,2})(.+?)(:same)?\))"
 )
 
-imdb = IMDb() 
+imdb = IMDb()
 url_shortener = pyshorteners.Shortener()
 
 BANNED = {}
@@ -35,17 +35,20 @@ SMART_CLOSE = '”'
 START_CHAR = ('\'', '"', SMART_OPEN)
 btns = []
 
-# temp db for banned 
+# temp db for banned
+
+
 class temp(object):
     BANNED_USERS = []
     BANNED_CHATS = []
     ME = None
-    CURRENT=int(os.environ.get("SKIP", 2))
+    CURRENT = int(os.environ.get("SKIP", 2))
     CANCEL = False
     MELCOW = {}
     U_NAME = None
     B_NAME = None
     SETTINGS = {}
+
 
 async def is_subscribed(bot, query):
     try:
@@ -72,19 +75,21 @@ async def get_poster(query, bulk=False, id=False, file=None):
         elif file is not None:
             year = re.findall(r'[1-2]\d{3}', file, re.IGNORECASE)
             if year:
-                year = list_to_str(year[:1]) 
+                year = list_to_str(year[:1])
         else:
             year = None
         movieid = imdb.search_movie(title.lower(), results=10)
         if not movieid:
             return None
         if year:
-            filtered=list(filter(lambda k: str(k.get('year')) == str(year), movieid))
+            filtered = list(filter(lambda k: str(
+                k.get('year')) == str(year), movieid))
             if not filtered:
                 filtered = movieid
         else:
             filtered = movieid
-        movieid=list(filter(lambda k: k.get('kind') in ['movie', 'tv series'], filtered))
+        movieid = list(filter(lambda k: k.get('kind') in [
+                       'movie', 'tv series'], filtered))
         if not movieid:
             movieid = filtered
         if bulk:
@@ -124,10 +129,10 @@ async def get_poster(query, bulk=False, id=False, file=None):
         "certificates": list_to_str(movie.get("certificates")),
         "languages": list_to_str(movie.get("languages")),
         "director": list_to_str(movie.get("director")),
-        "writer":list_to_str(movie.get("writer")),
-        "producer":list_to_str(movie.get("producer")),
-        "composer":list_to_str(movie.get("composer")) ,
-        "cinematographer":list_to_str(movie.get("cinematographer")),
+        "writer": list_to_str(movie.get("writer")),
+        "producer": list_to_str(movie.get("producer")),
+        "composer": list_to_str(movie.get("composer")),
+        "cinematographer": list_to_str(movie.get("cinematographer")),
         "music_team": list_to_str(movie.get("music department")),
         "distributors": list_to_str(movie.get("distributors")),
         'release_date': date,
@@ -136,7 +141,7 @@ async def get_poster(query, bulk=False, id=False, file=None):
         'poster': movie.get('full-size cover url'),
         'plot': plot,
         'rating': str(movie.get("rating")),
-        'url':f'https://www.imdb.com/title/tt{movieid}'
+        'url': f'https://www.imdb.com/title/tt{movieid}'
     }
 # https://github.com/odysseusm
 
@@ -150,7 +155,8 @@ async def broadcast_messages(user_id, message):
         return await broadcast_messages(user_id, message)
     except InputUserDeactivated:
         await db.delete_user(int(user_id))
-        logging.info(f"{user_id}-Removed from Database, since deleted account.")
+        logging.info(
+            f"{user_id}-Removed from Database, since deleted account.")
         return False, "Deleted"
     except UserIsBlocked:
         logging.info(f"{user_id} -Blocked the bot.")
@@ -162,18 +168,20 @@ async def broadcast_messages(user_id, message):
     except Exception as e:
         return False, "Error"
 
+
 async def search_gagala(text):
     usr_agent = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
         'Chrome/61.0.3163.100 Safari/537.36'
-        }
+    }
     text = text.replace(" ", '+')
     url = f'https://www.google.com/search?q={text}'
     response = requests.get(url, headers=usr_agent)
     response.raise_for_status()
     soup = BeautifulSoup(response.text, 'html.parser')
-    titles = soup.find_all( 'h3' )
+    titles = soup.find_all('h3')
     return [title.getText() for title in titles]
+
 
 async def get_settings(group_id):
     settings = temp.SETTINGS.get(group_id)
@@ -182,11 +190,13 @@ async def get_settings(group_id):
         temp.SETTINGS[group_id] = settings
     return settings
 
+
 async def save_group_settings(group_id, key, value):
     current = await get_settings(group_id)
     current[key] = value
     temp.SETTINGS[group_id] = current
     await db.update_settings(group_id, current)
+
 
 async def send_more_files(name):
     name = get_name(name)
@@ -199,7 +209,8 @@ async def send_more_files(name):
         files = files[:15]
     if files:
         return files
-    
+
+
 def get_size(size):
     """Get size in readable format"""
 
@@ -210,7 +221,8 @@ def get_size(size):
         i += 1
         size /= 1024.0
     return "%.2f %s" % (size, units[i])
-    
+
+
 def get_name(name):
     name = name.lower()
     name = name.replace("@cc", '')
@@ -218,16 +230,16 @@ def get_name(name):
     name = name.replace("www", '')
     name = name.replace("join", '')
     name = name.replace("tg", '')
-    name = name.replace("link", '') 
+    name = name.replace("link", '')
     name = name.replace("@", '')
     name = name.replace("massmovies0", '')
     name = name.replace("bullmoviee", '')
     name = name.replace("massmovies", '')
     name = name.replace("filmy4cab", '')
-    name = name.replace("maassmovies",'')
-    name = name.replace("theproffesorr",'')
-    name = name.replace("primeroom",'')
-    name = name.replace("team_hdt",'')
+    name = name.replace("maassmovies", '')
+    name = name.replace("theproffesorr", '')
+    name = name.replace("primeroom", '')
+    name = name.replace("team_hdt", '')
     name = name.replace("telugudubbing", '')
     name = name.replace("rickychannel", '')
     name = name.replace("tif", '')
@@ -298,6 +310,7 @@ def get_name(name):
     name = name.capitalize()
     return name
 
+
 def getseries(name):
     name = name.lower()
     name = name.replace("season", "")
@@ -312,34 +325,98 @@ def getseries(name):
     name = name.replace("english", "")
     name = name.replace("web", "")
     name = ''.join([i for i in name if not i.isdigit()])
-    name = name.replace(" ","")
+    name = name.replace(" ", "")
     return name
 
-def get_url(fileid):
+
+async def get_url(fileid):
     ident, file_id = fileid.split("#")
-    #urllink = f'https://playdisk.xyz/st?api=3ba547cddecb2156a75b2ab37c9fecdbf5655d7f&url=https://telegram.dog/SpaciousUniverseBot?start={ident}_{file_id}'
-    #urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url=https://telegram.dog/SpaciousUniverseBot?start={ident}_{file_id}'   
-    urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url=https://telegram.dog/SpaciousUniverseBot?start={ident}_{file_id}'
-    #urllink = f'https://semawur.com/st/?api=ee503477175b248fa734b0f2c0fa6f352bd8892d&url=https://telegram.dog/SpaciousUniverseBot?start={ident}_{file_id}'
-    #urllink = f'https://www.iamkt.xyz/st?api=41bd4ad28cde15c72c1baa6d16f05577cee0a90f&url=https://telegram.dog/SpaciousUniverseBot?start={ident}_{file_id}'
-    urllink = url_shortener.tinyurl.short(urllink)
-    return urllink
+    url = 'https://shorturllink.in/api'
+    link = f'https://telegram.dog/SpaciousUniverseBot?start={ident}_{file_id}'
+    api = '3ef6a62253efbe7a63dd29201b2f9c661bd15795'
+    params = {
+        'api': api,
+        'url': link
+    }
+    async with aiohttp.ClientSession() as app:
+        async with app.get(url, params=params, raise_for_status=True, ssl=False) as results:
+            data = await results.json()
+            if data["status"] == "success":
+                urllink = data['shortenedUrl']
 
-def gen_url(link):
-    urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url={link}'
-    #urllink = f'https://semawur.com/st/?api=ee503477175b248fa734b0f2c0fa6f352bd8892d&url={link}'
-    urllink = url_shortener.tinyurl.short(urllink)
-    return urllink
+            else:
+                urllink = link
 
-def geny_url(file_id):
-    urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url=https://telegram.dog/SpaciousUniverseBot?start={file_id}'
-    #urllink = f'https://semawur.com/st/?api=ee503477175b248fa734b0f2c0fa6f352bd8892d&url=https://telegram.dog/SpaciousUniverseBot?start={file_id}'
-    urllink = url_shortener.tinyurl.short(urllink)
-    return urllink
+            return urllink
+
+
+async def geny_url(file_id):
+    url = 'https://shorturllink.in/api'
+    link = f'https://telegram.dog/SpaciousUniverseBot?start={file_id}'
+    api = '3ef6a62253efbe7a63dd29201b2f9c661bd15795'
+    params = {
+        'api': api,
+        'url': link
+    }
+    async with aiohttp.ClientSession() as app:
+        async with app.get(url, params=params, raise_for_status=True, ssl=False) as results:
+            data = await results.json()
+            if data["status"] == "success":
+                urllink = data['shortenedUrl']
+
+            else:
+                urllink = link
+
+            return urllink
+
+
+async def gen_url(link):
+    url = 'https://shorturllink.in/api'
+    api = '3ef6a62253efbe7a63dd29201b2f9c661bd15795'
+    params = {
+        'api': api,
+        'url': link
+    }
+    async with aiohttp.ClientSession() as app:
+        async with app.get(url, params=params, raise_for_status=True, ssl=False) as results:
+            data = await results.json()
+            if data["status"] == "success":
+                urllink = data['shortenedUrl']
+
+            else:
+                urllink = link
+
+            return urllink
+
+# def get_url(fileid):
+#     ident, file_id = fileid.split("#")
+#     #urllink = f'https://playdisk.xyz/st?api=3ba547cddecb2156a75b2ab37c9fecdbf5655d7f&url=https://telegram.dog/SpaciousUniverseBot?start={ident}_{file_id}'
+#     #urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url=https://telegram.dog/SpaciousUniverseBot?start={ident}_{file_id}'
+#     urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url=https://telegram.dog/SpaciousUniverseBot?start={ident}_{file_id}'
+#     #urllink = f'https://semawur.com/st/?api=ee503477175b248fa734b0f2c0fa6f352bd8892d&url=https://telegram.dog/SpaciousUniverseBot?start={ident}_{file_id}'
+#     #urllink = f'https://www.iamkt.xyz/st?api=41bd4ad28cde15c72c1baa6d16f05577cee0a90f&url=https://telegram.dog/SpaciousUniverseBot?start={ident}_{file_id}'
+#     urllink = url_shortener.tinyurl.short(urllink)
+#     return urllink
+
+
+# def gen_url(link):
+#     urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url={link}'
+#     #urllink = f'https://semawur.com/st/?api=ee503477175b248fa734b0f2c0fa6f352bd8892d&url={link}'
+#     urllink = url_shortener.tinyurl.short(urllink)
+#     return urllink
+
+
+# def geny_url(file_id):
+#     urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url=https://telegram.dog/SpaciousUniverseBot?start={file_id}'
+#     #urllink = f'https://semawur.com/st/?api=ee503477175b248fa734b0f2c0fa6f352bd8892d&url=https://telegram.dog/SpaciousUniverseBot?start={file_id}'
+#     urllink = url_shortener.tinyurl.short(urllink)
+#     return urllink
+
 
 def split_list(l, n):
     for i in range(0, len(l), n):
-        yield l[i:i + n] 
+        yield l[i:i + n]
+
 
 def get_file_id(msg: Message):
     if msg.media:
@@ -358,6 +435,7 @@ def get_file_id(msg: Message):
                 setattr(obj, "message_type", message_type)
                 return obj
 
+
 def extract_user(message: Message) -> Union[int, str]:
     """extracts the user from a message"""
     # https://github.com/SpEcHiDe/PyroGramBot/blob/f30e2cca12002121bad1982f68cd0ff9814ce027/pyrobot/helper_functions/extract_user.py#L7
@@ -372,7 +450,7 @@ def extract_user(message: Message) -> Union[int, str]:
             len(message.entities) > 1 and
             message.entities[1].type == "text_mention"
         ):
-           
+
             required_entity = message.entities[1]
             user_id = required_entity.user.id
             user_first_name = required_entity.user.first_name
@@ -389,6 +467,7 @@ def extract_user(message: Message) -> Union[int, str]:
         user_first_name = message.from_user.first_name
     return (user_id, user_first_name)
 
+
 def list_to_str(k):
     if not k:
         return "N/A"
@@ -399,6 +478,7 @@ def list_to_str(k):
         return ' '.join(f'{elem}, ' for elem in k)
     else:
         return ' '.join(f'{elem}, ' for elem in k)
+
 
 def last_online(from_user):
     time = ""
@@ -415,7 +495,8 @@ def last_online(from_user):
     elif from_user.status == 'online':
         time += "Currently Online"
     elif from_user.status == 'offline':
-        time += datetime.fromtimestamp(from_user.last_online_date).strftime("%a, %d %b %Y, %H:%M:%S")
+        time += datetime.fromtimestamp(
+            from_user.last_online_date).strftime("%a, %d %b %Y, %H:%M:%S")
     return time
 
 
@@ -439,6 +520,7 @@ def split_quotes(text: str) -> List:
     if not key:
         key = text[0] + text[0]
     return list(filter(None, [key, rest]))
+
 
 def parser(text, keyword):
     if "buttonalert" in text:
@@ -495,6 +577,7 @@ def parser(text, keyword):
         return note_data, buttons, alerts
     except:
         return note_data, buttons, None
+
 
 def remove_escapes(text: str) -> str:
     res = ""
