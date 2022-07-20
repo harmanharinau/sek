@@ -137,17 +137,32 @@ async def start(client, message):
                 '🔹 Verfiy 🔹', url=f'https://telegram.dog/SpaciousUniverseBot?start={data}')
         ]]
         return await message.reply(
-            text="you'r not verified today. verfied your self and get unlimited acces",
+            text="you'r not verified today. verfied your self and get unlimited acces 1",
+            reply_markup=InlineKeyboardMarkup(button)
+        )
+    
+    elif (str(user_stats["stats"]) == 'unverified') and (str(user_stats["file"]) == file_id):
+        t = time.time()
+        await remove_verification(message.from_user.id)
+        await add_verification(message.from_user.id, 'verified', file_id, t)
+        t = time.localtime(t+86400)
+        current_time = time.strftime("%D  %H:%M:%S", t)
+        button = [[
+            InlineKeyboardButton(
+                'Get Files', url=f'https://telegram.dog/SpaciousUniverseBot?start={data}')
+        ]]
+        return await message.reply(
+            text=f"you'r verified Succusfully. acces until {current_time}",
             reply_markup=InlineKeyboardMarkup(button)
         )
 
-    elif (str(user_stats["stats"]) == 'unverified') & (str(user_stats["file"]) != file_id):
+    elif (str(user_stats["stats"]) == 'unverified') and (str(user_stats["file"]) != file_id):
         button = [[
             InlineKeyboardButton(
                 '🔹 Verfiy 🔹', url=f'https://telegram.dog/SpaciousUniverseBot?start={data}')
         ]]
         return await message.reply(
-            text="you'r not verified today. verfied your self and get unlimited acces",
+            text="you'r not verified today. verfied your self and get unlimited acces 2",
             reply_markup=InlineKeyboardMarkup(button)
         )
 
@@ -161,21 +176,6 @@ async def start(client, message):
         ]]
         return await message.reply(
             text="Your Verification Time Is expired. please verify again",
-            reply_markup=InlineKeyboardMarkup(button)
-        )
-
-    elif (str(user_stats["stats"]) == 'unverified') and (str(user_stats["file"]) == file_id):
-        t = time.time()
-        await remove_verification(message.from_user.id)
-        await add_verification(message.from_user.id, 'verified', file_id, t)
-        t = time.localtime(t+86400)
-        current_time = time.strftime("%D  %H:%M:%S", t)
-        button = [[
-            InlineKeyboardButton(
-                'Get Files', url=f'https://telegram.dog/SpaciousUniverseBot?start={data}')
-        ]]
-        return await message.reply(
-            text=f"you'r verified Succusfully. acces until {current_time}",
             reply_markup=InlineKeyboardMarkup(button)
         )
 
