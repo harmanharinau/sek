@@ -925,11 +925,11 @@ async def manual_filters(client, message, text=False):
                     "\\n", "\n").replace("\\t", "\t")
 
             if btn is not None:
-                try:
-                    if fileid == "None":
-                        if btn == "[]":
-                            await client.send_message(group_id, reply_text, disable_web_page_preview=True)
-                        else:
+                if fileid == "None":
+                    if btn == "[]":
+                        await client.send_message(group_id, reply_text, disable_web_page_preview=True)
+                    else:
+                        try:
                             button = eval(btn)
                             await client.send_message(
                                 group_id,
@@ -938,14 +938,24 @@ async def manual_filters(client, message, text=False):
                                 reply_markup=InlineKeyboardMarkup(button),
                                 reply_to_message_id=reply_id
                             )
-                    elif btn == "[]":
+                        except Exception as e:
+                            logger.exception(e)
+                        break
+
+                elif btn == "[]":
+                    try:
                         await client.send_cached_media(
                             group_id,
                             fileid,
                             caption=reply_text or "",
                             reply_to_message_id=reply_id
                         )
-                    else:
+
+                    except Exception as e:
+                        logger.exception(e)
+                    break
+                else:
+                    try:
                         button = eval(btn)
                         await message.reply_cached_media(
                             fileid,
@@ -953,15 +963,9 @@ async def manual_filters(client, message, text=False):
                             reply_markup=InlineKeyboardMarkup(button),
                             reply_to_message_id=reply_id
                         )
-                except (MessageEmpty, MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty):
-                    logger.exception(
-                        "Detect: The message sent is empty or contains invalid characters")
-                    pass
-
-                except Exception as e:
-                    logger.exception(e)
-
-                break
+                    except Exception as e:
+                        logger.exception(e)
+                    break
     else:
         return False
 
