@@ -6,7 +6,6 @@ import ast
 from pyrogram.errors.exceptions.bad_request_400 import MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty, MessageEmpty
 from Script import script
 import pyrogram
-import pyshorteners
 from database.connections_mdb import active_connection, all_connections, delete_connection, if_active, make_active, \
     make_inactive
 from info import ADMINS, AUTH_CHANNEL, AUTH_USERS, CUSTOM_FILE_CAPTION, AUTH_GROUPS, P_TTI_SHOW_OFF, IMDB, \
@@ -28,8 +27,6 @@ import logging
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.ERROR)
-
-url_shortener = pyshorteners.Shortener()
 
 BUTTONS = {}
 SPELL_CHECK = {}
@@ -75,7 +72,7 @@ async def next_page(bot, query):
         btn = [
             [
                 InlineKeyboardButton(
-                    text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", url=f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url=https://telegram.dog/SpaciousUniverseBot?start={file.file_id}'
+                    text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", url=f'https://telegram.dog/SpaciousUniverseBot?start={file.file_id}'
                 ),
             ]
             for file in files
@@ -112,7 +109,7 @@ async def next_page(bot, query):
         )
         btn.insert(0,
                    [InlineKeyboardButton(
-                       "◈ All Files ◈", url=f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url=https://telegram.dog/SpaciousUniverseBot?start={dbid}')]
+                       "◈ All Files ◈", url=f'https://telegram.dog/SpaciousUniverseBot?start={dbid}')]
                    )
 
     elif off_set is None:
@@ -125,7 +122,7 @@ async def next_page(bot, query):
         )
         btn.insert(0,
                    [InlineKeyboardButton(
-                       "◈ All Files ◈", url=f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url=https://telegram.dog/SpaciousUniverseBot?start={dbid}')]
+                       "◈ All Files ◈", url=f'https://telegram.dog/SpaciousUniverseBot?start={dbid}')]
                    )
 
     else:
@@ -145,7 +142,7 @@ async def next_page(bot, query):
         )
         btn.insert(0,
                    [InlineKeyboardButton(
-                       "◈ All Files ◈", url=f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url=https://telegram.dog/SpaciousUniverseBot?start={dbid}')]
+                       "◈ All Files ◈", url=f'https://telegram.dog/SpaciousUniverseBot?start={dbid}')]
                    )
 
     try:
@@ -754,7 +751,7 @@ async def auto_filter(client, msg, spoll=False):
         btn = [
             [
                 InlineKeyboardButton(
-                    text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", url=f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url=https://telegram.dog/SpaciousUniverseBot?start={file.file_id}'
+                    text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", url=f'https://telegram.dog/SpaciousUniverseBot?start={file.file_id}'
                 ),
             ]
             for file in files
@@ -788,7 +785,7 @@ async def auto_filter(client, msg, spoll=False):
         )
         btn.insert(0,
                    [InlineKeyboardButton(
-                       "◈ All Files ◈", url=f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url=https://telegram.dog/SpaciousUniverseBot?start={dbid}')]
+                       "◈ All Files ◈", url=f'https://telegram.dog/SpaciousUniverseBot?start={dbid}')]
                    )
 
     else:
@@ -801,7 +798,7 @@ async def auto_filter(client, msg, spoll=False):
         )
         btn.insert(0,
                    [InlineKeyboardButton(
-                       "◈ All Files ◈", url=f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url=https://telegram.dog/SpaciousUniverseBot?start={dbid}')]
+                       "◈ All Files ◈", url=f'https://telegram.dog/SpaciousUniverseBot?start={dbid}')]
                    )
 
     imdb = await get_poster(search, file=(files[0]).file_name) if settings["imdb"] else None

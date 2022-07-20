@@ -7,7 +7,6 @@ from pyrogram.types import Message
 from typing import Union
 import re
 import os
-import pyshorteners
 from datetime import datetime
 from typing import List
 from pyrogram.types import InlineKeyboardButton
@@ -27,7 +26,6 @@ BTN_URL_REGEX = re.compile(
 )
 
 imdb = IMDb()
-url_shortener = pyshorteners.Shortener()
 
 BANNED = {}
 SMART_OPEN = '“'
