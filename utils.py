@@ -343,11 +343,9 @@ async def get_url(fileid):
             data = await results.json()
             if data["status"] == "success":
                 urllink = data['shortenedUrl']
-
+                return urllink
             else:
-                urllink = link
-
-            return urllink
+                return link
 
 
 async def geny_url(file_id):
@@ -363,11 +361,9 @@ async def geny_url(file_id):
             data = await results.json()
             if data["status"] == "success":
                 urllink = data['shortenedUrl']
-
+                return urllink
             else:
-                urllink = link
-
-            return urllink
+                return link
 
 
 async def gen_url(link):
@@ -382,11 +378,9 @@ async def gen_url(link):
             data = await results.json()
             if data["status"] == "success":
                 urllink = data['shortenedUrl']
-
+                return urllink
             else:
-                urllink = link
-
-            return urllink
+                return link
 
 # def get_url(fileid):
 #     ident, file_id = fileid.split("#")
