@@ -75,7 +75,7 @@ async def next_page(bot, query):
         btn = [
             [
                 InlineKeyboardButton(
-                    text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", url=get_url(f'files#{file.file_id}')
+                    text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", url=await get_url(f'files#{file.file_id}')
                 ),
             ]
             for file in files
@@ -111,7 +111,7 @@ async def next_page(bot, query):
                 "◈ How To Download ◈", url="https://t.me/SpaciousUniverseBot?start=ZmlsZV9CQUFEQlFBREt3VUFBcmRVR0ZXbjBuU3dkdEVHM1JZRQ")]
         )
         btn.insert(0,
-                   [InlineKeyboardButton("◈ All Files ◈", url=geny_url(dbid))]
+                   [InlineKeyboardButton("◈ All Files ◈", url=await geny_url(dbid))]
                    )
 
     elif off_set is None:
@@ -123,7 +123,7 @@ async def next_page(bot, query):
                 "◈ How To Download ◈", url="https://t.me/SpaciousUniverseBot?start=ZmlsZV9CQUFEQlFBREt3VUFBcmRVR0ZXbjBuU3dkdEVHM1JZRQ")]
         )
         btn.insert(0,
-                   [InlineKeyboardButton("◈ All Files ◈", url=geny_url(dbid))]
+                   [InlineKeyboardButton("◈ All Files ◈", url=await geny_url(dbid))]
                    )
 
     else:
@@ -142,7 +142,7 @@ async def next_page(bot, query):
                 "◈ How To Download ◈", url="https://t.me/SpaciousUniverseBot?start=ZmlsZV9CQUFEQlFBREt3VUFBcmRVR0ZXbjBuU3dkdEVHM1JZRQ")]
         )
         btn.insert(0,
-                   [InlineKeyboardButton("◈ All Files ◈", url=geny_url(dbid))]
+                   [InlineKeyboardButton("◈ All Files ◈", url=await geny_url(dbid))]
                    )
 
     try:
@@ -751,7 +751,7 @@ async def auto_filter(client, msg, spoll=False):
         btn = [
             [
                 InlineKeyboardButton(
-                    text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", url=get_url(f'files#{file.file_id}')
+                    text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", url=await get_url(f'files#{file.file_id}')
                 ),
             ]
             for file in files
@@ -784,7 +784,7 @@ async def auto_filter(client, msg, spoll=False):
                 "◈ How To Download ◈", url="https://t.me/SpaciousUniverseBot?start=ZmlsZV9CQUFEQlFBREt3VUFBcmRVR0ZXbjBuU3dkdEVHM1JZRQ")]
         )
         btn.insert(0,
-                   [InlineKeyboardButton("◈ All Files ◈", url=geny_url(dbid))]
+                   [InlineKeyboardButton("◈ All Files ◈", url=await geny_url(dbid))]
                    )
 
     else:
@@ -796,7 +796,7 @@ async def auto_filter(client, msg, spoll=False):
                 "◈ How To Download ◈", url="https://t.me/SpaciousUniverseBot?start=ZmlsZV9CQUFEQlFBREt3VUFBcmRVR0ZXbjBuU3dkdEVHM1JZRQ")]
         )
         btn.insert(0,
-                   [InlineKeyboardButton("◈ All Files ◈", url=geny_url(dbid))]
+                   [InlineKeyboardButton("◈ All Files ◈", url=await geny_url(dbid))]
                    )
 
     imdb = await get_poster(search, file=(files[0]).file_name) if settings["imdb"] else None
@@ -984,10 +984,10 @@ async def tvseries_filters(client, message, text=False):
             links = links.split(",")
 
             btn = [[InlineKeyboardButton(text=f'Season {link + 1}', url=gen_url(links[link])), InlineKeyboardButton(
-                text=f'Season {link + 2}', url=gen_url(links[link + 1]))] for link in range(len(links) - 1) if link % 2 != 1]
+                text=f'Season {link + 2}', url=await gen_url(links[link + 1]))] for link in range(len(links) - 1) if link % 2 != 1]
             if len(links) % 2 == 1:
                 btn.append([InlineKeyboardButton(
-                    text=f'Season {len(links)}', url=gen_url(links[-1]))])
+                    text=f'Season {len(links)}', url=await gen_url(links[-1]))])
 
             btn.insert(0,
                        [InlineKeyboardButton(
