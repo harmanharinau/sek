@@ -10,6 +10,7 @@ import logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.ERROR)
 
+
 @Client.on_message(filters.command('id'))
 async def showid(client, message):
     chat_type = message.chat.type
@@ -17,7 +18,7 @@ async def showid(client, message):
         user_id = message.chat.id
         first = message.from_user.first_name
         last = message.from_user.last_name or ""
-        username = message.from_user.username
+        username = message.from_user.username or ""
         dc_id = message.from_user.dc_id or ""
         await message.reply_text(
             f"<b>➲ First Name:</b> {first}\n<b>➲ Last Name:</b> {last}\n<b>➲ Username:</b> {username}\n<b>➲ Telegram ID:</b> <code>{user_id}</code>\n<b>➲ Data Centre:</b> <code>{dc_id}</code>",
@@ -53,6 +54,7 @@ async def showid(client, message):
             _id,
             quote=True
         )
+
 
 @Client.on_message(filters.command(["info"]))
 async def who_is(client, message):
@@ -127,6 +129,7 @@ async def who_is(client, message):
         )
     await status_message.delete()
 
+
 @Client.on_message(filters.command(["imdb", 'search']))
 async def imdb_search(client, message):
     if ' ' in message.text:
@@ -148,49 +151,50 @@ async def imdb_search(client, message):
     else:
         await message.reply('Give me a movie / series Name')
 
+
 @Client.on_callback_query(filters.regex('^imdb'))
 async def imdb_callback(bot: Client, quer_y: CallbackQuery):
     i, movie = quer_y.data.split('#')
     imdb = await get_poster(query=movie, id=True)
     btn = [
-            [
-                InlineKeyboardButton(
-                    text=f"{imdb.get('title')}",
-                    url=imdb['url'],
-                )
-            ]
+        [
+            InlineKeyboardButton(
+                text=f"{imdb.get('title')}",
+                url=imdb['url'],
+            )
         ]
+    ]
     message = quer_y.message.reply_to_message or quer_y.message
     if imdb:
         caption = IMDB_TEMPLATE.format(
-            query = imdb['title'],
-            title = imdb['title'],
-            votes = imdb['votes'],
-            aka = imdb["aka"],
-            seasons = imdb["seasons"],
-            box_office = imdb['box_office'],
-            localized_title = imdb['localized_title'],
-            kind = imdb['kind'],
-            imdb_id = imdb["imdb_id"],
-            cast = imdb["cast"],
-            runtime = imdb["runtime"],
-            countries = imdb["countries"],
-            certificates = imdb["certificates"],
-            languages = imdb["languages"],
-            director = imdb["director"],
-            writer = imdb["writer"],
-            producer = imdb["producer"],
-            composer = imdb["composer"],
-            cinematographer = imdb["cinematographer"],
-            music_team = imdb["music_team"],
-            distributors = imdb["distributors"],
-            release_date = imdb['release_date'],
-            year = imdb['year'],
-            genres = imdb['genres'],
-            poster = imdb['poster'],
-            plot = imdb['plot'],
-            rating = imdb['rating'],
-            url = imdb['url'],
+            query=imdb['title'],
+            title=imdb['title'],
+            votes=imdb['votes'],
+            aka=imdb["aka"],
+            seasons=imdb["seasons"],
+            box_office=imdb['box_office'],
+            localized_title=imdb['localized_title'],
+            kind=imdb['kind'],
+            imdb_id=imdb["imdb_id"],
+            cast=imdb["cast"],
+            runtime=imdb["runtime"],
+            countries=imdb["countries"],
+            certificates=imdb["certificates"],
+            languages=imdb["languages"],
+            director=imdb["director"],
+            writer=imdb["writer"],
+            producer=imdb["producer"],
+            composer=imdb["composer"],
+            cinematographer=imdb["cinematographer"],
+            music_team=imdb["music_team"],
+            distributors=imdb["distributors"],
+            release_date=imdb['release_date'],
+            year=imdb['year'],
+            genres=imdb['genres'],
+            poster=imdb['poster'],
+            plot=imdb['plot'],
+            rating=imdb['rating'],
+            url=imdb['url'],
             **locals()
         )
     else:
@@ -209,6 +213,3 @@ async def imdb_callback(bot: Client, quer_y: CallbackQuery):
     else:
         await quer_y.message.edit(caption, reply_markup=InlineKeyboardMarkup(btn), disable_web_page_preview=False)
     await quer_y.answer()
-        
-
-        
