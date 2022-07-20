@@ -488,6 +488,15 @@ async def channel_info(bot, message):
         os.remove(file)
 
 
+@Client.on_message(filters.command('dev') & filters.user(ADMINS))
+async def devve(bot, message):
+    try:
+        user_stats = await get_verification(message.from_user.id)
+        await message.reply_text(user_stats)
+    except Exception as e:
+        await message.reply(str(e))
+
+
 @Client.on_message(filters.command('logs') & filters.user(ADMINS))
 async def log_file(bot, message):
     """Send log file"""
