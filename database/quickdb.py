@@ -54,3 +54,28 @@ async def count_sent_files():
     files = len(files)
 
     return files
+
+
+async def add_verification(user_id, stats, file_id, updat_time):
+    mycol = mydb["verification"]
+    mydict = {"userId": str(user_id), "stats": str(
+        stats), "file": str(file_id), "updat_time": str(updat_time)}
+
+    try:
+        x = mycol.insert_one(mydict)
+    except:
+        logger.exception('Some error occured!', exc_info=True)
+
+
+async def remove_verification(user_id):
+    mycol = mydb["verification"]
+    myquery = {"userId": str(user_id)}
+    mycol.delete_one(myquery)
+
+
+async def get_verification(user_id):
+    mycol = mydb["verification"]
+    myquery = {"userId": str(user_id)}
+    mydoc = mycol.find(myquery)
+    for user_dic in mydoc:
+        return user_dic

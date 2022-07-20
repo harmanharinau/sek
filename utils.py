@@ -329,79 +329,79 @@ def getseries(name):
     return name
 
 
-async def get_url(fileid):
-    ident, file_id = fileid.split("#")
-    url = 'https://shorturllink.in/api'
-    link = f'https://telegram.dog/SpaciousUniverseBot?start={ident}_{file_id}'
-    api = '3ef6a62253efbe7a63dd29201b2f9c661bd15795'
-    params = {
-        'api': api,
-        'url': link
-    }
-    try:
-        async with aiohttp.ClientSession() as app:
-            async with app.get(url, params=params, raise_for_status=True, ssl=False) as results:
-                data = await results.json()
-                if data["status"] == "success":
-                    urllink = data['shortenedUrl']
-                    return urllink
-                else:
-                    urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url={link}'
-                    urllink = url_shortener.tinyurl.short(urllink)
-                    return urllink
-    except:
-        urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url={link}'
-        urllink = url_shortener.tinyurl.short(urllink)
-        return urllink
+# async def get_url(fileid):
+#     ident, file_id = fileid.split("#")
+#     url = 'https://shorturllink.in/api'
+#     link = f'https://telegram.dog/SpaciousUniverseBot?start={ident}_{file_id}'
+#     api = '3ef6a62253efbe7a63dd29201b2f9c661bd15795'
+#     params = {
+#         'api': api,
+#         'url': link
+#     }
+#     try:
+#         async with aiohttp.ClientSession() as app:
+#             async with app.get(url, params=params, raise_for_status=True, ssl=False) as results:
+#                 data = await results.json()
+#                 if data["status"] == "success":
+#                     urllink = data['shortenedUrl']
+#                     return urllink
+#                 else:
+#                     urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url={link}'
+#                     urllink = url_shortener.tinyurl.short(urllink)
+#                     return urllink
+#     except:
+#         urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url={link}'
+#         urllink = url_shortener.tinyurl.short(urllink)
+#         return urllink
 
 
-async def geny_url(file_id):
-    url = 'https://shorturllink.in/api'
-    link = f'https://telegram.dog/SpaciousUniverseBot?start={file_id}'
-    api = '3ef6a62253efbe7a63dd29201b2f9c661bd15795'
-    params = {
-        'api': api,
-        'url': link
-    }
-    try:
-        async with aiohttp.ClientSession() as app:
-            async with app.get(url, params=params, raise_for_status=True, ssl=False) as results:
-                data = await results.json()
-                if data["status"] == "success":
-                    urllink = data['shortenedUrl']
-                    return urllink
-                else:
-                    urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url={link}'
-                    urllink = url_shortener.tinyurl.short(urllink)
-                    return urllink
-    except:
-        urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url={link}'
-        urllink = url_shortener.tinyurl.short(urllink)
-        return urllink
+# async def geny_url(file_id):
+#     url = 'https://shorturllink.in/api'
+#     link = f'https://telegram.dog/SpaciousUniverseBot?start={file_id}'
+#     api = '3ef6a62253efbe7a63dd29201b2f9c661bd15795'
+#     params = {
+#         'api': api,
+#         'url': link
+#     }
+#     try:
+#         async with aiohttp.ClientSession() as app:
+#             async with app.get(url, params=params, raise_for_status=True, ssl=False) as results:
+#                 data = await results.json()
+#                 if data["status"] == "success":
+#                     urllink = data['shortenedUrl']
+#                     return urllink
+#                 else:
+#                     urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url={link}'
+#                     urllink = url_shortener.tinyurl.short(urllink)
+#                     return urllink
+#     except:
+#         urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url={link}'
+#         urllink = url_shortener.tinyurl.short(urllink)
+#         return urllink
 
 
-async def gen_url(link):
-    url = 'https://shorturllink.in/api'
-    api = '3ef6a62253efbe7a63dd29201b2f9c661bd15795'
-    params = {
-        'api': api,
-        'url': link
-    }
-    try:
-        async with aiohttp.ClientSession() as app:
-            async with app.get(url, params=params, raise_for_status=True, ssl=False) as results:
-                data = await results.json()
-                if data["status"] == "success":
-                    urllink = data['shortenedUrl']
-                    return urllink
-                else:
-                    urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url={link}'
-                    urllink = url_shortener.tinyurl.short(urllink)
-                    return urllink
-    except:
-        urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url={link}'
-        urllink = url_shortener.tinyurl.short(urllink)
-        return urllink
+# async def gen_url(link):
+#     url = 'https://shorturllink.in/api'
+#     api = '3ef6a62253efbe7a63dd29201b2f9c661bd15795'
+#     params = {
+#         'api': api,
+#         'url': link
+#     }
+#     try:
+#         async with aiohttp.ClientSession() as app:
+#             async with app.get(url, params=params, raise_for_status=True, ssl=False) as results:
+#                 data = await results.json()
+#                 if data["status"] == "success":
+#                     urllink = data['shortenedUrl']
+#                     return urllink
+#                 else:
+#                     urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url={link}'
+#                     urllink = url_shortener.tinyurl.short(urllink)
+#                     return urllink
+#     except:
+#         urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url={link}'
+#         urllink = url_shortener.tinyurl.short(urllink)
+#         return urllink
 
 
 # def get_url(fileid):
