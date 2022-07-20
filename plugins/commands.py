@@ -134,7 +134,7 @@ async def start(client, message):
         await add_verification(message.from_user.id, 'unverified', file_id, t)
         button = [[
             InlineKeyboardButton(
-                '🔹 Verfiy 🔹', url=f'https://telegram.dog/SpaciousUniverseBot?start={data}')
+                '🔹 Verfiy 🔹', url=f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url=https://telegram.dog/SpaciousUniverseBot?start={data}')
         ]]
         return await message.reply(
             text="you'r not verified today. verfied your self and get unlimited acces",
@@ -162,7 +162,7 @@ async def start(client, message):
         await add_verification(message.from_user.id, 'verified', file_id, t)
         button = [[
             InlineKeyboardButton(
-                '🔹 Verfiy 🔹', url=f'https://telegram.dog/SpaciousUniverseBot?start={data}')
+                '🔹 Verfiy 🔹', url=f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url=https://telegram.dog/SpaciousUniverseBot?start={data}')
         ]]
         return await message.reply(
             text="you'r not verified today. verfied your self and get unlimited acces",
@@ -175,7 +175,7 @@ async def start(client, message):
         await add_verification(message.from_user.id, 'unverified', file_id, user_stats["updat_time"])
         button = [[
             InlineKeyboardButton(
-                '🔹 Verfiy 🔹', url=f'https://telegram.dog/SpaciousUniverseBot?start={data}')
+                '🔹 Verfiy 🔹', url=f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url=https://telegram.dog/SpaciousUniverseBot?start={data}')
         ]]
         return await message.reply(
             text="Your Verification Time Is expired. please verify again",
