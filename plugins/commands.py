@@ -225,11 +225,11 @@ async def start(client, message):
                     f_caption = getattr(msg, 'caption', file_name)
                 try:
                     k = await msg.copy(message.chat.id, caption=f_caption, protect_content=True if protect == "/pbatch" else False)
-                    await add_sent_files(message.from_user.id, msg.get("file_id"))
+                    await add_sent_files(message.from_user.id, message.chat.id)
                 except FloodWait as e:
                     await asyncio.sleep(e.x)
                     k = await msg.copy(message.chat.id, caption=f_caption, protect_content=True if protect == "/pbatch" else False)
-                    await add_sent_files(message.from_user.id, msg.get("file_id"))
+                    await add_sent_files(message.from_user.id, message.chat.id)
                 except Exception as e:
                     logger.exception(e)
                     continue
@@ -238,11 +238,11 @@ async def start(client, message):
             else:
                 try:
                     k = await msg.copy(message.chat.id, protect_content=True if protect == "/pbatch" else False)
-                    await add_sent_files(message.from_user.id, msg.get("file_id"))
+                    await add_sent_files(message.from_user.id, message.chat.id)
                 except FloodWait as e:
                     await asyncio.sleep(e.x)
                     k = await msg.copy(message.chat.id, protect_content=True if protect == "/pbatch" else False)
-                    await add_sent_files(message.from_user.id, msg.get("file_id"))
+                    await add_sent_files(message.from_user.id, message.chat.id)
                 except Exception as e:
                     logger.exception(e)
                     continue
