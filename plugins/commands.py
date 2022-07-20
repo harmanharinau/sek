@@ -137,7 +137,7 @@ async def start(client, message):
                 '🔹 Verfiy 🔹', url=f'https://telegram.dog/SpaciousUniverseBot?start={data}')
         ]]
         return await message.reply(
-            text="you'r not verified today. verfied your self and get unlimited acces 1",
+            text="you'r not verified today. verfied your self and get unlimited acces",
             reply_markup=InlineKeyboardMarkup(button)
         )
     
@@ -157,12 +157,15 @@ async def start(client, message):
         )
 
     elif (str(user_stats["stats"]) == 'unverified') and (str(user_stats["file"]) != file_id):
+        t = time.time()
+        await remove_verification(message.from_user.id)
+        await add_verification(message.from_user.id, 'verified', file_id, t)
         button = [[
             InlineKeyboardButton(
                 '🔹 Verfiy 🔹', url=f'https://telegram.dog/SpaciousUniverseBot?start={data}')
         ]]
         return await message.reply(
-            text="you'r not verified today. verfied your self and get unlimited acces 2",
+            text="you'r not verified today. verfied your self and get unlimited acces",
             reply_markup=InlineKeyboardMarkup(button)
         )
 
