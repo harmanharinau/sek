@@ -141,7 +141,7 @@ async def start(client, message):
             reply_markup=InlineKeyboardMarkup(button)
         )
 
-    elif str(user_stats["stats"]) == 'unverified' & str(user_stats["file"]) != file_id:
+    elif (str(user_stats["stats"]) == 'unverified') & (str(user_stats["file"]) != file_id):
         button = [[
             InlineKeyboardButton(
                 '🔹 Verfiy 🔹', url=f'https://telegram.dog/SpaciousUniverseBot?start={data}')
@@ -164,7 +164,7 @@ async def start(client, message):
             reply_markup=InlineKeyboardMarkup(button)
         )
 
-    elif str(user_stats["stats"]) == 'unverified' & str(user_stats["file"]) == file_id:
+    elif (str(user_stats["stats"]) == 'unverified') and (str(user_stats["file"]) == file_id):
         t = time.time()
         await remove_verification(message.from_user.id)
         await add_verification(message.from_user.id, 'verified', file_id, t)
