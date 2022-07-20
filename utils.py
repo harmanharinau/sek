@@ -346,9 +346,13 @@ async def get_url(fileid):
                     urllink = data['shortenedUrl']
                     return urllink
                 else:
-                    return link
+                    urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url={link}'
+                    urllink = url_shortener.tinyurl.short(urllink)
+                    return urllink
     except:
-        return link
+        urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url={link}'
+        urllink = url_shortener.tinyurl.short(urllink)
+        return urllink
 
 
 async def geny_url(file_id):
@@ -367,9 +371,13 @@ async def geny_url(file_id):
                     urllink = data['shortenedUrl']
                     return urllink
                 else:
-                    return link
+                    urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url={link}'
+                    urllink = url_shortener.tinyurl.short(urllink)
+                    return urllink
     except:
-        return link
+        urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url={link}'
+        urllink = url_shortener.tinyurl.short(urllink)
+        return urllink
 
 
 async def gen_url(link):
@@ -387,9 +395,13 @@ async def gen_url(link):
                     urllink = data['shortenedUrl']
                     return urllink
                 else:
-                    return link
+                    urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url={link}'
+                    urllink = url_shortener.tinyurl.short(urllink)
+                    return urllink
     except:
-        return link
+        urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url={link}'
+        urllink = url_shortener.tinyurl.short(urllink)
+        return urllink
 
 
 # def get_url(fileid):
