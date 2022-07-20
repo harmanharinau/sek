@@ -11,10 +11,11 @@ from database.users_chats_db import db
 from info import CHANNELS, ADMINS, AUTH_CHANNEL, LOG_CHANNEL, PICS, BATCH_FILE_CAPTION, CUSTOM_FILE_CAPTION, PROTECT_CONTENT
 from utils import get_settings, get_size, is_subscribed, save_group_settings, temp, send_more_files
 from database.connections_mdb import active_connection
-from database.quickdb import remove_inst, get_ids, add_sent_files
+from database.quickdb import remove_inst, get_ids, add_sent_files, get_verification, remove_verification, add_verification
 import re
 import json
 import base64
+import time
 logger = logging.getLogger(__name__)
 
 BATCH_FILES = {}
@@ -127,282 +128,333 @@ async def start(client, message):
     except:
         file_id = data
         pre = ""
+    user_stats = await get_verification(message.from_user.id)
+    if user_stats is None:
+        t = time.time()
+        await add_verification(message.from_user.id, 'unverified', file_id, t)
+        button = [[
+            InlineKeyboardButton(
+                '🔹 Verfiy 🔹', url=f'https://telegram.dog/SpaciousUniverseBot?start={data}')
+        ]]
+        return await message.reply(
+            text="you'r not verified today. verfied your self and get unlimited acces",
+            reply_markup=InlineKeyboardMarkup(button)
+        )
 
-    if data.split("-", 1)[0] == "BATCH":
-        sts = await message.reply("Please wait")
-        file_id = data.split("-", 1)[1]
-        msgs = BATCH_FILES.get(file_id)
-        sendmsglist = []
-        if not msgs:
-            file = await client.download_media(file_id)
-            try:
-                with open(file) as file_data:
-                    msgs = json.loads(file_data.read())
-            except:
-                await sts.edit("FAILED")
-                return await client.send_message(LOG_CHANNEL, "UNABLE TO OPEN FILE.")
-            os.remove(file)
-            BATCH_FILES[file_id] = msgs
-        for msg in msgs:
-            title = msg.get("title")
-            size = get_size(int(msg.get("size", 0)))
-            f_caption = msg.get("caption", "")
-            if BATCH_FILE_CAPTION:
+    elif user_stats["stats"] == 'unverified' & user_stats["file"] != file_id:
+        button = [[
+            InlineKeyboardButton(
+                '🔹 Verfiy 🔹', url=f'https://telegram.dog/SpaciousUniverseBot?start={data}')
+        ]]
+        return await message.reply(
+            text="you'r not verified today. verfied your self and get unlimited acces",
+            reply_markup=InlineKeyboardMarkup(button)
+        )
+
+    elif (time.time() - int(user_stats["updat_time"])) > 86400:
+        t = time.time()
+        await remove_verification(message.from_user.id)
+        await add_verification(message.from_user.id, 'unverified', file_id, user_stats["updat_time"])
+        button = [[
+            InlineKeyboardButton(
+                '🔹 Verfiy 🔹', url=f'https://telegram.dog/SpaciousUniverseBot?start={data}')
+        ]]
+        return await message.reply(
+            text="Your Verification Time Is expired. please verify again",
+            reply_markup=InlineKeyboardMarkup(button)
+        )
+
+    elif user_stats["stats"] == 'unverified' & user_stats["file"] == file_id:
+        t = time.time()
+        await remove_verification(message.from_user.id)
+        await add_verification(message.from_user.id, 'verified', file_id, t)
+        t = time.localtime(t+86400)
+        current_time = time.strftime("%D  %H:%M:%S", t)
+        button = [[
+            InlineKeyboardButton(
+                'Get Files', url=f'https://telegram.dog/SpaciousUniverseBot?start={data}')
+        ]]
+        return await message.reply(
+            text=f"you'r verified Succusfully. acces until {current_time}",
+            reply_markup=InlineKeyboardMarkup(button)
+        )
+
+    elif user_stats["stats"] == 'verified':
+        if data.split("-", 1)[0] == "BATCH":
+            sts = await message.reply("Please wait")
+            file_id = data.split("-", 1)[1]
+            msgs = BATCH_FILES.get(file_id)
+            sendmsglist = []
+            if not msgs:
+                file = await client.download_media(file_id)
                 try:
-                    f_caption = BATCH_FILE_CAPTION.format(
-                        file_name='' if title is None else title, file_size='' if size is None else size, file_caption='' if f_caption is None else f_caption)
-                except Exception as e:
-                    logger.exception(e)
-                    f_caption = f_caption
-            if f_caption is None:
-                f_caption = f"{title}"
-            try:
-                k = await client.send_cached_media(
-                    chat_id=message.from_user.id,
-                    file_id=msg.get("file_id"),
-                    caption=f_caption,
-                    protect_content=msg.get('protect', False),
-                )
-                sendmsglist.append(k)
-                await add_sent_files(message.from_user.id, msg.get("file_id"))
-
-            except FloodWait as e:
-                await asyncio.sleep(e.x)
-                logger.warning(f"Floodwait of {e.x} sec.")
-                k = await client.send_cached_media(
-                    chat_id=message.from_user.id,
-                    file_id=msg.get("file_id"),
-                    caption=f_caption,
-                    protect_content=msg.get('protect', False),
-                )
-                sendmsglist.append(k)
-                await add_sent_files(message.from_user.id, msg.get("file_id"))
-
-            except Exception as e:
-                logger.warning(e, exc_info=True)
-                continue
-            await asyncio.sleep(1)
-        await sts.delete()
-        await message.reply('𝕋𝕙𝕒𝕟𝕜 𝕐𝕠𝕦 𝔽𝕠𝕣 𝕌𝕤𝕚𝕟𝕘 𝕄𝕖 ')
-        kk = await client.send_message(
-            chat_id=message.from_user.id,
-            text="""
-            This Files Will delete in 10min Please Forward To Saved Messages folder before download
-            """)
-
-        await asyncio.sleep(600)
-
-        for k in sendmsglist:
-            await k.delete()
-        sendmsglist = []
-
-        return await kk.delete()
-
-    elif data.split("-", 1)[0] == "DSTORE":
-        sts = await message.reply("Please wait")
-        b_string = data.split("-", 1)[1]
-        decoded = (base64.urlsafe_b64decode(
-            b_string + "=" * (-len(b_string) % 4))).decode("ascii")
-        try:
-            f_msg_id, l_msg_id, f_chat_id, protect = decoded.split("_", 3)
-        except:
-            f_msg_id, l_msg_id, f_chat_id = decoded.split("_", 2)
-            protect = "/pbatch" if PROTECT_CONTENT else "batch"
-        diff = int(l_msg_id) - int(f_msg_id)
-        async for msg in client.iter_messages(int(f_chat_id), int(l_msg_id), int(f_msg_id)):
-            if msg.media:
-                media = getattr(msg, msg.media)
+                    with open(file) as file_data:
+                        msgs = json.loads(file_data.read())
+                except:
+                    await sts.edit("FAILED")
+                    return await client.send_message(LOG_CHANNEL, "UNABLE TO OPEN FILE.")
+                os.remove(file)
+                BATCH_FILES[file_id] = msgs
+            for msg in msgs:
+                title = msg.get("title")
+                size = get_size(int(msg.get("size", 0)))
+                f_caption = msg.get("caption", "")
                 if BATCH_FILE_CAPTION:
                     try:
-                        f_caption = BATCH_FILE_CAPTION.format(file_name=getattr(media, 'file_name', ''), file_size=getattr(
-                            media, 'file_size', ''), file_caption=getattr(msg, 'caption', ''))
+                        f_caption = BATCH_FILE_CAPTION.format(
+                            file_name='' if title is None else title, file_size='' if size is None else size, file_caption='' if f_caption is None else f_caption)
                     except Exception as e:
                         logger.exception(e)
-                        f_caption = getattr(msg, 'caption', '')
-                else:
-                    media = getattr(msg, msg.media)
-                    file_name = getattr(media, 'file_name', '')
-                    f_caption = getattr(msg, 'caption', file_name)
+                        f_caption = f_caption
+                if f_caption is None:
+                    f_caption = f"{title}"
                 try:
-                    k = await msg.copy(message.chat.id, caption=f_caption, protect_content=True if protect == "/pbatch" else False)
-                    await add_sent_files(message.from_user.id, message.chat.id)
-                except FloodWait as e:
-                    await asyncio.sleep(e.x)
-                    k = await msg.copy(message.chat.id, caption=f_caption, protect_content=True if protect == "/pbatch" else False)
-                    await add_sent_files(message.from_user.id, message.chat.id)
-                except Exception as e:
-                    logger.exception(e)
-                    continue
-            elif msg.empty:
-                continue
-            else:
-                try:
-                    k = await msg.copy(message.chat.id, protect_content=True if protect == "/pbatch" else False)
-                    await add_sent_files(message.from_user.id, message.chat.id)
-                except FloodWait as e:
-                    await asyncio.sleep(e.x)
-                    k = await msg.copy(message.chat.id, protect_content=True if protect == "/pbatch" else False)
-                    await add_sent_files(message.from_user.id, message.chat.id)
-                except Exception as e:
-                    logger.exception(e)
-                    continue
-            await asyncio.sleep(1)
-        await sts.delete()
-        await message.reply('𝕋𝕙𝕒𝕟𝕜 𝕐𝕠𝕦 𝔽𝕠𝕣 𝕌𝕤𝕚𝕟𝕘 𝕄𝕖 ')
-        kk = await client.send_message(
-            chat_id=message.from_user.id,
-            text="""
-            This Files Will delete in 10min Please Forward To Saved Messages folder before download
-            """)
-
-        await asyncio.sleep(600)
-        await k.delete()
-        return await kk.delete()
-
-    idstring = await get_ids(file_id)
-
-    if idstring:
-        await remove_inst(file_id)
-        idstring = idstring['links']
-        fileids = idstring.split("L_I_N_K")
-        sendmsglist = []
-        for file_id in fileids:
-            files_ = await get_file_details(file_id)
-            if not files_:
-                try:
-                    msg = await client.send_cached_media(
+                    k = await client.send_cached_media(
                         chat_id=message.from_user.id,
-                        file_id=file_id
+                        file_id=msg.get("file_id"),
+                        caption=f_caption,
+                        protect_content=msg.get('protect', False),
                     )
-                    filetype = msg.media
-                    file = getattr(msg, filetype)
-                    title = file.file_name
-                    size = get_size(file.file_size)
-                    f_caption = f"<code>{title}</code>"
-                    if CUSTOM_FILE_CAPTION:
-                        try:
-                            f_caption = CUSTOM_FILE_CAPTION.format(
-                                file_name='' if title is None else title, file_size='' if size is None else size, file_caption='')
-                        except:
-                            return
-                    await msg.edit_caption(f_caption)
-                    return
-                except:
-                    pass
-            files = files_[0]
-            title = files.file_name
-            size = get_size(files.file_size)
-            f_caption = files.caption
-            if CUSTOM_FILE_CAPTION:
-                try:
-                    f_caption = CUSTOM_FILE_CAPTION.format(
-                        file_name='' if title is None else title, file_size='' if size is None else size, file_caption='' if f_caption is None else f_caption)
+                    sendmsglist.append(k)
+                    await add_sent_files(message.from_user.id, msg.get("file_id"))
+
+                except FloodWait as e:
+                    await asyncio.sleep(e.x)
+                    logger.warning(f"Floodwait of {e.x} sec.")
+                    k = await client.send_cached_media(
+                        chat_id=message.from_user.id,
+                        file_id=msg.get("file_id"),
+                        caption=f_caption,
+                        protect_content=msg.get('protect', False),
+                    )
+                    sendmsglist.append(k)
+                    await add_sent_files(message.from_user.id, msg.get("file_id"))
+
                 except Exception as e:
-                    logger.exception(e)
-                    f_caption = f_caption
-            if f_caption is None:
-                f_caption = f"{files.file_name}"
-            k = await client.send_cached_media(
+                    logger.warning(e, exc_info=True)
+                    continue
+                await asyncio.sleep(1)
+            await sts.delete()
+            await message.reply('𝕋𝕙𝕒𝕟𝕜 𝕐𝕠𝕦 𝔽𝕠𝕣 𝕌𝕤𝕚𝕟𝕘 𝕄𝕖 ')
+            kk = await client.send_message(
                 chat_id=message.from_user.id,
-                file_id=file_id,
-                caption=f_caption,
-            )
-            sendmsglist.append(k)
-            await add_sent_files(message.from_user.id, file_id)
+                text="""
+                This Files Will delete in 10min Please Forward To Saved Messages folder before download
+                """)
 
-        await message.reply('𝕋𝕙𝕒𝕟𝕜 𝕐𝕠𝕦 𝔽𝕠𝕣 𝕌𝕤𝕚𝕟𝕘 𝕄𝕖')
-        kk = await client.send_message(
-            chat_id=message.from_user.id,
-            text="""
-            This Files Will delete in 10min Please Forward To Saved Messages folder before download
-            """)
+            await asyncio.sleep(600)
 
-        await asyncio.sleep(600)
+            for k in sendmsglist:
+                await k.delete()
+            sendmsglist = []
 
-        for k in sendmsglist:
+            return await kk.delete()
+
+        elif data.split("-", 1)[0] == "DSTORE":
+            sts = await message.reply("Please wait")
+            b_string = data.split("-", 1)[1]
+            decoded = (base64.urlsafe_b64decode(
+                b_string + "=" * (-len(b_string) % 4))).decode("ascii")
+            try:
+                f_msg_id, l_msg_id, f_chat_id, protect = decoded.split("_", 3)
+            except:
+                f_msg_id, l_msg_id, f_chat_id = decoded.split("_", 2)
+                protect = "/pbatch" if PROTECT_CONTENT else "batch"
+            diff = int(l_msg_id) - int(f_msg_id)
+            async for msg in client.iter_messages(int(f_chat_id), int(l_msg_id), int(f_msg_id)):
+                if msg.media:
+                    media = getattr(msg, msg.media)
+                    if BATCH_FILE_CAPTION:
+                        try:
+                            f_caption = BATCH_FILE_CAPTION.format(file_name=getattr(media, 'file_name', ''), file_size=getattr(
+                                media, 'file_size', ''), file_caption=getattr(msg, 'caption', ''))
+                        except Exception as e:
+                            logger.exception(e)
+                            f_caption = getattr(msg, 'caption', '')
+                    else:
+                        media = getattr(msg, msg.media)
+                        file_name = getattr(media, 'file_name', '')
+                        f_caption = getattr(msg, 'caption', file_name)
+                    try:
+                        k = await msg.copy(message.chat.id, caption=f_caption, protect_content=True if protect == "/pbatch" else False)
+                        await add_sent_files(message.from_user.id, message.chat.id)
+                    except FloodWait as e:
+                        await asyncio.sleep(e.x)
+                        k = await msg.copy(message.chat.id, caption=f_caption, protect_content=True if protect == "/pbatch" else False)
+                        await add_sent_files(message.from_user.id, message.chat.id)
+                    except Exception as e:
+                        logger.exception(e)
+                        continue
+                elif msg.empty:
+                    continue
+                else:
+                    try:
+                        k = await msg.copy(message.chat.id, protect_content=True if protect == "/pbatch" else False)
+                        await add_sent_files(message.from_user.id, message.chat.id)
+                    except FloodWait as e:
+                        await asyncio.sleep(e.x)
+                        k = await msg.copy(message.chat.id, protect_content=True if protect == "/pbatch" else False)
+                        await add_sent_files(message.from_user.id, message.chat.id)
+                    except Exception as e:
+                        logger.exception(e)
+                        continue
+                await asyncio.sleep(1)
+            await sts.delete()
+            await message.reply('𝕋𝕙𝕒𝕟𝕜 𝕐𝕠𝕦 𝔽𝕠𝕣 𝕌𝕤𝕚𝕟𝕘 𝕄𝕖 ')
+            kk = await client.send_message(
+                chat_id=message.from_user.id,
+                text="""
+                This Files Will delete in 10min Please Forward To Saved Messages folder before download
+                """)
+
+            await asyncio.sleep(600)
             await k.delete()
+            return await kk.delete()
 
-        sendmsglist = []
+        idstring = await get_ids(file_id)
 
-        return await kk.delete()
+        if idstring:
+            await remove_inst(file_id)
+            idstring = idstring['links']
+            fileids = idstring.split("L_I_N_K")
+            sendmsglist = []
+            for file_id in fileids:
+                files_ = await get_file_details(file_id)
+                if not files_:
+                    try:
+                        msg = await client.send_cached_media(
+                            chat_id=message.from_user.id,
+                            file_id=file_id
+                        )
+                        filetype = msg.media
+                        file = getattr(msg, filetype)
+                        title = file.file_name
+                        size = get_size(file.file_size)
+                        f_caption = f"<code>{title}</code>"
+                        if CUSTOM_FILE_CAPTION:
+                            try:
+                                f_caption = CUSTOM_FILE_CAPTION.format(
+                                    file_name='' if title is None else title, file_size='' if size is None else size, file_caption='')
+                            except:
+                                return
+                        await msg.edit_caption(f_caption)
+                        return
+                    except:
+                        pass
+                files = files_[0]
+                title = files.file_name
+                size = get_size(files.file_size)
+                f_caption = files.caption
+                if CUSTOM_FILE_CAPTION:
+                    try:
+                        f_caption = CUSTOM_FILE_CAPTION.format(
+                            file_name='' if title is None else title, file_size='' if size is None else size, file_caption='' if f_caption is None else f_caption)
+                    except Exception as e:
+                        logger.exception(e)
+                        f_caption = f_caption
+                if f_caption is None:
+                    f_caption = f"{files.file_name}"
+                k = await client.send_cached_media(
+                    chat_id=message.from_user.id,
+                    file_id=file_id,
+                    caption=f_caption,
+                )
+                sendmsglist.append(k)
+                await add_sent_files(message.from_user.id, file_id)
 
-    files_ = await get_file_details(file_id)
-    if not files_:
-        try:
-            pre, file_id = ((base64.urlsafe_b64decode(
-                data + "=" * (-len(data) % 4))).decode("ascii")).split("_", 1)
-            msg = await client.send_cached_media(
+            await message.reply('𝕋𝕙𝕒𝕟𝕜 𝕐𝕠𝕦 𝔽𝕠𝕣 𝕌𝕤𝕚𝕟𝕘 𝕄𝕖')
+            kk = await client.send_message(
                 chat_id=message.from_user.id,
-                file_id=file_id,
-                protect_content=True if pre == 'filep' else False,
-            )
-            filetype = msg.media
-            file = getattr(msg, filetype)
-            title = file.file_name
-            size = get_size(file.file_size)
-            f_caption = f"<code>{title}</code>"
-            if CUSTOM_FILE_CAPTION:
-                try:
-                    f_caption = CUSTOM_FILE_CAPTION.format(
-                        file_name='' if title is None else title, file_size='' if size is None else size, file_caption='')
-                except:
-                    return
-            await msg.edit_caption(f_caption)
-            return
-        except:
-            pass
-        return await message.reply('No such file exist.')
-    files = files_[0]
-    title = files.file_name
-    size = get_size(files.file_size)
-    f_caption = files.caption
-    if CUSTOM_FILE_CAPTION:
-        try:
-            f_caption = CUSTOM_FILE_CAPTION.format(
-                file_name='' if title is None else title, file_size='' if size is None else size, file_caption='' if f_caption is None else f_caption)
-        except Exception as e:
-            logger.exception(e)
-            f_caption = f_caption
-    if f_caption is None:
-        f_caption = f"{files.file_name}"
+                text="""
+                This Files Will delete in 10min Please Forward To Saved Messages folder before download
+                """)
 
-    files = await send_more_files(title)
+            await asyncio.sleep(600)
 
-    k = await client.send_cached_media(
-        chat_id=message.from_user.id,
-        file_id=file_id,
-        caption=f_caption,
-        protect_content=True if pre == 'filep' else False,
-    )
-    sendmsglist = [k]
-    await add_sent_files(message.from_user.id, file_id)
+            for k in sendmsglist:
+                await k.delete()
 
-    files = await send_more_files(title)
-    if files:
-        for file in files[1:]:
-            k = await client.send_cached_media(
-                chat_id=message.from_user.id,
-                file_id=file.file_id,
-                caption=f"<code>{file.file_name}</code>",
-                protect_content=True if pre == 'filep' else False,
-            )
-            sendmsglist.append(k)
-            await add_sent_files(message.from_user.id, file.file_id)
+            sendmsglist = []
 
-        await message.reply('𝕋𝕙𝕒𝕟𝕜 𝕐𝕠𝕦 𝔽𝕠𝕣 𝕌𝕤𝕚𝕟𝕘 𝕄𝕖 ')
-        kk = await client.send_message(
+            return await kk.delete()
+
+        files_ = await get_file_details(file_id)
+        if not files_:
+            try:
+                pre, file_id = ((base64.urlsafe_b64decode(
+                    data + "=" * (-len(data) % 4))).decode("ascii")).split("_", 1)
+                msg = await client.send_cached_media(
+                    chat_id=message.from_user.id,
+                    file_id=file_id,
+                    protect_content=True if pre == 'filep' else False,
+                )
+                filetype = msg.media
+                file = getattr(msg, filetype)
+                title = file.file_name
+                size = get_size(file.file_size)
+                f_caption = f"<code>{title}</code>"
+                if CUSTOM_FILE_CAPTION:
+                    try:
+                        f_caption = CUSTOM_FILE_CAPTION.format(
+                            file_name='' if title is None else title, file_size='' if size is None else size, file_caption='')
+                    except:
+                        return
+                await msg.edit_caption(f_caption)
+                return
+            except:
+                pass
+            return await message.reply('No such file exist.')
+        files = files_[0]
+        title = files.file_name
+        size = get_size(files.file_size)
+        f_caption = files.caption
+        if CUSTOM_FILE_CAPTION:
+            try:
+                f_caption = CUSTOM_FILE_CAPTION.format(
+                    file_name='' if title is None else title, file_size='' if size is None else size, file_caption='' if f_caption is None else f_caption)
+            except Exception as e:
+                logger.exception(e)
+                f_caption = f_caption
+        if f_caption is None:
+            f_caption = f"{files.file_name}"
+
+        files = await send_more_files(title)
+
+        k = await client.send_cached_media(
             chat_id=message.from_user.id,
-            text="""
-            This Files Will delete in 10min Please Forward To Saved Messages folder before download
-            """)
+            file_id=file_id,
+            caption=f_caption,
+            protect_content=True if pre == 'filep' else False,
+        )
+        sendmsglist = [k]
+        await add_sent_files(message.from_user.id, file_id)
 
-        await asyncio.sleep(600)
+        files = await send_more_files(title)
+        if files:
+            for file in files[1:]:
+                k = await client.send_cached_media(
+                    chat_id=message.from_user.id,
+                    file_id=file.file_id,
+                    caption=f"<code>{file.file_name}</code>",
+                    protect_content=True if pre == 'filep' else False,
+                )
+                sendmsglist.append(k)
+                await add_sent_files(message.from_user.id, file.file_id)
 
-        for k in sendmsglist:
-            await k.delete()
-        sendmsglist = []
+            await message.reply('𝕋𝕙𝕒𝕟𝕜 𝕐𝕠𝕦 𝔽𝕠𝕣 𝕌𝕤𝕚𝕟𝕘 𝕄𝕖 ')
+            kk = await client.send_message(
+                chat_id=message.from_user.id,
+                text="""
+                This Files Will delete in 10min Please Forward To Saved Messages folder before download
+                """)
 
-        return await kk.delete()
+            await asyncio.sleep(600)
+
+            for k in sendmsglist:
+                await k.delete()
+            sendmsglist = []
+
+            return await kk.delete()
 
 
 @Client.on_message(filters.command('channel') & filters.user(ADMINS))
