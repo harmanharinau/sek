@@ -111,7 +111,7 @@ async def next_page(bot, query):
                 "◈ How To Download ◈", url="https://t.me/SpaciousUniverseBot?start=ZmlsZV9CQUFEQlFBREt3VUFBcmRVR0ZXbjBuU3dkdEVHM1JZRQ")]
         )
         btn.insert(0,
-                   [InlineKeyboardButton("◈ All Files ◈", url=await geny_url(dbid))]
+                   [InlineKeyboardButton("◈ All Files ◈", url=geny_url(dbid))]
                    )
 
     elif off_set is None:
@@ -123,7 +123,7 @@ async def next_page(bot, query):
                 "◈ How To Download ◈", url="https://t.me/SpaciousUniverseBot?start=ZmlsZV9CQUFEQlFBREt3VUFBcmRVR0ZXbjBuU3dkdEVHM1JZRQ")]
         )
         btn.insert(0,
-                   [InlineKeyboardButton("◈ All Files ◈", url=await geny_url(dbid))]
+                   [InlineKeyboardButton("◈ All Files ◈", url=geny_url(dbid))]
                    )
 
     else:
@@ -142,7 +142,7 @@ async def next_page(bot, query):
                 "◈ How To Download ◈", url="https://t.me/SpaciousUniverseBot?start=ZmlsZV9CQUFEQlFBREt3VUFBcmRVR0ZXbjBuU3dkdEVHM1JZRQ")]
         )
         btn.insert(0,
-                   [InlineKeyboardButton("◈ All Files ◈", url=await geny_url(dbid))]
+                   [InlineKeyboardButton("◈ All Files ◈", url=geny_url(dbid))]
                    )
 
     try:
@@ -784,7 +784,7 @@ async def auto_filter(client, msg, spoll=False):
                 "◈ How To Download ◈", url="https://t.me/SpaciousUniverseBot?start=ZmlsZV9CQUFEQlFBREt3VUFBcmRVR0ZXbjBuU3dkdEVHM1JZRQ")]
         )
         btn.insert(0,
-                   [InlineKeyboardButton("◈ All Files ◈", url=await geny_url(dbid))]
+                   [InlineKeyboardButton("◈ All Files ◈", url=geny_url(dbid))]
                    )
 
     else:
@@ -796,7 +796,7 @@ async def auto_filter(client, msg, spoll=False):
                 "◈ How To Download ◈", url="https://t.me/SpaciousUniverseBot?start=ZmlsZV9CQUFEQlFBREt3VUFBcmRVR0ZXbjBuU3dkdEVHM1JZRQ")]
         )
         btn.insert(0,
-                   [InlineKeyboardButton("◈ All Files ◈", url=await geny_url(dbid))]
+                   [InlineKeyboardButton("◈ All Files ◈", url=geny_url(dbid))]
                    )
 
     imdb = await get_poster(search, file=(files[0]).file_name) if settings["imdb"] else None
