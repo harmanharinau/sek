@@ -43,6 +43,7 @@ async def give_filter(client, message):
 @Client.on_message(filters.private & filters.text & ~filters.edited & filters.incoming)
 async def pm_give_filter(client, message):
     await pm_auto_filter(client, message)
+    await tvseries_filters(client, message)
 
 
 @Client.on_callback_query(filters.regex(r"^next"))
