@@ -888,7 +888,10 @@ async def advantage_spell_chok(msg):
     if gs_parsed:
         for mov in gs_parsed:
             # searching each keyword in imdb
-            imdb_s = await get_poster(mov.strip(), bulk=True)
+            try:
+                imdb_s = await get_poster(mov.strip(), bulk=True)
+            except:
+                continue
             if imdb_s:
                 movielist += [movie.get('title') for movie in imdb_s]
     movielist += [(re.sub(r'(\-|\(|\)|_)', '', i, flags=re.IGNORECASE)).strip()
