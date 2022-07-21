@@ -50,8 +50,7 @@ async def add_sent_files(userid, fileid):
 
 async def count_sent_files():
     mycol = mydb["sentfiledb"]
-    files = mycol.find()
-    files = len(files)
+    files = mycol.count()
 
     return files
 
