@@ -51,7 +51,8 @@ async def getlinks():
 async def find_tvseries_filter(name):
     mycol = mydb["tvseries"]
     list = []
-    for x in mycol.find({"name": str(f'/{name}/')}):  # db.users.find({"name": /m/})
+    # db.users.find({"name": /m/}) db.users.find({'name': {'$regex': f'{name}'}})
+    for x in mycol.find({'name': {'$regex': f'{name}'}}):
         list.append(x)
     return list
 #     myquery = { "name": str(name) }
