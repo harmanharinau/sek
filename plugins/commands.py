@@ -134,12 +134,17 @@ async def start(client, message):
         await add_verification(message.from_user.id, 'unverified', file_id, t)
         button = [[
             InlineKeyboardButton(
+<<<<<<< Updated upstream
                 '🔹 Verfiy 🔹', url=f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url=https://telegram.dog/SpaciousUniverseBot?start={data}')
+=======
+                '🔹 Verfiy 🔹', url=f'https://telegram.dog/SpaciousUniverseBot?start={data}')
+>>>>>>> Stashed changes
         ]]
         return await message.reply(
             text="you'r not verified today. verfied your self and get unlimited acces",
             reply_markup=InlineKeyboardMarkup(button)
         )
+<<<<<<< Updated upstream
     
     elif (str(user_stats["stats"]) == 'unverified') and (str(user_stats["file"]) == file_id):
         t = time.time()
@@ -183,6 +188,48 @@ async def start(client, message):
         )
 
     elif str(user_stats["stats"]) == 'verified':
+=======
+
+    elif user_stats["stats"] == 'unverified' & user_stats["file"] != file_id:
+        button = [[
+            InlineKeyboardButton(
+                '🔹 Verfiy 🔹', url=f'https://telegram.dog/SpaciousUniverseBot?start={data}')
+        ]]
+        return await message.reply(
+            text="you'r not verified today. verfied your self and get unlimited acces",
+            reply_markup=InlineKeyboardMarkup(button)
+        )
+
+    elif (time.time() - int(user_stats["updat_time"])) > 86400:
+        t = time.time()
+        await remove_verification(message.from_user.id)
+        await add_verification(message.from_user.id, 'unverified', file_id, t)
+        button = [[
+            InlineKeyboardButton(
+                '🔹 Verfiy 🔹', url=f'https://telegram.dog/SpaciousUniverseBot?start={data}')
+        ]]
+        return await message.reply(
+            text="Your Verification Time Is expired. please verify again",
+            reply_markup=InlineKeyboardMarkup(button)
+        )
+
+    elif user_stats["stats"] == 'unverified' & user_stats["file"] == file_id:
+        t = time.time()
+        await remove_verification(message.from_user.id)
+        await add_verification(message.from_user.id, 'verified', file_id, t)
+        t = time.localtime(t+86400)
+        current_time = time.strftime("%D  %H:%M:%S", t)
+        button = [[
+            InlineKeyboardButton(
+                'Get Files', url=f'https://telegram.dog/SpaciousUniverseBot?start={data}')
+        ]]
+        return await message.reply(
+            text=f"you'r verified Succusfully. acces until {current_time}",
+            reply_markup=InlineKeyboardMarkup(button)
+        )
+
+    elif user_stats["stats"] == 'verified':
+>>>>>>> Stashed changes
         if data.split("-", 1)[0] == "BATCH":
             sts = await message.reply("Please wait")
             file_id = data.split("-", 1)[1]
@@ -431,6 +478,7 @@ async def start(client, message):
         )
         sendmsglist = [k]
         await add_sent_files(message.from_user.id, file_id)
+<<<<<<< Updated upstream
 
         files = await send_more_files(title)
         if files:
@@ -457,6 +505,34 @@ async def start(client, message):
                 await k.delete()
             sendmsglist = []
 
+=======
+
+        files = await send_more_files(title)
+        if files:
+            for file in files[1:]:
+                k = await client.send_cached_media(
+                    chat_id=message.from_user.id,
+                    file_id=file.file_id,
+                    caption=f"<code>{file.file_name}</code>",
+                    protect_content=True if pre == 'filep' else False,
+                )
+                sendmsglist.append(k)
+                await add_sent_files(message.from_user.id, file.file_id)
+
+            await message.reply('𝕋𝕙𝕒𝕟𝕜 𝕐𝕠𝕦 𝔽𝕠𝕣 𝕌𝕤𝕚𝕟𝕘 𝕄𝕖 ')
+            kk = await client.send_message(
+                chat_id=message.from_user.id,
+                text="""
+                This Files Will delete in 10min Please Forward To Saved Messages folder before download
+                """)
+
+            await asyncio.sleep(600)
+
+            for k in sendmsglist:
+                await k.delete()
+            sendmsglist = []
+
+>>>>>>> Stashed changes
             return await kk.delete()
 
 

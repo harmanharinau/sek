@@ -72,7 +72,11 @@ async def next_page(bot, query):
         btn = [
             [
                 InlineKeyboardButton(
+<<<<<<< Updated upstream
                     text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", url=f'https://telegram.dog/SpaciousUniverseBot?start={file.file_id}'
+=======
+                    text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", url='https://telegram.dog/SpaciousUniverseBot?start={file.file_id}'
+>>>>>>> Stashed changes
                 ),
             ]
             for file in files
@@ -109,7 +113,11 @@ async def next_page(bot, query):
         )
         btn.insert(0,
                    [InlineKeyboardButton(
+<<<<<<< Updated upstream
                        "◈ All Files ◈", url=f'https://telegram.dog/SpaciousUniverseBot?start={dbid}')]
+=======
+                       "◈ All Files ◈", url='https://telegram.dog/SpaciousUniverseBot?start={dbid}')]
+>>>>>>> Stashed changes
                    )
 
     elif off_set is None:
@@ -122,7 +130,11 @@ async def next_page(bot, query):
         )
         btn.insert(0,
                    [InlineKeyboardButton(
+<<<<<<< Updated upstream
                        "◈ All Files ◈", url=f'https://telegram.dog/SpaciousUniverseBot?start={dbid}')]
+=======
+                       "◈ All Files ◈", url='https://telegram.dog/SpaciousUniverseBot?start={dbid}')]
+>>>>>>> Stashed changes
                    )
 
     else:
@@ -142,7 +154,11 @@ async def next_page(bot, query):
         )
         btn.insert(0,
                    [InlineKeyboardButton(
+<<<<<<< Updated upstream
                        "◈ All Files ◈", url=f'https://telegram.dog/SpaciousUniverseBot?start={dbid}')]
+=======
+                       "◈ All Files ◈", url='https://telegram.dog/SpaciousUniverseBot?start={dbid}')]
+>>>>>>> Stashed changes
                    )
 
     try:
@@ -751,7 +767,11 @@ async def auto_filter(client, msg, spoll=False):
         btn = [
             [
                 InlineKeyboardButton(
+<<<<<<< Updated upstream
                     text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", url=f'https://telegram.dog/SpaciousUniverseBot?start={file.file_id}'
+=======
+                    text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", url='https://telegram.dog/SpaciousUniverseBot?start={file.file_id}'
+>>>>>>> Stashed changes
                 ),
             ]
             for file in files
@@ -785,7 +805,11 @@ async def auto_filter(client, msg, spoll=False):
         )
         btn.insert(0,
                    [InlineKeyboardButton(
+<<<<<<< Updated upstream
                        "◈ All Files ◈", url=f'https://telegram.dog/SpaciousUniverseBot?start={dbid}')]
+=======
+                       "◈ All Files ◈", url='https://telegram.dog/SpaciousUniverseBot?start={dbid}')]
+>>>>>>> Stashed changes
                    )
 
     else:
@@ -798,7 +822,11 @@ async def auto_filter(client, msg, spoll=False):
         )
         btn.insert(0,
                    [InlineKeyboardButton(
+<<<<<<< Updated upstream
                        "◈ All Files ◈", url=f'https://telegram.dog/SpaciousUniverseBot?start={dbid}')]
+=======
+                       "◈ All Files ◈", url='https://telegram.dog/SpaciousUniverseBot?start={dbid}')]
+>>>>>>> Stashed changes
                    )
 
     imdb = await get_poster(search, file=(files[0]).file_name) if settings["imdb"] else None
