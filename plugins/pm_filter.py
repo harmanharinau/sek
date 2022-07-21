@@ -150,7 +150,7 @@ async def next_page(bot, query):
 
 
 @Client.on_callback_query(filters.regex(r"^pmnext"))
-async def next_page(bot, query):
+async def pm_next_page(bot, query):
     ident, req, key, offset = query.data.split("_")
     try:
         offset = int(offset)
