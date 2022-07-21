@@ -9,7 +9,7 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from database.ia_filterdb import Media, get_file_details, unpack_new_file_id
 from database.users_chats_db import db
 from info import CHANNELS, ADMINS, AUTH_CHANNEL, LOG_CHANNEL, PICS, BATCH_FILE_CAPTION, CUSTOM_FILE_CAPTION, PROTECT_CONTENT
-from utils import get_settings, get_size, is_subscribed, save_group_settings, temp, send_more_files
+from utils import get_settings, get_size, is_subscribed, save_group_settings, temp, send_more_files, gen_url
 from database.connections_mdb import active_connection
 from database.quickdb import remove_inst, get_ids, add_sent_files, get_verification, remove_verification, add_verification
 import re
@@ -134,7 +134,7 @@ async def start(client, message):
         await add_verification(message.from_user.id, 'unverified', file_id, t)
         button = [[
             InlineKeyboardButton(
-                '🔹 Verfiy 🔹', url=f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url=https://telegram.dog/SpaciousUniverseBot?start={data}')
+                '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start={data}'))
         ]]
         return await message.reply(
             text="you'r not verified today. verfied your self and get unlimited acces",
@@ -162,7 +162,7 @@ async def start(client, message):
         await add_verification(message.from_user.id, 'verified', file_id, t)
         button = [[
             InlineKeyboardButton(
-                '🔹 Verfiy 🔹', url=f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url=https://telegram.dog/SpaciousUniverseBot?start={data}')
+                '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start={data}'))
         ]]
         return await message.reply(
             text="you'r not verified today. verfied your self and get unlimited acces",
@@ -175,7 +175,7 @@ async def start(client, message):
         await add_verification(message.from_user.id, 'unverified', file_id, user_stats["updat_time"])
         button = [[
             InlineKeyboardButton(
-                '🔹 Verfiy 🔹', url=f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url=https://telegram.dog/SpaciousUniverseBot?start={data}')
+                '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start={data}'))
         ]]
         return await message.reply(
             text="Your Verification Time Is expired. please verify again",
@@ -420,8 +420,6 @@ async def start(client, message):
                 f_caption = f_caption
         if f_caption is None:
             f_caption = f"{files.file_name}"
-
-        files = await send_more_files(title)
 
         k = await client.send_cached_media(
             chat_id=message.from_user.id,

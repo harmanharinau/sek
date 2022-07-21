@@ -2,6 +2,7 @@
 import asyncio
 import re
 import ast
+import time
 
 from pyrogram.errors.exceptions.bad_request_400 import MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty, MessageEmpty
 from Script import script
@@ -13,11 +14,11 @@ from info import ADMINS, AUTH_CHANNEL, AUTH_USERS, CUSTOM_FILE_CAPTION, AUTH_GRO
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 from pyrogram import Client, filters
 from pyrogram.errors import FloodWait, UserIsBlocked, MessageNotModified, PeerIdInvalid
-from utils import get_size, is_subscribed, get_poster, search_gagala, temp, get_settings, save_group_settings, get_name, getseries
+from utils import get_size, is_subscribed, get_poster, search_gagala, temp, get_settings, save_group_settings, get_name, getseries, send_more_files, gen_url
 from database.users_chats_db import db
 from database.ia_filterdb import Media, get_file_details, get_search_results
 from database.tvseriesfilters import add_tvseries_filter, update_tvseries_filter, getlinks, find_tvseries_filter, remove_tvseries
-from database.quickdb import add_inst_filter, remove_inst, get_ids
+from database.quickdb import remove_inst, get_ids, add_sent_files, get_verification, remove_verification, add_verification, add_inst_filter
 from database.filters_mdb import (
     del_all,
     find_filter,
@@ -37,6 +38,12 @@ async def give_filter(client, message):
     await auto_filter(client, message)
     await tvseries_filters(client, message)
     await manual_filters(client, message)
+
+
+@Client.on_message(filters.privet & filters.text & ~filters.edited & filters.incoming)
+async def pm_give_filter(client, message):
+    await pm_auto_filter(client, message)
+    await tvseries_filters(client, message)
 
 
 @Client.on_callback_query(filters.regex(r"^next"))
@@ -143,6 +150,104 @@ async def next_page(bot, query):
         btn.insert(0,
                    [InlineKeyboardButton(
                        "◈ All Files ◈", url=f'https://telegram.dog/SpaciousUniverseBot?start={dbid}')]
+                   )
+
+    try:
+        await query.edit_message_reply_markup(
+            reply_markup=InlineKeyboardMarkup(btn)
+        )
+    except MessageNotModified:
+        pass
+    await query.answer()
+
+
+@Client.on_callback_query(filters.regex(r"^pmnext"))
+async def next_page(bot, query):
+    ident, req, key, offset = query.data.split("_")
+    try:
+        offset = int(offset)
+    except:
+        offset = 0
+    search = BUTTONS.get(key)
+    if not search:
+        await query.answer("You are using one of my old messages, please send the request again.", show_alert=True)
+        return
+
+    files, n_offset, total = await get_search_results(search, offset=offset, filter=True)
+    try:
+        n_offset = int(n_offset)
+    except:
+        n_offset = 0
+
+    if not files:
+        return
+
+    fileids = [file.file_id for file in files]
+    dbid = fileids[0]
+    fileids = "L_I_N_K".join(fileids)
+    await add_inst_filter(dbid, fileids)
+
+    btn = [
+        [
+            InlineKeyboardButton(
+                text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", callback_data=f'pmfiles#{file.file_id}'
+            ),
+        ]
+        for file in files
+    ]
+
+    if 0 < offset <= 10:
+        off_set = 0
+    elif offset == 0:
+        off_set = None
+    else:
+        off_set = offset - 10
+    if n_offset == 0:
+        btn.append(
+            [InlineKeyboardButton("◄ Back", callback_data=f"next_{req}_{key}_{off_set}"),
+             InlineKeyboardButton(f"❏ Pages {round(int(offset) / 10) + 1} / {round(total / 10)}",
+                                  callback_data="pages")]
+        )
+        btn.append(
+            [InlineKeyboardButton(
+                "◈ How To Download ◈", callback_data=f'pmfiles#ZmlsZV9CQUFEQlFBREt3VUFBcmRVR0ZXbjBuU3dkdEVHM1JZRQ')]
+        )
+        btn.insert(0,
+                   [InlineKeyboardButton(
+                       "◈ All Files ◈", callback_data=f'pmfiles#{dbid}')]
+                   )
+
+    elif off_set is None:
+        btn.append(
+            [InlineKeyboardButton(f"❏ {round(int(offset) / 10) + 1} / {round(total / 10)}", callback_data="pages"),
+             InlineKeyboardButton("Next ►", callback_data=f"next_{req}_{key}_{n_offset}")])
+        btn.append(
+            [InlineKeyboardButton(
+                "◈ How To Download ◈", callback_data=f'pmfiles#ZmlsZV9CQUFEQlFBREt3VUFBcmRVR0ZXbjBuU3dkdEVHM1JZRQ')]
+        )
+        btn.insert(0,
+                   [InlineKeyboardButton(
+                       "◈ All Files ◈", callback_data=f'pmfiles#{dbid}')]
+                   )
+
+    else:
+        btn.append(
+            [
+                InlineKeyboardButton(
+                    "◄ Back", callback_data=f"next_{req}_{key}_{off_set}"),
+                InlineKeyboardButton(
+                    f"❏ {round(int(offset) / 10) + 1} / {round(total / 10)}", callback_data="pages"),
+                InlineKeyboardButton(
+                    "Next ►", callback_data=f"next_{req}_{key}_{n_offset}")
+            ],
+        )
+        btn.append(
+            [InlineKeyboardButton(
+                "◈ How To Download ◈", callback_data=f'pmfiles#ZmlsZV9CQUFEQlFBREt3VUFBcmRVR0ZXbjBuU3dkdEVHM1JZRQ')]
+        )
+        btn.insert(0,
+                   [InlineKeyboardButton(
+                       "◈ All Files ◈", callback_data=f'pmfiles#{dbid}')]
                    )
 
     try:
@@ -425,48 +530,195 @@ async def cb_handler(client: Client, query: CallbackQuery):
             alert = alerts[int(i)]
             alert = alert.replace("\\n", "\n").replace("\\t", "\t")
             await query.answer(alert, show_alert=True)
-    if query.data.startswith("file"):
-        ident, file_id = query.data.split("#")
-        files_ = await get_file_details(file_id)
-        if not files_:
-            return await query.answer('No such file exist.')
-        files = files_[0]
-        title = files.file_name
-        size = get_size(files.file_size)
-        f_caption = files.caption
-        settings = await get_settings(query.message.chat.id)
-        if CUSTOM_FILE_CAPTION:
-            try:
-                f_caption = CUSTOM_FILE_CAPTION.format(file_name='' if title is None else title,
-                                                       file_size='' if size is None else size,
-                                                       file_caption='' if f_caption is None else f_caption)
-            except Exception as e:
-                logger.exception(e)
-            f_caption = f_caption
-        if f_caption is None:
-            f_caption = f"{get_name(files.file_name)}"
 
-        try:
-            if AUTH_CHANNEL and not await is_subscribed(client, query):
-                await query.answer(url=f"https://t.me/{temp.U_NAME}?start={ident}_{file_id}")
-                return
-            elif settings['botpm']:
-                await query.answer(url=f"https://t.me/{temp.U_NAME}?start={ident}_{file_id}")
-                return
-            else:
-                await client.send_cached_media(
+    if query.data.startswith("pmfile"):
+        ident, file_id = query.data.split("#")
+        user_stats = await get_verification(query.from_user.id)
+        if user_stats is None:
+            t = time.time()
+            await add_verification(query.from_user.id, 'unverified', file_id, t)
+            button = [[
+                InlineKeyboardButton(
+                    '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start={file_id}'))
+            ]]
+            return await query.answer(
+                text="you'r not verified today. verfied your self and get unlimited acces",
+                reply_markup=InlineKeyboardMarkup(button)
+            )
+
+        elif (str(user_stats["stats"]) == 'unverified') and (str(user_stats["file"]) == file_id):
+            t = time.time()
+            await remove_verification(query.from_user.id)
+            await add_verification(query.from_user.id, 'verified', file_id, t)
+            t = time.localtime(t+86400)
+            current_time = time.strftime("%D  %H:%M:%S", t)
+            button = [[
+                InlineKeyboardButton(
+                    'Get Files', callback_data=f'pmfile#{file_id}')
+            ]]
+            return await query.answer(
+                text=f"you'r verified Succusfully. acces until {current_time}",
+                reply_markup=InlineKeyboardMarkup(button)
+            )
+
+        elif (str(user_stats["stats"]) == 'unverified') and (str(user_stats["file"]) != file_id):
+            t = time.time()
+            await remove_verification(query.from_user.id)
+            await add_verification(query.from_user.id, 'verified', file_id, t)
+            button = [[
+                InlineKeyboardButton(
+                    '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start={file_id}'))
+            ]]
+            return await query.answer(
+                text="you'r not verified today. verfied your self and get unlimited acces",
+                reply_markup=InlineKeyboardMarkup(button)
+            )
+
+        elif (time.time() - int(float(user_stats["updat_time"]))) > 86400:
+            t = time.time()
+            await remove_verification(query.from_user.id)
+            await add_verification(query.from_user.id, 'unverified', file_id, user_stats["updat_time"])
+            button = [[
+                InlineKeyboardButton(
+                    '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start={file_id}'))
+            ]]
+            return await query.answer(
+                text="Your Verification Time Is expired. please verify again",
+                reply_markup=InlineKeyboardMarkup(button)
+            )
+
+        elif str(user_stats["stats"]) == 'verified':
+            idstring = await get_ids(file_id)
+            if idstring:
+                await remove_inst(file_id)
+                idstring = idstring['links']
+                fileids = idstring.split("L_I_N_K")
+                sendmsglist = []
+                for file_id in fileids:
+                    files_ = await get_file_details(file_id)
+                    if not files_:
+                        try:
+                            msg = await client.send_cached_media(
+                                chat_id=query.from_user.id,
+                                file_id=file_id
+                            )
+                            filetype = msg.media
+                            file = getattr(msg, filetype)
+                            title = file.file_name
+                            size = get_size(file.file_size)
+                            f_caption = f"<code>{title}</code>"
+                            if CUSTOM_FILE_CAPTION:
+                                try:
+                                    f_caption = CUSTOM_FILE_CAPTION.format(
+                                        file_name='' if title is None else title, file_size='' if size is None else size, file_caption='')
+                                except:
+                                    return
+                            await msg.edit_caption(f_caption)
+                            return
+                        except:
+                            pass
+                    files = files_[0]
+                    title = files.file_name
+                    size = get_size(files.file_size)
+                    f_caption = files.caption
+                    if CUSTOM_FILE_CAPTION:
+                        try:
+                            f_caption = CUSTOM_FILE_CAPTION.format(
+                                file_name='' if title is None else title, file_size='' if size is None else size, file_caption='' if f_caption is None else f_caption)
+                        except Exception as e:
+                            logger.exception(e)
+                            f_caption = f_caption
+                    if f_caption is None:
+                        f_caption = f"{files.file_name}"
+                    k = await client.send_cached_media(
+                        chat_id=query.from_user.id,
+                        file_id=file_id,
+                        caption=f_caption,
+                    )
+                    sendmsglist.append(k)
+                    await add_sent_files(query.from_user.id, file_id)
+
+                await query.answer('𝕋𝕙𝕒𝕟𝕜 𝕐𝕠𝕦 𝔽𝕠𝕣 𝕌𝕤𝕚𝕟𝕘 𝕄𝕖')
+                kk = await client.send_message(
                     chat_id=query.from_user.id,
-                    file_id=file_id,
-                    caption=f_caption,
-                    protect_content=True if ident == "filep" else False
-                )
-                await query.answer('Check PM, I have sent files in pm', show_alert=True)
-        except UserIsBlocked:
-            await query.answer('Unblock the bot!', show_alert=True)
-        except PeerIdInvalid:
-            await query.answer(url=f"https://t.me/{temp.U_NAME}?start={ident}_{file_id}")
-        except Exception as e:
-            await query.answer(url=f"https://t.me/{temp.U_NAME}?start={ident}_{file_id}")
+                    text="""
+                    This Files Will delete in 10min Please Forward To Saved Messages folder before download
+                    """)
+
+                await asyncio.sleep(600)
+                for k in sendmsglist:
+                    await k.delete()
+                sendmsglist = []
+                return await kk.delete()
+
+            files_ = await get_file_details(file_id)
+            if not files_:
+                return await query.answer('No such file exist.')
+
+            files = files_[0]
+            title = files.file_name
+            size = get_size(files.file_size)
+            f_caption = files.caption
+            settings = await get_settings(query.message.chat.id)
+            if CUSTOM_FILE_CAPTION:
+                try:
+                    f_caption = CUSTOM_FILE_CAPTION.format(file_name='' if title is None else title,
+                                                           file_size='' if size is None else size,
+                                                           file_caption='' if f_caption is None else f_caption)
+                except Exception as e:
+                    logger.exception(e)
+                f_caption = f_caption
+            if f_caption is None:
+                f_caption = f"{get_name(files.file_name)}"
+
+            try:
+                if AUTH_CHANNEL and not await is_subscribed(client, query):
+                    await query.answer(url=f"https://t.me/{temp.U_NAME}?start={ident}_{file_id}")
+                    return
+                else:
+                    k = await client.send_cached_media(
+                        chat_id=query.from_user.id,
+                        file_id=file_id,
+                        caption=f_caption,
+                        protect_content=True if ident == "filep" else False
+                    )
+                    await query.answer('Check PM, I have sent files in pm', show_alert=True)
+            except UserIsBlocked:
+                await query.answer('Unblock the bot!', show_alert=True)
+            except PeerIdInvalid:
+                await query.answer(url=f"https://t.me/{temp.U_NAME}?start={ident}_{file_id}")
+            except Exception as e:
+                await query.answer(url=f"https://t.me/{temp.U_NAME}?start={ident}_{file_id}")
+
+            sendmsglist = [k]
+            await add_sent_files(query.from_user.id, file_id)
+
+            files = await send_more_files(title)
+            if files:
+                for file in files[1:]:
+                    k = await client.send_cached_media(
+                        chat_id=query.from_user.id,
+                        file_id=file.file_id,
+                        caption=f"<code>{file.file_name}</code>",
+                    )
+                    sendmsglist.append(k)
+                    await add_sent_files(query.from_user.id, file.file_id)
+
+                await query.answer('𝕋𝕙𝕒𝕟𝕜 𝕐𝕠𝕦 𝔽𝕠𝕣 𝕌𝕤𝕚𝕟𝕘 𝕄𝕖 ')
+                kk = await client.send_message(
+                    chat_id=query.from_user.id,
+                    text="""
+                    This Files Will delete in 10min Please Forward To Saved Messages folder before download
+                    """)
+
+                await asyncio.sleep(600)
+
+                for k in sendmsglist:
+                    await k.delete()
+                sendmsglist = []
+
+                return await kk.delete()
+
     elif query.data.startswith("checksub"):
         if AUTH_CHANNEL and not await is_subscribed(client, query):
             await query.answer("I Like Your Smartness, But Don't Be Oversmart 😒", show_alert=True)
@@ -805,6 +1057,122 @@ async def auto_filter(client, msg, spoll=False):
     TEMPLATE = settings['template']
     if imdb:
         cap = TEMPLATE.format(
+            query=search,
+            title=imdb['title'],
+            votes=imdb['votes'],
+            aka=imdb["aka"],
+            seasons=imdb["seasons"],
+            box_office=imdb['box_office'],
+            localized_title=imdb['localized_title'],
+            kind=imdb['kind'],
+            imdb_id=imdb["imdb_id"],
+            cast=imdb["cast"],
+            runtime=imdb["runtime"],
+            countries=imdb["countries"],
+            certificates=imdb["certificates"],
+            languages=imdb["languages"],
+            director=imdb["director"],
+            writer=imdb["writer"],
+            producer=imdb["producer"],
+            composer=imdb["composer"],
+            cinematographer=imdb["cinematographer"],
+            music_team=imdb["music_team"],
+            distributors=imdb["distributors"],
+            release_date=imdb['release_date'],
+            year=imdb['year'],
+            genres=imdb['genres'],
+            poster=imdb['poster'],
+            plot=imdb['plot'],
+            rating=imdb['rating'],
+            url=imdb['url'],
+            **locals()
+        )
+    else:
+        cap = f"Here is what i found for your query {search}"
+    if imdb and imdb.get('poster'):
+        try:
+            await message.reply_photo(photo=imdb.get('poster'), caption=cap[:1024],
+                                      reply_markup=InlineKeyboardMarkup(btn))
+        except (MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty):
+            pic = imdb.get('poster')
+            poster = pic.replace('.jpg', "._V1_UX360.jpg")
+            await message.reply_photo(photo=poster, caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btn))
+        except Exception as e:
+            logger.exception(e)
+    else:
+        await message.reply_text(cap, reply_markup=InlineKeyboardMarkup(btn))
+    if spoll:
+        await msg.message.delete()
+
+
+async def pm_auto_filter(client, msg, spoll=False):
+    if not spoll:
+        message = msg
+        if message.text.startswith("/"):
+            return  # ignore commands
+        if re.findall("((^\/|^,|^!|^\.|^[\U0001F600-\U000E007F]).*)", message.text):
+            return
+        if 2 < len(message.text) < 100:
+            search = message.text
+            files, offset, total_results = await get_search_results(search.lower(), offset=0, filter=True)
+            if not files:
+                try:
+                    await advantage_spell_chok(msg)
+                except:
+                    return
+        else:
+            return
+    else:
+        message = msg.message.reply_to_message  # msg will be callback query
+        search, files, offset, total_results = spoll
+
+    fileids = [file.file_id for file in files]
+    dbid = fileids[0]
+    fileids = "L_I_N_K".join(fileids)
+    await add_inst_filter(dbid, fileids)
+
+    btn = [
+        [
+            InlineKeyboardButton(
+                text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", callback_data=f'pmfiles#{file.file_id}'
+            ),
+        ]
+        for file in files
+    ]
+
+    if offset != "":
+        key = f"{message.chat.id}-{message.message_id}"
+        BUTTONS[key] = search
+        req = message.from_user.id if message.from_user else 0
+        btn.append(
+            [InlineKeyboardButton(text=f"❏ 1/{round(int(total_results) / 10)}", callback_data="pages"),
+             InlineKeyboardButton(text="Next ►", callback_data=f"pmnext_{req}_{key}_{offset}")]
+        )
+        btn.append(
+            [InlineKeyboardButton(
+                "◈ How To Download ◈", callback_data=f'pmfiles#ZmlsZV9CQUFEQlFBREt3VUFBcmRVR0ZXbjBuU3dkdEVHM1JZRQ')]
+        )
+        btn.insert(0,
+                   [InlineKeyboardButton(
+                       "◈ All Files ◈", callback_data=f'pmfiles#{dbid}')]
+                   )
+
+    else:
+        btn.append(
+            [InlineKeyboardButton(text="❏ 1/1", callback_data="pages")]
+        )
+        btn.append(
+            [InlineKeyboardButton(
+                "◈ How To Download ◈", callback_data='pmfiles#ZmlsZV9CQUFEQlFBREt3VUFBcmRVR0ZXbjBuU3dkdEVHM1JZRQ')]
+        )
+        btn.insert(0,
+                   [InlineKeyboardButton(
+                       "◈ All Files ◈", callback_data=f'pmfiles#{dbid}')]
+                   )
+
+    imdb = await get_poster(search, file=(files[0]).file_name)
+    if imdb:
+        cap = IMDB_TEMPLATE.format(
             query=search,
             title=imdb['title'],
             votes=imdb['votes'],
