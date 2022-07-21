@@ -239,10 +239,14 @@ async def next_page(bot, query):
 async def advantage_spoll_choker(bot, query):
     _, user, movie_ = query.data.split('#')
     if int(user) != 0 and query.from_user.id != int(user):
-        return await query.answer("okDa", show_alert=True)
+        return await query.answer("This is not for you", show_alert=True)
     if movie_ == "close_spellcheck":
         return await query.message.delete()
-    movies = SPELL_CHECK.get(query.message.reply_to_message.message_id)
+    try:
+        movies = SPELL_CHECK.get(query.message.reply_to_message.message_id)
+    except:
+        return await query.answer('Something went wrong...')
+
     if not movies:
         return await query.answer("You are clicking on an old button which is expired.", show_alert=True)
     movie = movies[(int(movie_))]
@@ -517,7 +521,8 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 InlineKeyboardButton(
                     '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start={file_id}'))
             ]]
-            return await query.answer(
+            return await client.send_message(
+                chat_id=query.from_user.id,
                 text="""
             <p>you'r not verified today. verfied your self and get unlimited access</p>
             <br>
@@ -536,7 +541,8 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 InlineKeyboardButton(
                     'Get Files', callback_data=f'pmfile#{file_id}')
             ]]
-            return await query.answer(
+            return await client.send_message(
+                chat_id=query.from_user.id,
                 text="""
             <p>you'r verified Succusfully. access until {current_time}</p>
             """,
@@ -551,7 +557,8 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 InlineKeyboardButton(
                     '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start={file_id}'))
             ]]
-            return await query.answer(
+            return await client.send_message(
+                chat_id=query.from_user.id,
                 text="""
             <p>you'r not verified today. verfied your self and get unlimited access</p>
             <br>
@@ -568,7 +575,8 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 InlineKeyboardButton(
                     '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start={file_id}'))
             ]]
-            return await query.answer(
+            return await client.send_message(
+                chat_id=query.from_user.id,
                 text="""
             <p>Your Verification Time Is expired. please verify again</p>
             <br>
@@ -966,10 +974,8 @@ async def auto_filter(client, msg, spoll=False):
             search = message.text
             files, offset, total_results = await get_search_results(search.lower(), offset=0, filter=True)
             if not files:
-                if settings["spell_check"]:
-                    return await advantage_spell_chok(msg)
-                else:
-                    return
+                return await advantage_spell_chok(msg)
+
         else:
             return
     else:
@@ -1092,10 +1098,8 @@ async def pm_auto_filter(client, msg, spoll=False):
             search = message.text
             files, offset, total_results = await get_search_results(search.lower(), offset=0, filter=True)
             if not files:
-                try:
-                    await advantage_spell_chok(msg)
-                except:
-                    return
+                return await advantage_spell_chok(msg)
+
         else:
             return
     else:
