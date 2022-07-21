@@ -35,8 +35,8 @@ SPELL_CHECK = {}
 
 @Client.on_message(filters.group & filters.text & ~filters.edited & filters.incoming)
 async def give_filter(client, message):
-    await auto_filter(client, message)
     await tvseries_filters(client, message)
+    await auto_filter(client, message)
     await manual_filters(client, message)
 
 
