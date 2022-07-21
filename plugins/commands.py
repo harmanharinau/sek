@@ -137,7 +137,11 @@ async def start(client, message):
                 '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start={data}'))
         ]]
         return await message.reply(
-            text="you'r not verified today. verfied your self and get unlimited acces",
+            text="""
+            <p>you'r not verified today. verfied your self and get unlimited access</p>
+            <br>
+            <small><a href="kalanakt.github.io/projects/telegram/baesuzy/howto-verify/">How To Verify !</a></small>
+            """,
             reply_markup=InlineKeyboardMarkup(button)
         )
 
@@ -152,7 +156,9 @@ async def start(client, message):
                 'Get Files', url=f'https://telegram.dog/SpaciousUniverseBot?start={data}')
         ]]
         return await message.reply(
-            text=f"you'r verified Succusfully. acces until {current_time}",
+            text="""
+            <p>you'r verified Succusfully. access until {current_time}</p>
+            """,
             reply_markup=InlineKeyboardMarkup(button)
         )
 
@@ -165,7 +171,11 @@ async def start(client, message):
                 '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start={data}'))
         ]]
         return await message.reply(
-            text="you'r not verified today. verfied your self and get unlimited acces",
+            text="""
+            <p>you'r not verified today. verfied your self and get unlimited access</p>
+            <br>
+            <small><a href="kalanakt.github.io/projects/telegram/baesuzy/howto-verify/">How To Verify !</a></small>
+            """,
             reply_markup=InlineKeyboardMarkup(button)
         )
 
@@ -178,7 +188,11 @@ async def start(client, message):
                 '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start={data}'))
         ]]
         return await message.reply(
-            text="Your Verification Time Is expired. please verify again",
+            text="""
+            <p>Your Verification Time Is expired. please verify again</p>
+            <br>
+            <small><a href="kalanakt.github.io/projects/telegram/baesuzy/howto-verify/">How To Verify</a></small>
+            """,
             reply_markup=InlineKeyboardMarkup(button)
         )
 

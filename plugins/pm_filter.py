@@ -110,10 +110,6 @@ async def next_page(bot, query):
              InlineKeyboardButton(f"❏ Pages {round(int(offset) / 10) + 1} / {round(total / 10)}",
                                   callback_data="pages")]
         )
-        btn.append(
-            [InlineKeyboardButton(
-                "◈ How To Download ◈", url="https://t.me/SpaciousUniverseBot?start=ZmlsZV9CQUFEQlFBREt3VUFBcmRVR0ZXbjBuU3dkdEVHM1JZRQ")]
-        )
         btn.insert(0,
                    [InlineKeyboardButton(
                        "◈ All Files ◈", url=f'https://telegram.dog/SpaciousUniverseBot?start={dbid}')]
@@ -123,10 +119,6 @@ async def next_page(bot, query):
         btn.append(
             [InlineKeyboardButton(f"❏ {round(int(offset) / 10) + 1} / {round(total / 10)}", callback_data="pages"),
              InlineKeyboardButton("Next ►", callback_data=f"next_{req}_{key}_{n_offset}")])
-        btn.append(
-            [InlineKeyboardButton(
-                "◈ How To Download ◈", url="https://t.me/SpaciousUniverseBot?start=ZmlsZV9CQUFEQlFBREt3VUFBcmRVR0ZXbjBuU3dkdEVHM1JZRQ")]
-        )
         btn.insert(0,
                    [InlineKeyboardButton(
                        "◈ All Files ◈", url=f'https://telegram.dog/SpaciousUniverseBot?start={dbid}')]
@@ -142,10 +134,6 @@ async def next_page(bot, query):
                 InlineKeyboardButton(
                     "Next ►", callback_data=f"next_{req}_{key}_{n_offset}")
             ],
-        )
-        btn.append(
-            [InlineKeyboardButton(
-                "◈ How To Download ◈", url="https://t.me/SpaciousUniverseBot?start=ZmlsZV9CQUFEQlFBREt3VUFBcmRVR0ZXbjBuU3dkdEVHM1JZRQ")]
         )
         btn.insert(0,
                    [InlineKeyboardButton(
@@ -208,10 +196,6 @@ async def next_page(bot, query):
              InlineKeyboardButton(f"❏ Pages {round(int(offset) / 10) + 1} / {round(total / 10)}",
                                   callback_data="pages")]
         )
-        btn.append(
-            [InlineKeyboardButton(
-                "◈ How To Download ◈", callback_data=f'pmfiles#ZmlsZV9CQUFEQlFBREt3VUFBcmRVR0ZXbjBuU3dkdEVHM1JZRQ')]
-        )
         btn.insert(0,
                    [InlineKeyboardButton(
                        "◈ All Files ◈", callback_data=f'pmfiles#{dbid}')]
@@ -221,10 +205,6 @@ async def next_page(bot, query):
         btn.append(
             [InlineKeyboardButton(f"❏ {round(int(offset) / 10) + 1} / {round(total / 10)}", callback_data="pages"),
              InlineKeyboardButton("Next ►", callback_data=f"next_{req}_{key}_{n_offset}")])
-        btn.append(
-            [InlineKeyboardButton(
-                "◈ How To Download ◈", callback_data=f'pmfiles#ZmlsZV9CQUFEQlFBREt3VUFBcmRVR0ZXbjBuU3dkdEVHM1JZRQ')]
-        )
         btn.insert(0,
                    [InlineKeyboardButton(
                        "◈ All Files ◈", callback_data=f'pmfiles#{dbid}')]
@@ -240,10 +220,6 @@ async def next_page(bot, query):
                 InlineKeyboardButton(
                     "Next ►", callback_data=f"next_{req}_{key}_{n_offset}")
             ],
-        )
-        btn.append(
-            [InlineKeyboardButton(
-                "◈ How To Download ◈", callback_data=f'pmfiles#ZmlsZV9CQUFEQlFBREt3VUFBcmRVR0ZXbjBuU3dkdEVHM1JZRQ')]
         )
         btn.insert(0,
                    [InlineKeyboardButton(
@@ -542,7 +518,11 @@ async def cb_handler(client: Client, query: CallbackQuery):
                     '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start={file_id}'))
             ]]
             return await query.answer(
-                text="you'r not verified today. verfied your self and get unlimited acces",
+                text="""
+            <p>you'r not verified today. verfied your self and get unlimited access</p>
+            <br>
+            <small><a href="kalanakt.github.io/projects/telegram/baesuzy/howto-verify/">How To Verify !</a></small>
+            """,
                 reply_markup=InlineKeyboardMarkup(button)
             )
 
@@ -557,7 +537,9 @@ async def cb_handler(client: Client, query: CallbackQuery):
                     'Get Files', callback_data=f'pmfile#{file_id}')
             ]]
             return await query.answer(
-                text=f"you'r verified Succusfully. acces until {current_time}",
+                text="""
+            <p>you'r verified Succusfully. access until {current_time}</p>
+            """,
                 reply_markup=InlineKeyboardMarkup(button)
             )
 
@@ -570,7 +552,11 @@ async def cb_handler(client: Client, query: CallbackQuery):
                     '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start={file_id}'))
             ]]
             return await query.answer(
-                text="you'r not verified today. verfied your self and get unlimited acces",
+                text="""
+            <p>you'r not verified today. verfied your self and get unlimited access</p>
+            <br>
+            <small><a href="kalanakt.github.io/projects/telegram/baesuzy/howto-verify/">How To Verify !</a></small>
+            """,
                 reply_markup=InlineKeyboardMarkup(button)
             )
 
@@ -583,7 +569,11 @@ async def cb_handler(client: Client, query: CallbackQuery):
                     '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start={file_id}'))
             ]]
             return await query.answer(
-                text="Your Verification Time Is expired. please verify again",
+                text="""
+            <p>Your Verification Time Is expired. please verify again</p>
+            <br>
+            <small><a href="kalanakt.github.io/projects/telegram/baesuzy/howto-verify/">How To Verify</a></small>
+            """,
                 reply_markup=InlineKeyboardMarkup(button)
             )
 
@@ -673,51 +663,45 @@ async def cb_handler(client: Client, query: CallbackQuery):
 
             try:
                 if AUTH_CHANNEL and not await is_subscribed(client, query):
-                    await query.answer(url=f"https://t.me/{temp.U_NAME}?start={ident}_{file_id}")
-                    return
-                else:
-                    k = await client.send_cached_media(
+                    return await query.answer(url=f"https://t.me/{temp.U_NAME}?start={ident}_{file_id}")
+
+                k = await client.send_cached_media(
+                    chat_id=query.from_user.id,
+                    file_id=file_id,
+                    caption=f_caption,
+                    protect_content=True if ident == "filep" else False
+                )
+                sendmsglist = [k]
+                await add_sent_files(query.from_user.id, file_id)
+                files = await send_more_files(title)
+                if files:
+                    for file in files[1:]:
+                        k = await client.send_cached_media(
+                            chat_id=query.from_user.id,
+                            file_id=file.file_id,
+                            caption=f"<code>{file.file_name}</code>",
+                        )
+                        sendmsglist.append(k)
+                        await add_sent_files(query.from_user.id, file.file_id)
+
+                    await query.answer('𝕋𝕙𝕒𝕟𝕜 𝕐𝕠𝕦 𝔽𝕠𝕣 𝕌𝕤𝕚𝕟𝕘 𝕄𝕖 ')
+                    kk = await client.send_message(
                         chat_id=query.from_user.id,
-                        file_id=file_id,
-                        caption=f_caption,
-                        protect_content=True if ident == "filep" else False
-                    )
-                    await query.answer('Check PM, I have sent files in pm', show_alert=True)
+                        text="""
+                        This Files Will delete in 10min Please Forward To Saved Messages folder before download
+                        """)
+                    await asyncio.sleep(600)
+                    for k in sendmsglist:
+                        await k.delete()
+                    sendmsglist = []
+                    return await kk.delete()
+
             except UserIsBlocked:
                 await query.answer('Unblock the bot!', show_alert=True)
             except PeerIdInvalid:
                 await query.answer(url=f"https://t.me/{temp.U_NAME}?start={ident}_{file_id}")
             except Exception as e:
                 await query.answer(url=f"https://t.me/{temp.U_NAME}?start={ident}_{file_id}")
-
-            sendmsglist = [k]
-            await add_sent_files(query.from_user.id, file_id)
-
-            files = await send_more_files(title)
-            if files:
-                for file in files[1:]:
-                    k = await client.send_cached_media(
-                        chat_id=query.from_user.id,
-                        file_id=file.file_id,
-                        caption=f"<code>{file.file_name}</code>",
-                    )
-                    sendmsglist.append(k)
-                    await add_sent_files(query.from_user.id, file.file_id)
-
-                await query.answer('𝕋𝕙𝕒𝕟𝕜 𝕐𝕠𝕦 𝔽𝕠𝕣 𝕌𝕤𝕚𝕟𝕘 𝕄𝕖 ')
-                kk = await client.send_message(
-                    chat_id=query.from_user.id,
-                    text="""
-                    This Files Will delete in 10min Please Forward To Saved Messages folder before download
-                    """)
-
-                await asyncio.sleep(600)
-
-                for k in sendmsglist:
-                    await k.delete()
-                sendmsglist = []
-
-                return await kk.delete()
 
     elif query.data.startswith("checksub"):
         if AUTH_CHANNEL and not await is_subscribed(client, query):
@@ -1031,10 +1015,6 @@ async def auto_filter(client, msg, spoll=False):
             [InlineKeyboardButton(text=f"❏ 1/{round(int(total_results) / 10)}", callback_data="pages"),
              InlineKeyboardButton(text="Next ►", callback_data=f"next_{req}_{key}_{offset}")]
         )
-        btn.append(
-            [InlineKeyboardButton(
-                "◈ How To Download ◈", url="https://t.me/SpaciousUniverseBot?start=ZmlsZV9CQUFEQlFBREt3VUFBcmRVR0ZXbjBuU3dkdEVHM1JZRQ")]
-        )
         btn.insert(0,
                    [InlineKeyboardButton(
                        "◈ All Files ◈", url=f'https://telegram.dog/SpaciousUniverseBot?start={dbid}')]
@@ -1043,10 +1023,6 @@ async def auto_filter(client, msg, spoll=False):
     else:
         btn.append(
             [InlineKeyboardButton(text="❏ 1/1", callback_data="pages")]
-        )
-        btn.append(
-            [InlineKeyboardButton(
-                "◈ How To Download ◈", url="https://t.me/SpaciousUniverseBot?start=ZmlsZV9CQUFEQlFBREt3VUFBcmRVR0ZXbjBuU3dkdEVHM1JZRQ")]
         )
         btn.insert(0,
                    [InlineKeyboardButton(
@@ -1148,10 +1124,6 @@ async def pm_auto_filter(client, msg, spoll=False):
             [InlineKeyboardButton(text=f"❏ 1/{round(int(total_results) / 10)}", callback_data="pages"),
              InlineKeyboardButton(text="Next ►", callback_data=f"pmnext_{req}_{key}_{offset}")]
         )
-        btn.append(
-            [InlineKeyboardButton(
-                "◈ How To Download ◈", callback_data=f'pmfiles#ZmlsZV9CQUFEQlFBREt3VUFBcmRVR0ZXbjBuU3dkdEVHM1JZRQ')]
-        )
         btn.insert(0,
                    [InlineKeyboardButton(
                        "◈ All Files ◈", callback_data=f'pmfiles#{dbid}')]
@@ -1160,10 +1132,6 @@ async def pm_auto_filter(client, msg, spoll=False):
     else:
         btn.append(
             [InlineKeyboardButton(text="❏ 1/1", callback_data="pages")]
-        )
-        btn.append(
-            [InlineKeyboardButton(
-                "◈ How To Download ◈", callback_data='pmfiles#ZmlsZV9CQUFEQlFBREt3VUFBcmRVR0ZXbjBuU3dkdEVHM1JZRQ')]
         )
         btn.insert(0,
                    [InlineKeyboardButton(
@@ -1368,10 +1336,6 @@ async def tvseries_filters(client, message, text=False):
                        )
             btns.extend(btn)
 
-        btns.append(
-            [InlineKeyboardButton(
-                "◈ How To Download ◈", url="https://t.me/SpaciousUniverseBot?start=ZmlsZV9CQUFEQlFBREt3VUFBcmRVR0ZXbjBuU3dkdEVHM1JZRQ")]
-        )
         imdb = await get_poster(message.text) if IMDB else None
         if imdb:
             cap = IMDB_TEMPLATE.format(
