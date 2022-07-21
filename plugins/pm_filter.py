@@ -192,7 +192,7 @@ async def pm_next_page(bot, query):
         off_set = offset - 10
     if n_offset == 0:
         btn.append(
-            [InlineKeyboardButton("◄ Back", callback_data=f"next_{req}_{key}_{off_set}"),
+            [InlineKeyboardButton("◄ Back", callback_data=f"pmnext_{req}_{key}_{off_set}"),
              InlineKeyboardButton(f"❏ Pages {round(int(offset) / 10) + 1} / {round(total / 10)}",
                                   callback_data="pages")]
         )
@@ -204,7 +204,7 @@ async def pm_next_page(bot, query):
     elif off_set is None:
         btn.append(
             [InlineKeyboardButton(f"❏ {round(int(offset) / 10) + 1} / {round(total / 10)}", callback_data="pages"),
-             InlineKeyboardButton("Next ►", callback_data=f"next_{req}_{key}_{n_offset}")])
+             InlineKeyboardButton("Next ►", callback_data=f"pmnext_{req}_{key}_{n_offset}")])
         btn.insert(0,
                    [InlineKeyboardButton(
                        "◈ All Files ◈", callback_data=f'pmfiles#{dbid}')]
@@ -214,11 +214,11 @@ async def pm_next_page(bot, query):
         btn.append(
             [
                 InlineKeyboardButton(
-                    "◄ Back", callback_data=f"next_{req}_{key}_{off_set}"),
+                    "◄ Back", callback_data=f"pmnext_{req}_{key}_{off_set}"),
                 InlineKeyboardButton(
                     f"❏ {round(int(offset) / 10) + 1} / {round(total / 10)}", callback_data="pages"),
                 InlineKeyboardButton(
-                    "Next ►", callback_data=f"next_{req}_{key}_{n_offset}")
+                    "Next ►", callback_data=f"pmnext_{req}_{key}_{n_offset}")
             ],
         )
         btn.insert(0,
