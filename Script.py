@@ -106,28 +106,25 @@ ID - <code>{}</code>
 Name - {}
 """
     POST_TEXT = """
-𝗕𝗮𝗲 𝗦𝘂𝘇𝘆 𝗕𝗼𝘁 𝗨𝗽𝗱𝗮𝘁𝗲 🎶
+𝗕𝗮𝗲 𝗦𝘂𝘇𝘆 𝗕𝗼𝘁 𝗨𝗽𝗱𝗮𝘁𝗲 
 
 🔹 New Features :
 
- - /batch Create Batch Link To Your Batch (File, Video, Stickers, Photo...) 
-- /link Generate Link To Your Post 
+    - Remove the Old Added Verification method now no need to verify yourself for every request. you Only need to Verify yourself at once. (for 24 hours full access) 
+And you need to update verification expire within 24 hours. 
 
-🔹 Step To Create Batch Link :
+    - Now, You Can Use Bot In Both Privet Chat And Groups
 
-i) If Your Message Forwarding Channel Is Privet Channel, Add @SpaciousUniverseBot To Your Channel As Admin 
+    - Added Advance TV Series Filters. 
 
-ii) Now Send /batch Commands 
-- Forward First Message of your batch from Channel 
-- Forward Last Message of your batch from same channel 
+    - Added button to get all files on the regular page 
 
-That's it for Create Batch 🎶.
+    - When sending files bot Automatically sends similar files to a user 
 
-🔹 Other Commands : 
+    - Added Delete Timer ( You need to forward files to your `save message chat` before downloading ) 
 
-- /imdb : Get Movie /Tv Series /Anime Information From IMDB 
-- /search : Get Movie /Tv Series /Anime Information From Google 
- 
+Add Bae Suzy To Your Group & Enjoy 
+
 @SpaciousUniverseBot | @TMWAD
 
 Bot Stats:
@@ -140,4 +137,5 @@ Bot Stats:
 • Total Files: {}
 
 Updated Time: {}
+
 """

@@ -29,21 +29,24 @@ btn = [
 
 @Client.on_message(filters.chat('TMWAD'))
 async def stats_channel(client, message):
-    todaySentFiles = await count_sent_files()
-    total_users = await db.total_users_count()
-    files = await Media.count_documents()
-    todayUsers = total_users - prev_day_total_users
-    todayFiles = files - prev_day_total_files
-    t = time.localtime()
-    current_time = time.strftime("%H:%M:%S", t)
+    while True:
+        todaySentFiles = await count_sent_files()
+        total_users = await db.total_users_count()
+        files = await Media.count_documents()
+        todayUsers = total_users - prev_day_total_users
+        todayFiles = files - prev_day_total_files
+        t = time.localtime()
+        current_time = time.strftime("%H:%M:%S", t)
 
-    try:
-        await client.edit_message_text(
-            chat_id=str('TMWAD'),
-            message_id=int(49),
-            text=script.POST_TEXT.format(
-                todaySentFiles, todayUsers, todayFiles, total_users, files, current_time),
-            reply_markup=InlineKeyboardMarkup(btn),
-        )
-    except:
-        logger.exception('Some error occured!', exc_info=True)
+        try:
+            await client.edit_message_text(
+                chat_id=str('TMWAD'),
+                message_id=int(49),
+                text=script.POST_TEXT.format(
+                    todaySentFiles, todayUsers, todayFiles, total_users, files, current_time),
+                reply_markup=InlineKeyboardMarkup(btn),
+            )
+        except:
+            logger.exception('Some error occured!', exc_info=True)
+
+        await asyncio.sleep(86400)
