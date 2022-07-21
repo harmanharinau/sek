@@ -40,7 +40,7 @@ async def stats_channel(client, message):
     try:
         await client.edit_message_text(
             chat_id=str('TMWAD'),
-            message_id=int(241290),
+            message_id=int(49),
             text=script.POST_TEXT.format(
                 todaySentFiles, todayUsers, todayFiles, total_users, files, current_time),
             reply_markup=InlineKeyboardMarkup(btn),
