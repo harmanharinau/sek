@@ -136,6 +136,13 @@ async def start(client, message):
         file_id = data.split("-", 1)[1]
         await add_verification(message.from_user.id, 'verified', file_id, t)
 
+        tt = time.localtime(t+86400)
+        current_time = time.strftime("%D  %H:%M:%S", tt)
+        await message.reply(
+            text=f"""
+                <p>you'r verified Succusfully. access until {current_time}</p>
+                """
+        )
         idstring = await get_ids(file_id)
 
         if idstring:
