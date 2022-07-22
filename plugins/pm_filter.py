@@ -466,7 +466,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 text="""
             <p>you'r not verified today. verfied your self and get unlimited access</p>
             <br>
-            <small><a href="kalanakt.github.io/projects/telegram/baesuzy/howto-verify/">How To Verify !</a></small>
+            <small><a href="kalanakt.github.io/projects/telegram/baesuzy/">How To Verify !</a></small>
             """,
                 reply_markup=InlineKeyboardMarkup(button)
             )
@@ -484,7 +484,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 text="""
             <p>you'r Clicking old message. plese verify yourself</p>
             <br>
-            <small><a href="kalanakt.github.io/projects/telegram/baesuzy/howto-verify/">How To Verify !</a></small>
+            <small><a href="kalanakt.github.io/projects/telegram/baesuzy/">How To Verify !</a></small>
             """,
                 reply_markup=InlineKeyboardMarkup(button)
             )
@@ -502,7 +502,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 text="""
             <p>you'r not verified today. verfied your self and get unlimited access</p>
             <br>
-            <small><a href="kalanakt.github.io/projects/telegram/baesuzy/howto-verify/">How To Verify !</a></small>
+            <small><a href="kalanakt.github.io/projects/telegram/baesuzy/">How To Verify !</a></small>
             """,
                 reply_markup=InlineKeyboardMarkup(button)
             )
@@ -520,7 +520,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 text="""
             <p>Your Verification Time Is expired. please verify again</p>
             <br>
-            <small><a href="kalanakt.github.io/projects/telegram/baesuzy/howto-verify/">How To Verify</a></small>
+            <small><a href="kalanakt.github.io/projects/telegram/baesuzy/">How To Verify</a></small>
             """,
                 reply_markup=InlineKeyboardMarkup(button)
             )
