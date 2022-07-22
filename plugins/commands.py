@@ -131,6 +131,7 @@ async def start(client, message):
         pre = ""
 
     if data.split("-", 1)[0] == "FEND":
+        t = time.time()
         await remove_verification(message.from_user.id)
         await add_verification(message.from_user.id, 'verified', file_id, t)
         file_id = data.split("-", 1)[1]
