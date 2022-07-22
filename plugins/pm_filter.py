@@ -79,7 +79,7 @@ async def next_page(bot, query):
         btn = [
             [
                 InlineKeyboardButton(
-                    text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", url=f'https://telegram.dog/SpaciousUniverseBot?start={file.file_id}'
+                    text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", callback_data=f'gpfiles#{file.file_id}'
                 ),
             ]
             for file in files
@@ -112,7 +112,7 @@ async def next_page(bot, query):
         )
         btn.insert(0,
                    [InlineKeyboardButton(
-                       "◈ All Files ◈", url=f'https://telegram.dog/SpaciousUniverseBot?start={dbid}')]
+                       "◈ All Files ◈", callback_data=f'gpfiles#{dbid}')]
                    )
 
     elif off_set is None:
@@ -121,7 +121,7 @@ async def next_page(bot, query):
              InlineKeyboardButton("Next ►", callback_data=f"next_{req}_{key}_{n_offset}")])
         btn.insert(0,
                    [InlineKeyboardButton(
-                       "◈ All Files ◈", url=f'https://telegram.dog/SpaciousUniverseBot?start={dbid}')]
+                       "◈ All Files ◈", callback_data=f'gpfiles#{dbid}')]
                    )
 
     else:
@@ -137,7 +137,7 @@ async def next_page(bot, query):
         )
         btn.insert(0,
                    [InlineKeyboardButton(
-                       "◈ All Files ◈", url=f'https://telegram.dog/SpaciousUniverseBot?start={dbid}')]
+                       "◈ All Files ◈", callback_data=f'gpfiles#{dbid}')]
                    )
 
     try:
@@ -456,6 +456,10 @@ async def cb_handler(client: Client, query: CallbackQuery):
             alert = alerts[int(i)]
             alert = alert.replace("\\n", "\n").replace("\\t", "\t")
             await query.answer(alert, show_alert=True)
+
+    if query.data.startswith("gpfile"):
+        ident, file_id = query.data.split("#")
+        return await query.answer(url=f"https://t.me/{temp.U_NAME}?start={file_id}")
 
     if query.data.startswith("pmfile"):
         ident, file_id = query.data.split("#")
@@ -939,7 +943,7 @@ async def auto_filter(client, msg, spoll=False):
         btn = [
             [
                 InlineKeyboardButton(
-                    text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", url=f'https://telegram.dog/SpaciousUniverseBot?start={file.file_id}'
+                    text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", callback_data=f'gpfiles#{file.file_id}'
                 ),
             ]
             for file in files
@@ -969,7 +973,7 @@ async def auto_filter(client, msg, spoll=False):
         )
         btn.insert(0,
                    [InlineKeyboardButton(
-                       "◈ All Files ◈", url=f'https://telegram.dog/SpaciousUniverseBot?start={dbid}')]
+                       "◈ All Files ◈", callback_data=f'gpfiles#{dbid}')]
                    )
 
     else:
@@ -978,7 +982,7 @@ async def auto_filter(client, msg, spoll=False):
         )
         btn.insert(0,
                    [InlineKeyboardButton(
-                       "◈ All Files ◈", url=f'https://telegram.dog/SpaciousUniverseBot?start={dbid}')]
+                       "◈ All Files ◈", callback_data=f'gpfiles#{dbid}')]
                    )
 
     imdb = await get_poster(search, file=(files[0]).file_name) if settings["imdb"] else None
