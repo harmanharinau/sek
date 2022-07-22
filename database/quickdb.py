@@ -78,3 +78,25 @@ async def get_verification(user_id):
     mydoc = mycol.find(myquery)
     for user_dic in mydoc:
         return user_dic
+
+
+async def add_update_msg(todaySentFiles, total_users, files):
+    mycol = mydb["updatemsg"]
+    mydict = {"totalUsers": str(
+        total_users), "files": str(files)}
+
+    try:
+        x = mycol.insert_one(mydict)
+    except:
+        logger.exception('Some error occured!', exc_info=True)
+
+
+async def remove_update_msg():
+    mycol = mydb["updatemsg"]
+    mycol.delete_many({})
+
+
+async def get_verification():
+    mycol = mydb["updatemsg"]
+    x = mycol.find_one()
+    return x

@@ -11,13 +11,9 @@ from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from database.users_chats_db import db
 from database.ia_filterdb import Media
 from utils import temp
-from database.quickdb import add_inst_filter, remove_inst, get_ids, get, add_sent_files, count_sent_files
+from database.quickdb import count_sent_files, add_update_msg, remove_update_msg, get_verification
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
-
-
-prev_day_total_users = 35531
-prev_day_total_files = 577448
 
 btn = [
     [
@@ -30,13 +26,19 @@ btn = [
 @Client.on_message(filters.chat('TMWAD'))
 async def stats_channel(client, message):
     while True:
+        updates = await get_verification()
+        await remove_update_msg()
         todaySentFiles = await count_sent_files()
         total_users = await db.total_users_count()
         files = await Media.count_documents()
+        prev_day_total_users = updates["totalUsers"]
+        prev_day_total_files = updates["updatemsg"]
         todayUsers = total_users - prev_day_total_users
         todayFiles = files - prev_day_total_files
         t = time.localtime()
         current_time = time.strftime("%H:%M:%S", t)
+
+        await add_update_msg(todaySentFiles, total_users, files)
 
         try:
             await client.edit_message_text(
@@ -46,6 +48,8 @@ async def stats_channel(client, message):
                     todaySentFiles, todayUsers, todayFiles, total_users, files, current_time),
                 reply_markup=InlineKeyboardMarkup(btn),
             )
+            logger.exception(
+                todaySentFiles, todayUsers, todayFiles, total_users, files, current_time)
         except:
             logger.exception('Some error occured!', exc_info=True)
 
