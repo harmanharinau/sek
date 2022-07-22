@@ -84,6 +84,10 @@ async def next_page(bot, query):
             ]
             for file in files
         ]
+        btn.insert(0,
+                   [InlineKeyboardButton(
+                       "◈ All Files ◈", url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start=FEND-{dbid}'))]
+                   )
     else:
         btn = [
             [
@@ -93,6 +97,10 @@ async def next_page(bot, query):
             ]
             for file in files
         ]
+        btn.insert(0,
+                   [InlineKeyboardButton(
+                       "◈ All Files ◈", callback_data=f'gpfiles#{dbid}')]
+                   )
 
     if 0 < offset <= 10:
         off_set = 0
@@ -106,19 +114,11 @@ async def next_page(bot, query):
              InlineKeyboardButton(f"❏ Pages {round(int(offset) / 10) + 1} / {round(total / 10)}",
                                   callback_data="pages")]
         )
-        btn.insert(0,
-                   [InlineKeyboardButton(
-                       "◈ All Files ◈", callback_data=f'gpfiles#{dbid}')]
-                   )
 
     elif off_set is None:
         btn.append(
             [InlineKeyboardButton(f"❏ {round(int(offset) / 10) + 1} / {round(total / 10)}", callback_data="pages"),
              InlineKeyboardButton("Next ►", callback_data=f"next_{req}_{key}_{n_offset}")])
-        btn.insert(0,
-                   [InlineKeyboardButton(
-                       "◈ All Files ◈", callback_data=f'gpfiles#{dbid}')]
-                   )
 
     else:
         btn.append(
@@ -131,10 +131,6 @@ async def next_page(bot, query):
                     "Next ►", callback_data=f"next_{req}_{key}_{n_offset}")
             ],
         )
-        btn.insert(0,
-                   [InlineKeyboardButton(
-                       "◈ All Files ◈", callback_data=f'gpfiles#{dbid}')]
-                   )
 
     try:
         await query.edit_message_reply_markup(
@@ -943,6 +939,10 @@ async def auto_filter(client, msg, spoll=False):
             ]
             for file in files
         ]
+        btn.insert(0,
+                   [InlineKeyboardButton(
+                       "◈ All Files ◈", url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start=FEND-{dbid}'))]
+                   )
 
     else:
         btn = [
@@ -953,6 +953,10 @@ async def auto_filter(client, msg, spoll=False):
             ]
             for file in files
         ]
+        btn.insert(0,
+                   [InlineKeyboardButton(
+                       "◈ All Files ◈", callback_data=f'gpfiles#{dbid}')]
+                   )
 
     if offset != "":
         key = f"{message.chat.id}-{message.message_id}"
@@ -962,19 +966,11 @@ async def auto_filter(client, msg, spoll=False):
             [InlineKeyboardButton(text=f"❏ 1/{round(int(total_results) / 10)}", callback_data="pages"),
              InlineKeyboardButton(text="Next ►", callback_data=f"next_{req}_{key}_{offset}")]
         )
-        btn.insert(0,
-                   [InlineKeyboardButton(
-                       "◈ All Files ◈", callback_data=f'gpfiles#{dbid}')]
-                   )
 
     else:
         btn.append(
             [InlineKeyboardButton(text="❏ 1/1", callback_data="pages")]
         )
-        btn.insert(0,
-                   [InlineKeyboardButton(
-                       "◈ All Files ◈", callback_data=f'gpfiles#{dbid}')]
-                   )
 
     imdb = await get_poster(search, file=(files[0]).file_name) if settings["imdb"] else None
     TEMPLATE = settings['template']
