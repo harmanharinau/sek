@@ -145,8 +145,9 @@ async def start(client, message):
             """,
             reply_markup=InlineKeyboardMarkup(button)
         )
-    if (str(user_stats["stats"]) == 'unverified') and (str(user_stats["file"]) == file_id):
-        if data.split("-", 1)[0] == "REAL":
+    if data.split("-", 1)[0] == "REAL":
+        file_id = data.split("-", 1)[1]
+        if (str(user_stats["stats"]) == 'unverified') and (str(user_stats["file"]) == file_id):
             file_id = data.split("-", 1)[1]
             t = time.time()
             await remove_verification(message.from_user.id)
