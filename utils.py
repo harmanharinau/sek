@@ -420,7 +420,11 @@ def gen_url(link):
     #urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url={link}'
     #urllink = f'https://semawur.com/st/?api=ee503477175b248fa734b0f2c0fa6f352bd8892d&url={link}'
     urllink = f'https://rocklinks.net/st?api=85b949240ee33cb797db1efc7aa94cb265c6ad35&url={link}'
-    urllink = shortner.tinyurl.short(urllink)
+    try:
+        urllink = shortner.tinyurl.short(urllink)
+    except:
+        urllink = urllink
+
     return urllink
 
 # def geny_url(file_id):
