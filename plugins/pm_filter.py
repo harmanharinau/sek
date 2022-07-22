@@ -75,11 +75,11 @@ async def next_page(bot, query):
 
     user_stats = await get_verification(query.from_user.id)
 
-    if str(user_stats["stats"]) == 'verified':
+    if user_stats is None:
         btn = [
             [
                 InlineKeyboardButton(
-                    text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", callback_data=f'gpfiles#{file.file_id}'
+                    text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start=FEND-{file.file_id}')
                 ),
             ]
             for file in files
@@ -88,7 +88,7 @@ async def next_page(bot, query):
         btn = [
             [
                 InlineKeyboardButton(
-                    text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start=FEND-{file.file_id}')
+                    text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", callback_data=f'gpfiles#{file.file_id}'
                 ),
             ]
             for file in files
@@ -933,20 +933,22 @@ async def auto_filter(client, msg, spoll=False):
     fileids = "L_I_N_K".join(fileids)
 
     user_stats = await get_verification(message.from_user.id)
-    if str(user_stats["stats"]) == 'verified':
-        btn = [
-            [
-                InlineKeyboardButton(
-                    text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", callback_data=f'gpfiles#{file.file_id}'
-                ),
-            ]
-            for file in files
-        ]
-    else:
+
+    if user_stats is None:
         btn = [
             [
                 InlineKeyboardButton(
                     text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start=FEND-{file.file_id}')
+                ),
+            ]
+            for file in files
+        ]
+
+    else:
+        btn = [
+            [
+                InlineKeyboardButton(
+                    text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", callback_data=f'gpfiles#{file.file_id}'
                 ),
             ]
             for file in files
