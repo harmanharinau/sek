@@ -922,13 +922,12 @@ async def auto_filter(client, msg, spoll=False):
         settings = await get_settings(msg.message.chat.id)
         message = msg.message.reply_to_message  # msg will be callback query
         search, files, offset, total_results = spoll
-    pre = 'filep' if settings['file_secure'] else 'file'
 
     fileids = [file.file_id for file in files]
     dbid = fileids[0]
     fileids = "L_I_N_K".join(fileids)
 
-    user_stats = await get_verification(message.from_user.id)
+    user_stats = await get_verification(msg.from_user.id)
 
     if user_stats is None:
         btn = [

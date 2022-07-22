@@ -237,6 +237,7 @@ def get_name(name):
     name = name.replace("tg", '')
     name = name.replace("link", '')
     name = name.replace("@", '')
+    name = name.replace("Team_Tony", '')
     name = name.replace("massmovies0", '')
     name = name.replace("bullmoviee", '')
     name = name.replace("massmovies", '')
