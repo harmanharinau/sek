@@ -484,17 +484,17 @@ async def cb_handler(client: Client, query: CallbackQuery):
         elif (str(user_stats["stats"]) == 'unverified') and (str(user_stats["file"]) == file_id):
             t = time.time()
             await remove_verification(query.from_user.id)
-            await add_verification(query.from_user.id, 'verified', file_id, t)
-            t = time.localtime(t+86400)
-            current_time = time.strftime("%D  %H:%M:%S", t)
+            await add_verification(query.from_user.id, 'unverified', file_id, t)
             button = [[
                 InlineKeyboardButton(
-                    'Get Files', callback_data=f'pmfile#{file_id}')
+                    '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start=REAL-{file_id}'))
             ]]
             return await client.send_message(
                 chat_id=query.from_user.id,
                 text="""
-            <p>you'r verified Succusfully. access until {current_time}</p>
+            <p>you'r Clicking old message. plese verify yourself</p>
+            <br>
+            <small><a href="kalanakt.github.io/projects/telegram/baesuzy/howto-verify/">How To Verify !</a></small>
             """,
                 reply_markup=InlineKeyboardMarkup(button)
             )
@@ -502,7 +502,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         elif (str(user_stats["stats"]) == 'unverified') and (str(user_stats["file"]) != file_id):
             t = time.time()
             await remove_verification(query.from_user.id)
-            await add_verification(query.from_user.id, 'verified', file_id, t)
+            await add_verification(query.from_user.id, 'unverified', file_id, t)
             button = [[
                 InlineKeyboardButton(
                     '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start=REAL-{file_id}'))
