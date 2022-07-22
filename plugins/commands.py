@@ -166,7 +166,7 @@ async def start(client, message):
     elif (str(user_stats["stats"]) == 'unverified') and (str(user_stats["file"]) != file_id):
         t = time.time()
         await remove_verification(message.from_user.id)
-        await add_verification(message.from_user.id, 'verified', file_id, t)
+        await add_verification(message.from_user.id, 'unverified', file_id, t)
         button = [[
             InlineKeyboardButton(
                 '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start={data}'))
