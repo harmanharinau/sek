@@ -129,6 +129,87 @@ async def start(client, message):
     except:
         file_id = data
         pre = ""
+
+    if data.split("-", 1)[0] == "FEND":
+        await remove_verification(message.from_user.id)
+        await add_verification(message.from_user.id, 'verified', file_id, t)
+        file_id = data.split("-", 1)[1]
+        files_ = await get_file_details(file_id)
+        if not files_:
+            try:
+                pre, file_id = ((base64.urlsafe_b64decode(
+                    data + "=" * (-len(data) % 4))).decode("ascii")).split("_", 1)
+                msg = await client.send_cached_media(
+                    chat_id=message.from_user.id,
+                    file_id=file_id,
+                    protect_content=True if pre == 'filep' else False,
+                )
+                filetype = msg.media
+                file = getattr(msg, filetype)
+                title = file.file_name
+                size = get_size(file.file_size)
+                f_caption = f"<code>{title}</code>"
+                if CUSTOM_FILE_CAPTION:
+                    try:
+                        f_caption = CUSTOM_FILE_CAPTION.format(
+                            file_name='' if title is None else title, file_size='' if size is None else size, file_caption='')
+                    except:
+                        return
+                await msg.edit_caption(f_caption)
+                return
+            except:
+                pass
+            return await message.reply('No such file exist.')
+        files = files_[0]
+        title = files.file_name
+        size = get_size(files.file_size)
+        f_caption = files.caption
+        if CUSTOM_FILE_CAPTION:
+            try:
+                f_caption = CUSTOM_FILE_CAPTION.format(
+                    file_name='' if title is None else title, file_size='' if size is None else size, file_caption='' if f_caption is None else f_caption)
+            except Exception as e:
+                logger.exception(e)
+                f_caption = f_caption
+        if f_caption is None:
+            f_caption = f"{files.file_name}"
+
+        k = await client.send_cached_media(
+            chat_id=message.from_user.id,
+            file_id=file_id,
+            caption=f_caption,
+            protect_content=True if pre == 'filep' else False,
+        )
+        sendmsglist = [k]
+        await add_sent_files(message.from_user.id, file_id)
+
+        files = await send_more_files(title)
+        if files:
+            for file in files[1:]:
+                k = await client.send_cached_media(
+                    chat_id=message.from_user.id,
+                    file_id=file.file_id,
+                    caption=f"<code>{file.file_name}</code>",
+                    protect_content=True if pre == 'filep' else False,
+                )
+                sendmsglist.append(k)
+                await add_sent_files(message.from_user.id, file.file_id)
+
+            await message.reply('𝕋𝕙𝕒𝕟𝕜 𝕐𝕠𝕦 𝔽𝕠𝕣 𝕌𝕤𝕚𝕟𝕘 𝕄𝕖 ')
+            kk = await client.send_message(
+                chat_id=message.from_user.id,
+                text="""
+                This Files Will delete in 10min Please Forward To Saved Messages folder before download
+                """)
+
+            await asyncio.sleep(600)
+
+            for k in sendmsglist:
+                await k.delete()
+            sendmsglist = []
+
+            return await kk.delete()
+
     user_stats = await get_verification(message.from_user.id)
     if user_stats is None:
         t = time.time()
@@ -145,7 +226,7 @@ async def start(client, message):
             """,
             reply_markup=InlineKeyboardMarkup(button)
         )
-    if data.split("-", 1)[0] == "REAL":
+    elif data.split("-", 1)[0] == "REAL":
         file_id = data.split("-", 1)[1]
         if (str(user_stats["stats"]) == 'unverified') and (str(user_stats["file"]) == file_id):
             file_id = data.split("-", 1)[1]

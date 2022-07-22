@@ -18,7 +18,7 @@ from utils import get_size, is_subscribed, get_poster, search_gagala, temp, get_
 from database.users_chats_db import db
 from database.ia_filterdb import Media, get_file_details, get_search_results
 from database.tvseriesfilters import add_tvseries_filter, update_tvseries_filter, getlinks, find_tvseries_filter, remove_tvseries
-from database.quickdb import remove_inst, get_ids, add_sent_files, get_verification, remove_verification, add_verification, add_inst_filter
+from database.quickdb import remove_inst, get_ids, add_sent_files, get_verification, remove_verification, add_verification
 from database.filters_mdb import (
     del_all,
     find_filter,
@@ -72,10 +72,10 @@ async def next_page(bot, query):
     fileids = [file.file_id for file in files]
     dbid = fileids[0]
     fileids = "L_I_N_K".join(fileids)
-    await add_inst_filter(dbid, fileids)
 
-    settings = await get_settings(query.message.chat.id)
-    if settings['button']:
+    user_stats = await get_verification(query.from_user.id)
+
+    if str(user_stats["stats"]) == 'verified':
         btn = [
             [
                 InlineKeyboardButton(
@@ -88,11 +88,7 @@ async def next_page(bot, query):
         btn = [
             [
                 InlineKeyboardButton(
-                    text=f"get_name(file.file_name)", callback_data=f'files#{file.file_id}'
-                ),
-                InlineKeyboardButton(
-                    text=f"{get_size(file.file_size)}",
-                    callback_data=f'files_#{file.file_id}',
+                    text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start=FEND-{file.file_id}')
                 ),
             ]
             for file in files
@@ -173,8 +169,6 @@ async def pm_next_page(bot, query):
     fileids = [file.file_id for file in files]
     dbid = fileids[0]
     fileids = "L_I_N_K".join(fileids)
-    await add_inst_filter(dbid, fileids)
-
     btn = [
         [
             InlineKeyboardButton(
@@ -937,9 +931,9 @@ async def auto_filter(client, msg, spoll=False):
     fileids = [file.file_id for file in files]
     dbid = fileids[0]
     fileids = "L_I_N_K".join(fileids)
-    await add_inst_filter(dbid, fileids)
 
-    if settings["button"]:
+    user_stats = await get_verification(message.from_user.id)
+    if str(user_stats["stats"]) == 'verified':
         btn = [
             [
                 InlineKeyboardButton(
@@ -952,12 +946,7 @@ async def auto_filter(client, msg, spoll=False):
         btn = [
             [
                 InlineKeyboardButton(
-                    text=f"{file.file_name}",
-                    callback_data=f'{pre}#{file.file_id}',
-                ),
-                InlineKeyboardButton(
-                    text=f"{get_size(file.file_size)}",
-                    callback_data=f'{pre}#{file.file_id}',
+                    text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start=FEND-{file.file_id}')
                 ),
             ]
             for file in files
@@ -1059,7 +1048,6 @@ async def pm_auto_filter(client, msg, spoll=False):
     fileids = [file.file_id for file in files]
     dbid = fileids[0]
     fileids = "L_I_N_K".join(fileids)
-    await add_inst_filter(dbid, fileids)
 
     btn = [
         [
