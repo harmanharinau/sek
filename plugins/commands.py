@@ -156,7 +156,7 @@ async def start(client, message):
             current_time = time.strftime("%D  %H:%M:%S", t)
             button = [[
                 InlineKeyboardButton(
-                    'Get Files', url=f'https://telegram.dog/SpaciousUniverseBot?start={data}')
+                    'Get Files', url=f'https://telegram.dog/SpaciousUniverseBot?start={file_id}')
             ]]
             return await message.reply(
                 text=f"""
