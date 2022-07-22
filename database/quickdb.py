@@ -96,7 +96,7 @@ async def remove_update_msg():
     mycol.delete_many({})
 
 
-async def get_verification():
+async def get_update_msg():
     mycol = mydb["updatemsg"]
     x = mycol.find_one()
     return x

@@ -11,7 +11,7 @@ from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from database.users_chats_db import db
 from database.ia_filterdb import Media
 from utils import temp
-from database.quickdb import count_sent_files, add_update_msg, remove_update_msg, get_verification
+from database.quickdb import count_sent_files, add_update_msg, remove_update_msg, get_verification, get_update_msg
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
@@ -26,7 +26,7 @@ btn = [
 @Client.on_message(filters.chat('TMWAD'))
 async def stats_channel(client, message):
     while True:
-        updates = await get_verification()
+        updates = await get_update_msg()
         await remove_update_msg()
         todaySentFiles = await count_sent_files()
         total_users = await db.total_users_count()
