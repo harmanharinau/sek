@@ -469,7 +469,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await add_verification(query.from_user.id, 'unverified', file_id, t)
             button = [[
                 InlineKeyboardButton(
-                    '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start={file_id}'))
+                    '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start=REAL-{file_id}'))
             ]]
             return await client.send_message(
                 chat_id=query.from_user.id,
@@ -505,7 +505,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await add_verification(query.from_user.id, 'verified', file_id, t)
             button = [[
                 InlineKeyboardButton(
-                    '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start={file_id}'))
+                    '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start=REAL-{file_id}'))
             ]]
             return await client.send_message(
                 chat_id=query.from_user.id,
@@ -523,7 +523,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await add_verification(query.from_user.id, 'unverified', file_id, user_stats["updat_time"])
             button = [[
                 InlineKeyboardButton(
-                    '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start={file_id}'))
+                    '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start=REAL-{file_id}'))
             ]]
             return await client.send_message(
                 chat_id=query.from_user.id,
