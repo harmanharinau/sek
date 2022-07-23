@@ -568,11 +568,21 @@ async def cb_handler(client: Client, query: CallbackQuery):
                             f_caption = f_caption
                     if f_caption is None:
                         f_caption = f"{files.file_name}"
-                    k = await client.send_cached_media(
-                        chat_id=query.from_user.id,
-                        file_id=file_id,
-                        caption=f_caption,
-                    )
+                    try:
+                        k = await client.send_cached_media(
+                            chat_id=query.from_user.id,
+                            file_id=file_id,
+                            caption=f_caption,
+                        )
+                    except FloodWait as e:
+                        await asyncio.sleep(e.x)
+                        logger.warning(f"Floodwait of {e.x} sec.")
+                        k = await client.send_cached_media(
+                            chat_id=query.from_user.id,
+                            file_id=file_id,
+                            caption=f_caption,
+                        )
+                    await asyncio.sleep(1)
                     sendmsglist.append(k)
                     await add_sent_files(query.from_user.id, file_id)
 
@@ -624,11 +634,21 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 files = await send_more_files(title)
                 if files:
                     for file in files[1:]:
-                        k = await client.send_cached_media(
-                            chat_id=query.from_user.id,
-                            file_id=file.file_id,
-                            caption=f"<code>{file.file_name}</code>",
-                        )
+                        try:
+                            k = await client.send_cached_media(
+                                chat_id=query.from_user.id,
+                                file_id=file.file_id,
+                                caption=f"<code>{file.file_name}</code>",
+                            )
+                        except FloodWait as e:
+                            await asyncio.sleep(e.x)
+                            logger.warning(f"Floodwait of {e.x} sec.")
+                            k = await client.send_cached_media(
+                                chat_id=query.from_user.id,
+                                file_id=file.file_id,
+                                caption=f"<code>{file.file_name}</code>",
+                            )
+                        await asyncio.sleep(1)
                         sendmsglist.append(k)
                         await add_sent_files(query.from_user.id, file.file_id)
 

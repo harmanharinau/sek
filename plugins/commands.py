@@ -547,11 +547,20 @@ async def start(client, message):
                         f_caption = f_caption
                 if f_caption is None:
                     f_caption = f"{files.file_name}"
-                k = await client.send_cached_media(
-                    chat_id=message.from_user.id,
-                    file_id=file_id,
-                    caption=f_caption,
-                )
+                try:
+                    k = await client.send_cached_media(
+                        chat_id=message.from_user.id,
+                        file_id=file_id,
+                        caption=f_caption,
+                    )
+                except FloodWait as e:
+                    await asyncio.sleep(e.x)
+                    logger.warning(f"Floodwait of {e.x} sec.")
+                    k = await client.send_cached_media(
+                        chat_id=message.from_user.id,
+                        file_id=file_id,
+                        caption=f_caption,
+                    )
                 sendmsglist.append(k)
                 await add_sent_files(message.from_user.id, file_id)
 
@@ -623,12 +632,23 @@ async def start(client, message):
         files = await send_more_files(title)
         if files:
             for file in files[1:]:
-                k = await client.send_cached_media(
-                    chat_id=message.from_user.id,
-                    file_id=file.file_id,
-                    caption=f"<code>{file.file_name}</code>",
-                    protect_content=True if pre == 'filep' else False,
-                )
+                try:
+                    k = await client.send_cached_media(
+                        chat_id=message.from_user.id,
+                        file_id=file.file_id,
+                        caption=f"<code>{file.file_name}</code>",
+                        protect_content=True if pre == 'filep' else False,
+                    )
+                except FloodWait as e:
+                    await asyncio.sleep(e.x)
+                    logger.warning(f"Floodwait of {e.x} sec.")
+                    k = await client.send_cached_media(
+                        chat_id=message.from_user.id,
+                        file_id=file.file_id,
+                        caption=f"<code>{file.file_name}</code>",
+                        protect_content=True if pre == 'filep' else False,
+                    )
+
                 sendmsglist.append(k)
                 await add_sent_files(message.from_user.id, file.file_id)
 
