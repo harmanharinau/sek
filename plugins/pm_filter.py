@@ -1202,9 +1202,9 @@ async def advantage_spell_chok(msg):
             ],
             [
                 InlineKeyboardButton(
-                    text="IMDB", url=f"https://www.imdb.com/find?q={name}"),
+                    text="IMDB 💠", url=f"https://www.imdb.com/find?q={name}"),
                 InlineKeyboardButton(
-                    text="Wikipedia", url=f"https://en.m.wikipedia.org/w/index.php?search={name}")
+                    text="Wikipedia 💠", url=f"https://en.m.wikipedia.org/w/index.php?search={name}")
             ]
         ]
         k = await msg.reply(
@@ -1212,7 +1212,7 @@ async def advantage_spell_chok(msg):
             reply_markup=InlineKeyboardMarkup(btns),
             disable_web_page_preview=True,
         )
-        await asyncio.sleep(8)
+        await asyncio.sleep(30)
         await k.delete()
         return
     SPELL_CHECK[msg.message_id] = movielist
