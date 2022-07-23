@@ -249,7 +249,7 @@ async def advantage_spoll_choker(bot, query):
             await auto_filter(bot, query, k)
         else:
             try:
-                k = await query.message.edit('This Movie Not Found In DataBase')
+                k = await query.message.edit('This Movie Not Found In DataBase. \nTry Request Again with correct spelling')
                 await asyncio.sleep(10)
                 await k.delete()
 
@@ -1193,7 +1193,25 @@ async def advantage_spell_chok(msg):
                   for i in gs_parsed]
     movielist = list(dict.fromkeys(movielist))  # removing duplicates
     if not movielist:
-        k = await msg.reply("I couldn't find anything related to that. Check your spelling")
+        name = msg.text
+        name = name.replace(" ", "%20")
+        btns = [
+            [
+                InlineKeyboardButton(
+                    text="Check Spelling On Google 🧩", url=f"https://www.google.com/search?q={name}")
+            ],
+            [
+                InlineKeyboardButton(
+                    text="IMDB", url=f"https://www.imdb.com/find?q={name}"),
+                InlineKeyboardButton(
+                    text="Wikipedia", url=f"https://en.m.wikipedia.org/w/index.php?search={name}")
+            ]
+        ]
+        k = await msg.reply(
+            text="I couldn't find anything related to that.Please Check your spelling",
+            reply_markup=InlineKeyboardMarkup(btns),
+            disable_web_page_preview=True,
+        )
         await asyncio.sleep(8)
         await k.delete()
         return
@@ -1272,7 +1290,10 @@ async def manual_filters(client, message, text=False):
 
 async def tvseries_filters(client, message, text=False):
     name = getseries(message.text)
-    seriess = await find_tvseries_filter(name)
+    if name:
+        seriess = await find_tvseries_filter(name)
+    else:
+        return False
 
     if seriess:
         btns = [[InlineKeyboardButton(

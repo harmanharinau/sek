@@ -330,7 +330,7 @@ def getseries(name):
     name = name.replace("tamil", "")
     name = name.replace("english", "")
     name = name.replace("web", "")
-    name = ''.join([i for i in name if not i.isdigit()])
+    # name = ''.join([i for i in name if not i.isdigit()])
     name = name.replace(" ", "")
     return name
 
