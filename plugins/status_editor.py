@@ -53,4 +53,4 @@ async def stats_channel(client, message):
         except:
             logger.exception('Some error occured!', exc_info=True)
 
-        await asyncio.sleep(86400)
+        await asyncio.sleep(43200)

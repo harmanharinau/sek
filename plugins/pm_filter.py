@@ -507,7 +507,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 reply_markup=InlineKeyboardMarkup(button)
             )
 
-        elif (time.time() - int(float(user_stats["updat_time"]))) > 86400:
+        elif (time.time() - int(float(user_stats["updat_time"]))) > 43200:
             t = time.time()
             await remove_verification(query.from_user.id)
             await add_verification(query.from_user.id, 'unverified', file_id, user_stats["updat_time"])
