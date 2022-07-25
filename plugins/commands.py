@@ -841,7 +841,7 @@ async def tmwad_update(bot, message):
     todayUsers = total_users - prev_day_total_users
     todayFiles = files - prev_day_total_files
     t = time.localtime()
-    current_time = time.strftime("%H:%M:%S", t)
+    current_time = time.strftime("%D %H:%M:%S", t)
 
     await add_update_msg(todaySentFiles, total_users, files)
 
