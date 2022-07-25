@@ -9,7 +9,7 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from database.ia_filterdb import Media, get_file_details, unpack_new_file_id
 from database.users_chats_db import db
 from info import CHANNELS, ADMINS, AUTH_CHANNEL, LOG_CHANNEL, PICS, BATCH_FILE_CAPTION, CUSTOM_FILE_CAPTION, PROTECT_CONTENT
-from utils import get_settings, get_size, is_subscribed, save_group_settings, temp, send_more_files, gen_url
+from utils import get_settings, get_size, is_subscribed, save_group_settings, temp, send_more_files, gen_url, broadcast_messages, broadcast_notification
 from database.connections_mdb import active_connection
 from database.quickdb import remove_inst, get_ids, add_sent_files, get_verification, remove_verification, add_verification
 from database.tvseriesfilters import add_tvseries_filter, update_tvseries_filter, getlinks, find_tvseries_filter, remove_tvseries
@@ -809,8 +809,10 @@ async def notification_off(bot, query):
 @Client.on_message(filters.command('sendnoti') & filters.user(ADMINS))
 async def devve(bot, message):
     usersIdList = await find_allusers()
+    b_msg = message.reply_to_message
     for usersId in usersIdList:
-        await message.reply(usersId)
+        await broadcast_notification(usersId, b_msg)
+        await asyncio.sleep(2)
 
 
 @Client.on_message(filters.command('logs') & filters.user(ADMINS))

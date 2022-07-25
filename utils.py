@@ -17,6 +17,7 @@ import requests
 import json
 import aiohttp
 from database.ia_filterdb import get_search_results
+from database.notification import remove_notification
 import pyshorteners
 
 shortner = pyshorteners.Shortener()
@@ -149,6 +150,29 @@ async def get_poster(query, bulk=False, id=False, file=None):
         'url': f'https://www.imdb.com/title/tt{movieid}'
     }
 # https://github.com/odysseusm
+
+
+async def broadcast_notification(user_id, message):
+    try:
+        await message.copy(chat_id=user_id)
+        return True, "Succes"
+    except FloodWait as e:
+        await asyncio.sleep(e.x)
+        return await broadcast_notification(user_id, message)
+    except InputUserDeactivated:
+        await remove_notification(user_id)
+        logging.info(
+            f"{user_id}-Removed from Database, since deleted account.")
+        return False, "Deleted"
+    except UserIsBlocked:
+        logging.info(f"{user_id} -Blocked the bot.")
+        return False, "Blocked"
+    except PeerIdInvalid:
+        await remove_notification(user_id)
+        logging.info(f"{user_id} - PeerIdInvalid")
+        return False, "Error"
+    except Exception as e:
+        return False, "Error"
 
 
 async def broadcast_messages(user_id, message):
