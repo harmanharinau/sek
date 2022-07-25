@@ -826,12 +826,14 @@ async def sendnotifications(bot, message):
 @Client.on_message(filters.command('tmwad') & filters.user(ADMINS))
 async def tmwad_update(bot, message):
     updates = await get_update_msg()
-    if not updates:
-        return
+    if updates:
+        await remove_update_msg()
+        prev_day_total_users = updates["totalUsers"]
+        prev_day_total_files = updates["files"]
 
-    await remove_update_msg()
-    prev_day_total_users = updates["totalUsers"]
-    prev_day_total_files = updates["files"]
+    else:
+        prev_day_total_users = 35957
+        prev_day_total_files = 598483
 
     todaySentFiles = await count_sent_files()
     total_users = await db.total_users_count()
