@@ -11,7 +11,7 @@ from database.users_chats_db import db
 from info import CHANNELS, ADMINS, AUTH_CHANNEL, LOG_CHANNEL, PICS, BATCH_FILE_CAPTION, CUSTOM_FILE_CAPTION, PROTECT_CONTENT
 from utils import get_settings, get_size, is_subscribed, save_group_settings, temp, send_more_files, gen_url, broadcast_messages, broadcast_notification
 from database.connections_mdb import active_connection
-from database.quickdb import remove_inst, get_ids, add_sent_files, get_verification, remove_verification, add_verification
+from database.quickdb import remove_inst, get_ids, add_sent_files, get_verification, remove_verification, add_verification, count_sent_files, add_update_msg, remove_update_msg, get_update_msg
 from database.tvseriesfilters import add_tvseries_filter, update_tvseries_filter, getlinks, find_tvseries_filter, remove_tvseries
 from database.notification import find_notification, remove_notification, update_notification, add_notification, find_allusers
 import re
@@ -766,7 +766,7 @@ async def devve(bot, message):
 @Client.on_message(filters.command('notification') & filters.incoming & ~filters.edited)
 async def get_notification(bot, message):
     await message.reply_text(
-        'Get Movies/Tv series On realse Time. select on or off, you can change anytime',
+        'Get Movies/ Tv series On realse Time 〽. Turned on notifications, you can change anytime',
         reply_markup=InlineKeyboardMarkup(
             [
                 [
@@ -807,12 +807,48 @@ async def notification_off(bot, query):
 
 
 @Client.on_message(filters.command('sendnoti') & filters.user(ADMINS))
-async def devve(bot, message):
+async def sendnotifications(bot, message):
     usersIdList = await find_allusers()
     b_msg = message.reply_to_message
+    if not b_msg:
+        return await message.reply(f"Reply to message")
+    count = 0
+    msg = await message.reply("Processing...⏳", quote=True)
     for usersId in usersIdList:
         await broadcast_notification(usersId, b_msg)
         await asyncio.sleep(2)
+        count += 1
+
+    await msg.delete()
+    return await message.reply(f"Succuesfully sended to {count} users")
+
+
+@Client.on_message(filters.command('tmwad') & filters.user(ADMINS))
+async def tmwad_update(bot, message):
+    updates = await get_update_msg()
+    await remove_update_msg()
+    todaySentFiles = await count_sent_files()
+    total_users = await db.total_users_count()
+    files = await Media.count_documents()
+    prev_day_total_users = updates["totalUsers"]
+    prev_day_total_files = updates["updatemsg"]
+    todayUsers = total_users - prev_day_total_users
+    todayFiles = files - prev_day_total_files
+    t = time.localtime()
+    current_time = time.strftime("%H:%M:%S", t)
+
+    await add_update_msg(todaySentFiles, total_users, files)
+
+    try:
+        await bot.edit_message_text(
+            chat_id=str('TMWAD'),
+            message_id=int(49),
+            text=script.POST_TEXT.format(
+                todaySentFiles, todayUsers, todayFiles, total_users, files, current_time)
+        )
+        return await message.reply("Update Succusfully on @TMWAD")
+    except:
+        logger.exception('Some error occured!', exc_info=True)
 
 
 @Client.on_message(filters.command('logs') & filters.user(ADMINS))
