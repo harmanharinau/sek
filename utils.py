@@ -246,6 +246,7 @@ def get_name(name):
     name = name.replace("theproffesorr", '')
     name = name.replace("primeroom", '')
     name = name.replace("team_hdt", '')
+    name = name.replace("Pulikesi_Meme", '')
     name = name.replace("telugudubbing", '')
     name = name.replace("rickychannel", '')
     name = name.replace("tif", '')
