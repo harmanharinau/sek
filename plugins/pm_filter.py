@@ -1280,8 +1280,12 @@ async def manual_filters(client, message, text=False):
 
 async def tvseries_filters(client, message, text=False):
     name = getseries(message.text)
-    if name:
+    if len(name) < 3:
+        return False
+
+    elif name:
         seriess = await find_tvseries_filter(name)
+
     else:
         return False
 
