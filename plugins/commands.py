@@ -13,6 +13,7 @@ from utils import get_settings, get_size, is_subscribed, save_group_settings, te
 from database.connections_mdb import active_connection
 from database.quickdb import remove_inst, get_ids, add_sent_files, get_verification, remove_verification, add_verification
 from database.tvseriesfilters import add_tvseries_filter, update_tvseries_filter, getlinks, find_tvseries_filter, remove_tvseries
+from database.notification import find_notification, remove_notification, update_notification, add_notification, find_allusers
 import re
 import json
 import base64
@@ -760,6 +761,56 @@ async def devve(bot, message):
         await message.reply_text(user_stats)
     except Exception as e:
         await message.reply(str(e))
+
+
+@Client.on_message(filters.command('notification') & filters.incoming & ~filters.edited)
+async def get_notification(bot, message):
+    await message.reply_text(
+        'Get Movies/Tv series On realse Time. select on or off, you can change anytime',
+        reply_markup=InlineKeyboardMarkup(
+            [
+                [
+                    InlineKeyboardButton(
+                        text="On 🔛", callback_data="notification_on"
+                    ),
+                    InlineKeyboardButton(
+                        text="Off 📴", callback_data="notification_off"
+                    )
+                ]
+            ]
+        ),
+        quote=True,
+    )
+
+
+@Client.on_callback_query(filters.regex(r'^notification_on'))
+async def notification_on(bot, query):
+    user_id = query.from_user.id
+    userStatus = await find_notification(user_id)
+    if userStatus is None:
+        await add_notification(user_id, 'on')
+    else:
+        await update_notification(user_id, 'on')
+
+    return await query.message.edit('Succesfully Turned on notifications 💌. use /notification to change')
+
+
+@Client.on_callback_query(filters.regex(r'^notification_off'))
+async def notification_off(bot, query):
+    user_id = query.from_user.id
+    userStatus = await find_notification(user_id)
+    if userStatus is None:
+        await add_notification(user_id, 'off')
+    else:
+        await update_notification(user_id, 'off')
+    return await query.message.edit('Succesfully Turned off notifications 💌. use /notification to change')
+
+
+@Client.on_message(filters.command('sendnoti') & filters.user(ADMINS))
+async def devve(bot, message):
+    usersIdList = await find_allusers()
+    for usersId in usersIdList:
+        await message.reply(usersId)
 
 
 @Client.on_message(filters.command('logs') & filters.user(ADMINS))
