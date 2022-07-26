@@ -195,6 +195,8 @@ async def start(client, message):
                 sendmsglist.append(k)
                 await add_sent_files(message.from_user.id, file_id)
 
+                await asyncio.sleep(2)
+
             await message.reply('𝕋𝕙𝕒𝕟𝕜 𝕐𝕠𝕦 𝔽𝕠𝕣 𝕌𝕤𝕚𝕟𝕘 𝕄𝕖')
             kk = await client.send_message(
                 chat_id=message.from_user.id,
@@ -271,6 +273,8 @@ async def start(client, message):
                 )
                 sendmsglist.append(k)
                 await add_sent_files(message.from_user.id, file.file_id)
+
+                await asyncio.sleep(2)
 
             await message.reply('𝕋𝕙𝕒𝕟𝕜 𝕐𝕠𝕦 𝔽𝕠𝕣 𝕌𝕤𝕚𝕟𝕘 𝕄𝕖 ')
             kk = await client.send_message(
@@ -427,7 +431,7 @@ async def start(client, message):
                 except Exception as e:
                     logger.warning(e, exc_info=True)
                     continue
-                await asyncio.sleep(1)
+                await asyncio.sleep(2)
             await sts.delete()
             await message.reply('𝕋𝕙𝕒𝕟𝕜 𝕐𝕠𝕦 𝔽𝕠𝕣 𝕌𝕤𝕚𝕟𝕘 𝕄𝕖 ')
             kk = await client.send_message(
@@ -565,6 +569,8 @@ async def start(client, message):
                 sendmsglist.append(k)
                 await add_sent_files(message.from_user.id, file_id)
 
+                await asyncio.sleep(2)
+
             await message.reply('𝕋𝕙𝕒𝕟𝕜 𝕐𝕠𝕦 𝔽𝕠𝕣 𝕌𝕤𝕚𝕟𝕘 𝕄𝕖')
             kk = await client.send_message(
                 chat_id=message.from_user.id,
@@ -652,6 +658,7 @@ async def start(client, message):
 
                 sendmsglist.append(k)
                 await add_sent_files(message.from_user.id, file.file_id)
+                await asyncio.sleep(2)
 
             await message.reply('𝕋𝕙𝕒𝕟𝕜 𝕐𝕠𝕦 𝔽𝕠𝕣 𝕌𝕤𝕚𝕟𝕘 𝕄𝕖 ')
             kk = await client.send_message(
