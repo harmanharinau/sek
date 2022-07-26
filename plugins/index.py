@@ -189,9 +189,6 @@ async def index_files_to_db(lst_msg_id, chat, msg, bot):
                     duplicate += 1
                 elif vnay == 2:
                     errors += 1
-                if mytot > 300:
-                    time.sleep(60)
-                    mytot = 0
 
         except Exception as e:
             logger.exception(e)
