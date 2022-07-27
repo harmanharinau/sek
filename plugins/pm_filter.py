@@ -590,7 +590,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 kk = await client.send_message(
                     chat_id=query.from_user.id,
                     text="""
-                    This Files Will delete in 10min Please Forward To Saved Messages folder before download
+                    This Files Will delete in 10min Please Forward To Saved Messages folder before download. \n\nTurned On /notification for get new movie|tv Serieses
                     """)
 
                 await asyncio.sleep(600)
@@ -656,7 +656,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                     kk = await client.send_message(
                         chat_id=query.from_user.id,
                         text="""
-                        This Files Will delete in 10min Please Forward To Saved Messages folder before download
+                        This Files Will delete in 10min Please Forward To Saved Messages folder before download. \n\nTurned On /notification for get new movie|tv Serieses
                         """)
                     await asyncio.sleep(600)
                     for k in sendmsglist:
