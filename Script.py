@@ -123,6 +123,8 @@ And you need to update verification expire within 24 hours.
 
     - Added Delete Timer ( You need to forward files to your `save message chat` before downloading ) 
 
+    - Added `/notification` Feature. it's update you new movie / Tv series ( For get notification you should turned on notification | go to bot and send /notification command ) [ Update 7/26 ]
+
 Add Bae Suzy To Your Group & Enjoy 
 
 @SpaciousUniverseBot | @TMWAD

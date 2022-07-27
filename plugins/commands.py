@@ -326,6 +326,23 @@ async def start(client, message):
                 """,
                 reply_markup=InlineKeyboardMarkup(button)
             )
+        elif data.split("-")[1] == "BATCH":
+            file_id = data.split("-", 2)[2]
+            t = time.time()
+            await remove_verification(message.from_user.id)
+            await add_verification(message.from_user.id, 'verified', file_id, t)
+            t = time.localtime(t+86400)
+            current_time = time.strftime("%D  %H:%M:%S", t)
+            button = [[
+                InlineKeyboardButton(
+                    'Get Files', url=f'https://telegram.dog/SpaciousUniverseBot?start={file_id}')
+            ]]
+            return await message.reply(
+                text=f"""
+                <p>you'r verified Succusfully. access until {current_time}</p>
+                """,
+                reply_markup=InlineKeyboardMarkup(button)
+            )
         else:
             t = time.time()
             await remove_verification(message.from_user.id)
