@@ -137,7 +137,7 @@ async def start(client, message):
         file_id = data.split("-", 1)[1]
         await add_verification(message.from_user.id, 'verified', file_id, t)
 
-        tt = time.localtime(t+86400)
+        tt = time.localtime(t+43200)
         current_time = time.strftime("%D  %H:%M:%S", tt)
         await message.reply(
             text=f"""
@@ -314,7 +314,7 @@ async def start(client, message):
             t = time.time()
             await remove_verification(message.from_user.id)
             await add_verification(message.from_user.id, 'verified', file_id, t)
-            t = time.localtime(t+86400)
+            t = time.localtime(t+43200)
             current_time = time.strftime("%D  %H:%M:%S", t)
             button = [[
                 InlineKeyboardButton(
@@ -331,7 +331,7 @@ async def start(client, message):
             t = time.time()
             await remove_verification(message.from_user.id)
             await add_verification(message.from_user.id, 'verified', file_id, t)
-            t = time.localtime(t+86400)
+            t = time.localtime(t+43200)
             current_time = time.strftime("%D  %H:%M:%S", t)
             button = [[
                 InlineKeyboardButton(
@@ -347,7 +347,7 @@ async def start(client, message):
             t = time.time()
             await remove_verification(message.from_user.id)
             await add_verification(message.from_user.id, 'unverified', file_id, t)
-            t = time.localtime(t+86400)
+            t = time.localtime(t+43200)
             current_time = time.strftime("%D  %H:%M:%S", t)
             button = [[
                 InlineKeyboardButton(
