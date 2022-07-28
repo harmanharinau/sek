@@ -856,14 +856,13 @@ async def tmwad_update(bot, message):
         prev_day_total_files = updates["files"]
 
     else:
-        prev_day_total_users = 35957
-        prev_day_total_files = 598483
+        return await message.reply("get_update_msg() Not Support")
 
     todaySentFiles = await count_sent_files()
     total_users = await db.total_users_count()
     files = await Media.count_documents()
 
-    todayUsers = total_users - prev_day_total_users
+    todayUsers = int(total_users) - int(prev_day_total_users)
     todayFiles = files - prev_day_total_files
     t = time.localtime()
     current_time = time.strftime("%D %H:%M:%S", t)
