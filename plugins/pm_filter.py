@@ -652,7 +652,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                         sendmsglist.append(k)
                         await add_sent_files(query.from_user.id, file.file_id)
 
-                    await query.answer('𝕋𝕙𝕒𝕟𝕜 𝕐𝕠𝕦 𝔽𝕠𝕣 𝕌𝕤𝕚𝕟𝕘 𝕄𝕖 ')
+                    await query.answer("𝕋𝕙𝕒𝕟𝕜 𝕐𝕠𝕦 𝔽𝕠𝕣 𝕌𝕤𝕚𝕟𝕘 𝕄𝕖 \n\n⭐Rate Me: <a href='https://t.me/tlgrmcbot?start=spaciousuniversebot-review'>Here</a>")
                     kk = await client.send_message(
                         chat_id=query.from_user.id,
                         text="""
