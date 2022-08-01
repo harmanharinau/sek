@@ -856,7 +856,7 @@ async def tmwad_update(bot, message):
         prev_day_total_files = updates["files"]
 
     else:
-        return await message.reply("get_update_msg() Not Support")
+        return await message.reply(updates)
 
     todaySentFiles = await count_sent_files()
     total_users = await db.total_users_count()
