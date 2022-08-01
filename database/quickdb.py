@@ -80,7 +80,7 @@ async def get_verification(user_id):
         return user_dic
 
 
-async def add_update_msg(todaySentFiles, total_users, files):
+async def add_update_msg(total_users, files):
     mycol = mydb["updatemsg"]
     mydict = {"totalUsers": str(
         total_users), "files": str(files)}

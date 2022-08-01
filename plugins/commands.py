@@ -850,7 +850,7 @@ async def sendnotifications(bot, message):
 @Client.on_message(filters.command('tmwad') & filters.user(ADMINS))
 async def tmwad_update(bot, message):
     updates = await get_update_msg()
-    if updates:
+    if updates is not None:
         await remove_update_msg()
         prev_day_total_users = updates["totalUsers"]
         prev_day_total_files = updates["files"]
@@ -867,7 +867,7 @@ async def tmwad_update(bot, message):
     t = time.localtime()
     current_time = time.strftime("%D %H:%M:%S", t)
 
-    await add_update_msg(todaySentFiles, total_users, files)
+    await add_update_msg(total_users, files)
 
     try:
         await bot.edit_message_text(
