@@ -98,5 +98,5 @@ async def remove_update_msg():
 
 async def get_update_msg():
     mycol = mydb["updatemsg"]
-    x = mycol.find_one()
-    return x
+    for x in mycol.find():
+        return x
