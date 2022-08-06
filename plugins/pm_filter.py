@@ -33,14 +33,14 @@ BUTTONS = {}
 SPELL_CHECK = {}
 
 
-@Client.on_message(filters.group & filters.text & ~filters.edited & filters.incoming)
+@Client.on_message(filters.group & filters.text & filters.incoming)
 async def give_filter(client, message):
     await tvseries_filters(client, message)
     await auto_filter(client, message)
     await manual_filters(client, message)
 
 
-@Client.on_message(filters.private & filters.text & ~filters.edited & filters.incoming)
+@Client.on_message(filters.private & filters.text & filters.incoming)
 async def pm_give_filter(client, message):
     await pm_auto_filter(client, message)
     await tvseries_filters(client, message)
