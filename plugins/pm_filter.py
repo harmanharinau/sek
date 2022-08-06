@@ -33,14 +33,14 @@ BUTTONS = {}
 SPELL_CHECK = {}
 
 
-@Client.on_message(filters.group & filters.text & ~filters.edited & filters.incoming)
+@Client.on_message(filters.group & filters.text & filters.incoming)
 async def give_filter(client, message):
     await tvseries_filters(client, message)
     await auto_filter(client, message)
     await manual_filters(client, message)
 
 
-@Client.on_message(filters.private & filters.text & ~filters.edited & filters.incoming)
+@Client.on_message(filters.private & filters.text & filters.incoming)
 async def pm_give_filter(client, message):
     await pm_auto_filter(client, message)
     await tvseries_filters(client, message)
@@ -233,7 +233,7 @@ async def advantage_spoll_choker(bot, query):
     if movie_ == "close_spellcheck":
         return await query.message.delete()
     try:
-        movies = SPELL_CHECK.get(query.message.reply_to_message.message_id)
+        movies = SPELL_CHECK.get(query.message.reply_to_message.id)
     except:
         return await query.answer('Something went wrong...')
 
@@ -719,7 +719,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             text=script.START_TXT.format(
                 query.from_user.mention, temp.U_NAME, temp.B_NAME),
             reply_markup=reply_markup,
-            parse_mode='html'
+
         )
         await query.answer('Piracy Is Crime')
     elif query.data == "help":
@@ -738,7 +738,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         await query.message.edit_text(
             text=script.HELP_TXT.format(query.from_user.mention),
             reply_markup=reply_markup,
-            parse_mode='html'
+
         )
     elif query.data == "about":
         buttons = [[
@@ -752,7 +752,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         await query.message.edit_text(
             text=script.ABOUT_TXT.format(temp.B_NAME),
             reply_markup=reply_markup,
-            parse_mode='html'
+
         )
     elif query.data == "source":
         buttons = [[
@@ -762,7 +762,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         await query.message.edit_text(
             text=script.SOURCE_TXT,
             reply_markup=reply_markup,
-            parse_mode='html'
+
         )
     elif query.data == "manuelfilter":
         buttons = [[
@@ -773,7 +773,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         await query.message.edit_text(
             text=script.MANUELFILTER_TXT,
             reply_markup=reply_markup,
-            parse_mode='html'
+
         )
     elif query.data == "button":
         buttons = [[
@@ -783,7 +783,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         await query.message.edit_text(
             text=script.BUTTON_TXT,
             reply_markup=reply_markup,
-            parse_mode='html'
+
         )
     elif query.data == "autofilter":
         buttons = [[
@@ -793,7 +793,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         await query.message.edit_text(
             text=script.AUTOFILTER_TXT,
             reply_markup=reply_markup,
-            parse_mode='html'
+
         )
     elif query.data == "coct":
         buttons = [[
@@ -803,7 +803,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         await query.message.edit_text(
             text=script.CONNECTION_TXT,
             reply_markup=reply_markup,
-            parse_mode='html'
+
         )
     elif query.data == "extra":
         buttons = [[
@@ -814,7 +814,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         await query.message.edit_text(
             text=script.EXTRAMOD_TXT,
             reply_markup=reply_markup,
-            parse_mode='html'
+
         )
     elif query.data == "admin":
         buttons = [[
@@ -824,7 +824,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         await query.message.edit_text(
             text=script.ADMIN_TXT,
             reply_markup=reply_markup,
-            parse_mode='html'
+
         )
     elif query.data == "stats":
         buttons = [[
@@ -842,7 +842,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         await query.message.edit_text(
             text=script.STATUS_TXT.format(total, users, chats, monsize, free),
             reply_markup=reply_markup,
-            parse_mode='html'
+
         )
     elif query.data == "rfrsh":
         await query.answer("Fetching MongoDb DataBase")
@@ -861,7 +861,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         await query.message.edit_text(
             text=script.STATUS_TXT.format(total, users, chats, monsize, free),
             reply_markup=reply_markup,
-            parse_mode='html'
+
         )
     elif query.data.startswith("setgs"):
         ident, set_type, status, grp_id = query.data.split("#")
@@ -978,7 +978,7 @@ async def auto_filter(client, msg, spoll=False):
                    )
 
     if offset != "":
-        key = f"{message.chat.id}-{message.message_id}"
+        key = f"{message.chat.id}-{message.id}"
         BUTTONS[key] = search
         req = message.from_user.id if message.from_user else 0
         btn.append(
@@ -1076,7 +1076,7 @@ async def pm_auto_filter(client, msg, spoll=False):
     ]
 
     if offset != "":
-        key = f"{message.chat.id}-{message.message_id}"
+        key = f"{message.chat.id}-{message.id}"
         BUTTONS[key] = search
         req = message.from_user.id if message.from_user else 0
         btn.append(
@@ -1215,7 +1215,7 @@ async def advantage_spell_chok(msg):
         await asyncio.sleep(30)
         await k.delete()
         return
-    SPELL_CHECK[msg.message_id] = movielist
+    SPELL_CHECK[msg.id] = movielist
     btn = [[
         InlineKeyboardButton(
             text=movie.strip(),
@@ -1231,7 +1231,7 @@ async def advantage_spell_chok(msg):
 async def manual_filters(client, message, text=False):
     group_id = message.chat.id
     name = text or message.text
-    reply_id = message.reply_to_message.message_id if message.reply_to_message else message.message_id
+    reply_id = message.reply_to_message.id if message.reply_to_message else message.id
     keywords = await get_filters(group_id)
     for keyword in reversed(sorted(keywords, key=len)):
         pattern = r"( |^|[^\w])" + re.escape(keyword) + r"( |$|[^\w])"

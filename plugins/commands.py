@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 BATCH_FILES = {}
 
 
-@Client.on_message(filters.command("start") & filters.incoming & ~filters.edited)
+@Client.on_message(filters.command("start") & filters.incoming)
 async def start(client, message):
 
     if message.chat.type in ['group', 'supergroup']:
@@ -66,19 +66,13 @@ async def start(client, message):
             caption=script.START_TXT.format(
                 message.from_user.mention, temp.U_NAME, temp.B_NAME),
             reply_markup=reply_markup,
-            parse_mode='html'
         )
         return
     if AUTH_CHANNEL and not await is_subscribed(client, message):
-        try:
-            invite_link = await client.create_chat_invite_link(int(AUTH_CHANNEL))
-        except ChatAdminRequired:
-            logger.error("Make sure Bot is admin in Forcesub channel")
-            return
         btn = [
             [
                 InlineKeyboardButton(
-                    "🤖 Join Updates Channel", url=invite_link.invite_link
+                    "🤖 Join Updates Channel", url="https://t.me/TMWAD"
                 )
             ]
         ]
@@ -120,7 +114,7 @@ async def start(client, message):
             caption=script.START_TXT.format(
                 message.from_user.mention, temp.U_NAME, temp.B_NAME),
             reply_markup=reply_markup,
-            parse_mode='html'
+
         )
         return
 
@@ -693,7 +687,7 @@ async def start(client, message):
             return await kk.delete()
 
 
-@Client.on_message(filters.command("addseries") & filters.incoming & ~filters.edited & filters.user(ADMINS))
+@Client.on_message(filters.command("addseries") & filters.incoming & filters.user(ADMINS))
 async def tvseries_adder(bot, message):
     sts = await message.reply("Checking Your Request...")
     if " " not in message.text:
@@ -709,7 +703,7 @@ async def tvseries_adder(bot, message):
     await sts.delete()
 
 
-@Client.on_message(filters.command("updateseries") & filters.incoming & ~filters.edited & filters.user(ADMINS))
+@Client.on_message(filters.command("updateseries") & filters.incoming & filters.user(ADMINS))
 async def tvseries_updater(bot, message):
     sts = await message.reply("Checking Your Request...")
     if " " not in message.text:
@@ -725,7 +719,7 @@ async def tvseries_updater(bot, message):
     await sts.delete()
 
 
-@Client.on_message(filters.command("removeseries") & filters.incoming & ~filters.edited & filters.user(ADMINS))
+@Client.on_message(filters.command("removeseries") & filters.incoming & filters.user(ADMINS))
 async def tvseries_remover(bot, message):
     sts = await message.reply("Checking Your Request...")
     if " " not in message.text:
@@ -741,7 +735,7 @@ async def tvseries_remover(bot, message):
     await sts.delete()
 
 
-@Client.on_message(filters.command("alltvs") & filters.incoming & ~filters.edited)
+@Client.on_message(filters.command("alltvs") & filters.incoming)
 async def tvseries_get(bot, message):
     k = await getlinks()
     await message.reply(k)
@@ -787,7 +781,7 @@ async def devve(bot, message):
         await message.reply(str(e))
 
 
-@Client.on_message(filters.command('notification') & filters.incoming & ~filters.edited)
+@Client.on_message(filters.command('notification') & filters.incoming)
 async def get_notification(bot, message):
     await message.reply_text(
         'Get Movies/ Tv series On realse Time 〽. Turned on notifications, you can change anytime',
@@ -1076,7 +1070,7 @@ async def settings(client, message):
             reply_markup=reply_markup,
             disable_web_page_preview=True,
             parse_mode="html",
-            reply_to_message_id=message.message_id
+            reply_to_message_id=message.id
         )
 
 
