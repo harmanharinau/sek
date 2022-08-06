@@ -159,7 +159,7 @@ async def gen_invite(bot, message):
     chat = message.command[1]
     try:
         chat = int(chat)
-    except:
+    except Exception:
         return await message.reply('Give Me A Valid Chat ID')
     try:
         link = await bot.create_chat_invite_link(chat)
@@ -171,7 +171,6 @@ async def gen_invite(bot, message):
 
 @Client.on_message(filters.command('ban') & filters.user(ADMINS))
 async def ban_a_user(bot, message):
-    # https://t.me/GetTGLink/4185
     if len(message.command) == 1:
         return await message.reply('Give me a user id / username')
     r = message.text.split(None)
@@ -214,14 +213,13 @@ async def unban_a_user(bot, message):
     else:
         chat = message.command[1]
         reason = "No reason Provided"
-    try:
-        chat = int(chat)
-    except:
-        pass
+        
+    chat = int(chat)
     try:
         k = await bot.get_users(chat)
     except PeerIdInvalid:
         return await message.reply("This is an invalid user, make sure ia have met him before.")
+
     except IndexError:
         return await message.reply("Thismight be a channel, make sure its a user.")
     except Exception as e:
