@@ -92,8 +92,7 @@ async def start(client, message):
         await client.send_message(
             chat_id=message.from_user.id,
             text="**Please Join My Updates Channel to use this Bot!**",
-            reply_markup=InlineKeyboardMarkup(btn),
-            parse_mode="markdown"
+            reply_markup=InlineKeyboardMarkup(btn)
         )
         return
     if len(message.command) == 2 and message.command[1] in ["subscribe", "error", "okay", "help"]:
