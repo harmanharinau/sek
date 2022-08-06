@@ -45,11 +45,11 @@ async def index_files(bot, query):
 
 @Client.on_message(filters.forwarded & filters.private & filters.incoming)
 async def send_for_index(bot, message):
-    if message.forward_from_chat.type != 'CHANNEL':
+    if message.forward_from_chat["type"] != "ChatType.CHANNEL":
         return await message.reply(f"{message.forward_from_chat} {message.forward_from_chat.type}")
 
     last_msg_id = message.forward_from_message_id
-    chat_id = message.forward_from_chat.username or message.forward_from_chat.id
+    chat_id = message.forward_from_chat["username"] or message.forward_from_chat["id"]
     await message.reply(f"{message.forward_from_chat.type}, {last_msg_id}, {chat_id}")
     try:
         await bot.get_chat(chat_id)
