@@ -106,7 +106,7 @@ async def send_for_index(bot, message):
 async def index_files_to_db(lst_msg_id, chat, msg, bot):
     # sourcery skip: low-code-quality
     errors, total_files, duplicate, deleted, no_media, unsupported, current = 0, 0, 0, 0, 0, 0, 0
-    await msg.edit(lst_msg_id)
+    msg_id = lst_msg_id
     try:
         for msgs in range(abs(lst_msg_id)):
             current += 1
@@ -117,7 +117,7 @@ async def index_files_to_db(lst_msg_id, chat, msg, bot):
                 await msg.edit_text(
                     text=f"Total messages fetched: <code>{current}</code>\nTotal messages saved: <code>{total_files}</code>\nDuplicate Files Skipped: <code>{duplicate}</code>\nDeleted Messages Skipped: <code>{deleted}</code>\nNon-Media messages skipped: <code>{no_media + unsupported}</code>(Unsupported Media - `{unsupported}` )\nErrors Occurred: <code>{errors}</code>",
                     reply_markup=reply)
-            message = await bot.get_messages(chat, msgs)
+            message = await bot.get_messages(chat, msg_id)
             if message.empty or not message.media:
                 no_media += 1
                 continue
@@ -140,6 +140,7 @@ async def index_files_to_db(lst_msg_id, chat, msg, bot):
                 errors += 1
 
             msgs += 1
+            msg_id -= 1
 
     except Exception as e:
         logger.exception(e)
