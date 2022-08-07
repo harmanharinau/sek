@@ -104,26 +104,49 @@ async def send_for_index(bot, message):
 
 
 async def index_files_to_db(lst_msg_id, chat, msg, bot):
-    errors, total_files, duplicate, deleted, no_media, unsupported = 0, 0, 0, 0, 0, 0
+    # sourcery skip: low-code-quality
+    errors, total_files, duplicate, deleted, no_media, unsupported, current = 0, 0, 0, 0, 0, 0, 0
     await msg.edit(lst_msg_id)
     try:
         for msgs in range(abs(lst_msg_id)):
+            current += 1
+            if current % 20 == 0:
+                can = [[InlineKeyboardButton(
+                    'Cancel', callback_data='index_cancel')]]
+                reply = InlineKeyboardMarkup(can)
+                await msg.edit_text(
+                    text=f"Total messages fetched: <code>{current}</code>\nTotal messages saved: <code>{total_files}</code>\nDuplicate Files Skipped: <code>{duplicate}</code>\nDeleted Messages Skipped: <code>{deleted}</code>\nNon-Media messages skipped: <code>{no_media + unsupported}</code>(Unsupported Media - `{unsupported}` )\nErrors Occurred: <code>{errors}</code>",
+                    reply_markup=reply)
             message = await bot.get_messages(chat, lst_msg_id)
             if message.empty:
                 no_media += 1
+                continue
+
+            elif not message.media:
+                no_media += 1
+                continue
+
+            elif message.media not in ['audio', 'video', 'document']:
+                unsupported += 1
                 continue
             for file_type in ("document", "video", "audio"):
                 media = getattr(message, file_type, None)
 
                 if not media:
                     unsupported += 1
-                    await msg.edit(f"unsupported files: {unsupported}")
                     continue
 
                 media.file_type = message.media
                 media.caption = message.caption
                 aynav, vnay = await save_file(media)
-                await msg.edit(f"{aynav} {vnay}")
+
+                if aynav:
+                    total_files += 1
+                elif vnay == 0:
+                    duplicate += 1
+                elif vnay == 2:
+                    errors += 1
+
             msgs += 1
 
     except Exception as e:
