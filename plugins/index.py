@@ -51,12 +51,9 @@ async def index_files(bot, query):
 
 @Client.on_message(filters.forwarded & filters.private & filters.incoming)
 async def send_for_index(bot, message):
-    # sourcery skip: remove-unnecessary-else, swap-if-else-branches
-    if message.forward_from_chat.type == 'channel':
-        last_msg_id = message.forward_from_message_id
-        chat_id = message.forward_from_chat.username or message.forward_from_chat.id
-    else:
-        return await message.reply(message.forward_from_chat.type)
+    last_msg_id = message.forward_from_message_id
+    chat_id = message.forward_from_chat.id
+    await message.reply(last_msg_id, last_msg_id)
     try:
         await bot.get_chat(chat_id)
     except ChannelInvalid:
