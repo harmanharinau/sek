@@ -41,7 +41,7 @@ async def gen_link_s(bot, message):
 
 
 @Client.on_message(filters.command(['batch', 'pbatch']) & filters.create(allowed))
-async def gen_link_batch(bot, message):
+async def gen_link_batch(bot, message):  # sourcery skip: low-code-quality
     if " " not in message.text:
         return await message.reply("Use correct format.\nExample <code>/batch https://t.me/TeamEvamaria/10 https://t.me/TeamEvamaria/20</code>.")
     links = message.text.strip().split(" ")
@@ -115,12 +115,12 @@ async def gen_link_batch(bot, message):
 
                 og_msg += 1
                 outlist.append(file)
-        except:
+        except Exception:
             pass
         if not og_msg % 20:
             try:
                 await sts.edit(FRMT.format(total=l_msg_id-f_msg_id, current=tot, rem=((l_msg_id-f_msg_id) - tot), sts="Saving Messages"))
-            except:
+            except Exception:
                 pass
     with open(f"batchmode_{message.from_user.id}.json", "w+") as out:
         json.dump(outlist, out)
