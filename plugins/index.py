@@ -107,8 +107,7 @@ async def index_files_to_db(lst_msg_id, chat, msg, bot):
     errors, total_files, duplicate, deleted, no_media, unsupported = 0, 0, 0, 0, 0, 0
     await msg.edit(lst_msg_id)
     try:
-        for _ in range(abs(lst_msg_id)):
-            await msg.edit(_)
+        for msgs in range(abs(lst_msg_id)):
             message = await bot.get_messages(chat, lst_msg_id)
             if message.empty:
                 no_media += 1
@@ -122,7 +121,7 @@ async def index_files_to_db(lst_msg_id, chat, msg, bot):
             media.caption = message.caption
             aynav, vnay = await save_file(media)
             await msg.edit(aynav, vnay)
-            lst_msg_id += 1
+            msgs += 1
 
     except Exception as e:
         logger.exception(e)
