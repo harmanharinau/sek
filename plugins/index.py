@@ -111,7 +111,8 @@ async def index_files_to_db(lst_msg_id, chat, msg, bot):
             if message.empty:
                 no_media += 1
                 continue
-            media = getattr(message, message.media, None)
+            for file_type in ("document", "video", "audio"):
+                media = getattr(message, file_type, None)
             if not media:
                 unsupported += 1
                 continue
