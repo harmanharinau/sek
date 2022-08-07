@@ -122,9 +122,9 @@ async def index_files_to_db(lst_msg_id, chat, msg, bot):
                 no_media += 1
                 continue
 
-            elif message.media not in ['video', 'document']:
+            elif message.media not in ['video', 'document', 'DOCUMENT', 'VIDEO']:
                 unsupported += 1
-                await msg.edit(message.media)
+                await msg.edit(f"{msgs} {message.media}")
                 continue
 
             media = getattr(message, message.media, None)
