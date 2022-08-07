@@ -114,13 +114,16 @@ async def index_files_to_db(lst_msg_id, chat, msg, bot):
                 continue
             for file_type in ("document", "video", "audio"):
                 media = getattr(message, file_type, None)
-            if not media:
-                unsupported += 1
-                continue
-            media.file_type = message.media
-            media.caption = message.caption
-            aynav, vnay = await save_file(media)
-            await msg.edit(aynav, vnay)
+
+                if not media:
+                    unsupported += 1
+                    await msg.edit(f"unsupported files: {unsupported}")
+                    continue
+
+                media.file_type = message.media
+                media.caption = message.caption
+                aynav, vnay = await save_file(media)
+                await msg.edit(aynav, vnay)
             msgs += 1
 
     except Exception as e:
