@@ -105,8 +105,10 @@ async def send_for_index(bot, message):
 
 async def index_files_to_db(lst_msg_id, chat, msg, bot):
     errors, total_files, duplicate, deleted, no_media, unsupported = 0, 0, 0, 0, 0, 0
+    await msg.edit(lst_msg_id)
     try:
         for _ in range(abs(lst_msg_id)):
+            await msg.edit(_)
             message = await bot.get_messages(chat, lst_msg_id)
             if message.empty:
                 no_media += 1
