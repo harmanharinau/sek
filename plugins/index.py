@@ -1,5 +1,7 @@
+from distutils.log import error
 import logging
 import asyncio
+from queue import Empty
 from pyrogram import Client, filters
 from pyrogram.errors import FloodWait
 from pyrogram.errors.exceptions.bad_request_400 import ChannelInvalid, ChatAdminRequired, UsernameInvalid, UsernameNotModified
@@ -102,30 +104,18 @@ async def send_for_index(bot, message):
 
 
 async def index_files_to_db(lst_msg_id, chat, msg, bot):
-    total_files, duplicate, errors, deleted, no_media, unsupported = 0, 0, 0, 0, 0, 0
-
+    errors, total_files, duplicate, deleted, no_media, unsupported = 0, 0, 0, 0, 0, 0
     try:
         for _ in range(abs(lst_msg_id)):
-            message = bot.get_messages(chat, lst_msg_id)
-            if not message.media:
+            message = await bot.get_messages(chat, lst_msg_id)
+            if message.empty:
                 no_media += 1
-                continue
-            elif message.media not in ['audio', 'video', 'document']:
+            media = getattr(message, message.media.value)
+            if message.media.value not in ("document", "video"):
                 unsupported += 1
                 continue
-            media = getattr(message, message.media, None)
-            if not media:
-                unsupported += 1
-                continue
-            media.file_type = message.media
-            media.caption = message.caption
-            aynav, vnay = await save_file(media)
-            if aynav:
-                total_files += 1
-            elif vnay == 0:
-                duplicate += 1
-            elif vnay == 2:
-                errors += 1
+
+            await save_file(media)
 
     except Exception as e:
         logger.exception(e)
