@@ -1,6 +1,5 @@
 import logging
 import asyncio
-from msilib.schema import Extension
 from pyrogram import Client, filters
 from pyrogram.errors import FloodWait
 from pyrogram.errors.exceptions.bad_request_400 import ChannelInvalid, ChatAdminRequired, UsernameInvalid, UsernameNotModified
