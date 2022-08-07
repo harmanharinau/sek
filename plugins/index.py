@@ -119,6 +119,8 @@ async def index_files_to_db(lst_msg_id, chat, msg, bot):
             media.file_type = message.media
             media.caption = message.caption
             aynav, vnay = await save_file(media)
+            await msg.edit(aynav, vnay)
+            lst_msg_id += 1
 
     except Exception as e:
         logger.exception(e)
