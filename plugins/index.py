@@ -110,12 +110,14 @@ async def index_files_to_db(lst_msg_id, chat, msg, bot):
             message = await bot.get_messages(chat, lst_msg_id)
             if message.empty:
                 no_media += 1
-            media = getattr(message, message.media.value)
-            if message.media.value not in ("document", "video"):
+                continue
+            media = getattr(message, message.media, None)
+            if not media:
                 unsupported += 1
                 continue
-
-            await save_file(media)
+            media.file_type = message.media
+            media.caption = message.caption
+            aynav, vnay = await save_file(media)
 
     except Exception as e:
         logger.exception(e)
