@@ -1,5 +1,6 @@
 import logging
 import asyncio
+from msilib.schema import Extension
 from pyrogram import Client, filters
 from pyrogram.errors import FloodWait
 from pyrogram.errors.exceptions.bad_request_400 import ChannelInvalid, ChatAdminRequired, UsernameInvalid, UsernameNotModified
@@ -51,9 +52,14 @@ async def index_files(bot, query):
 
 @Client.on_message(filters.forwarded & filters.private & filters.incoming)
 async def send_for_index(bot, message):
-    last_msg_id = message.forward_from_message_id
-    chat_id = message.forward_from_chat.id
-    await message.reply(last_msg_id, last_msg_id)
+    try:
+        last_msg_id = message.forward_from_message_id
+        chat_id = message.forward_from_chat.id
+
+    except Exception as e:
+        logger.exception(e)
+        return await message.reply(f'Errors - {e}')
+
     try:
         await bot.get_chat(chat_id)
     except ChannelInvalid:
@@ -134,7 +140,7 @@ async def index_files_to_db(lst_msg_id, chat, msg, bot):
         try:
             current = temp.CURRENT
             temp.CANCEL = False
-            async for message in bot.iter_messages(chat, lst_msg_id, temp.CURRENT):
+            async for message in bot.get_messages(chat, lst_msg_id, temp.CURRENT):
                 if temp.CANCEL:
                     await msg.edit(f"Successfully Cancelled!!\n\nSaved <code>{total_files}</code> files to dataBase!\nDuplicate Files Skipped: <code>{duplicate}</code>\nDeleted Messages Skipped: <code>{deleted}</code>\nNon-Media messages skipped: <code>{no_media + unsupported}</code>(Unsupported Media - `{unsupported}` )\nErrors Occurred: <code>{errors}</code>")
                     break
