@@ -105,7 +105,7 @@ async def index_files_to_db(lst_msg_id, chat, msg, bot):
     total_files, duplicate, errors, deleted, no_media, unsupported = 0, 0, 0, 0, 0, 0
 
     try:
-        for _ in int(lst_msg_id):
+        for _ in range(abs(lst_msg_id)):
             message = bot.get_messages(chat, lst_msg_id)
             if message.empty:
                 deleted += 1
