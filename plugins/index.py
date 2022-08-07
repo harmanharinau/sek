@@ -107,10 +107,7 @@ async def index_files_to_db(lst_msg_id, chat, msg, bot):
     try:
         for _ in range(abs(lst_msg_id)):
             message = bot.get_messages(chat, lst_msg_id)
-            if message.empty:
-                deleted += 1
-                continue
-            elif not message.media:
+            if not message.media:
                 no_media += 1
                 continue
             elif message.media not in ['audio', 'video', 'document']:
