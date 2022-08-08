@@ -562,7 +562,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
 
             try:
                 if AUTH_CHANNEL and not await is_subscribed(client, query):
-                    return await query.answer(url=f"https://t.me/{temp.U_NAME}?start={ident}_{file_id}")
+                    return await query.answer(url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start=REAL-{file_id}'))
 
                 k = await client.send_cached_media(
                     chat_id=query.from_user.id,
@@ -608,9 +608,9 @@ async def cb_handler(client: Client, query: CallbackQuery):
             except UserIsBlocked:
                 await query.answer('Unblock the bot!', show_alert=True)
             except PeerIdInvalid:
-                await query.answer(url=f"https://t.me/{temp.U_NAME}?start={ident}_{file_id}")
+                await query.answer(url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start=REAL-{file_id}'))
             except Exception as e:
-                await query.answer(url=f"https://t.me/{temp.U_NAME}?start={ident}_{file_id}")
+                await query.answer(url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start=REAL-{file_id}'))
 
     elif query.data.startswith("checksub"):
         if AUTH_CHANNEL and not await is_subscribed(client, query):
