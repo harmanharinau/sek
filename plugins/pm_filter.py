@@ -46,7 +46,7 @@ async def pm_give_filter(client, message):
     await tvseries_filters(client, message)
 
 
-@Client.on_callback_query(filters.regex(r"^next"))
+@Client.on_callback_query(filters.regex("^next"))
 async def next_page(bot, query):
     ident, req, key, offset = query.data.split("_")
     if int(req) not in [query.from_user.id, 0]:
@@ -58,49 +58,33 @@ async def next_page(bot, query):
     search = BUTTONS.get(key)
     if not search:
         await query.answer("You are using one of my old messages, please send the request again.", show_alert=True)
-        return
 
+        return
     files, n_offset, total = await get_search_results(search, offset=offset, filter=True)
+
     try:
         n_offset = int(n_offset)
-    except:
+    except Exception:
         n_offset = 0
-
     if not files:
         return
-
     fileids = [file.file_id for file in files]
     dbid = fileids[0]
     fileids = "L_I_N_K".join(fileids)
-
     user_stats = await get_verification(query.from_user.id)
-
     if user_stats is None:
-        btn = [
-            [
-                InlineKeyboardButton(
-                    text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start=FEND-{file.file_id}')
-                ),
-            ]
-            for file in files
-        ]
-        btn.insert(0,
-                   [InlineKeyboardButton(
-                       "◈ All Files ◈", url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start=FEND-{dbid}'))]
-                   )
+        btn = [[InlineKeyboardButton(text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", url=gen_url(
+            f'https://telegram.dog/SpaciousUniverseBot?start=FEND-{file.file_id}'))] for file in files]
+
+        btn.insert(0, [InlineKeyboardButton("◈ All Files ◈", url=gen_url(
+            f'https://telegram.dog/SpaciousUniverseBot?start=FEND-{dbid}'))])
+
     else:
-        btn = [
-            [
-                InlineKeyboardButton(
-                    text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", callback_data=f'gpfiles#{file.file_id}'
-                ),
-            ]
-            for file in files
-        ]
-        btn.insert(0,
-                   [InlineKeyboardButton(
-                       "◈ All Files ◈", callback_data=f'gpfiles#{dbid}')]
-                   )
+        btn = [[InlineKeyboardButton(text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}",
+                                     callback_data=f'gpfiles#{file.file_id}')] for file in files]
+
+        btn.insert(0, [InlineKeyboardButton(
+            "◈ All Files ◈", callback_data=f'gpfiles#{dbid}')])
 
     if 0 < offset <= 10:
         off_set = 0
@@ -109,70 +93,49 @@ async def next_page(bot, query):
     else:
         off_set = offset - 10
     if n_offset == 0:
-        btn.append(
-            [InlineKeyboardButton("◄ Back", callback_data=f"next_{req}_{key}_{off_set}"),
-             InlineKeyboardButton(f"❏ Pages {round(int(offset) / 10) + 1} / {round(total / 10)}",
-                                  callback_data="pages")]
-        )
+        btn.append([InlineKeyboardButton("◄ Back", callback_data=f"next_{req}_{key}_{off_set}"), InlineKeyboardButton(
+            f"❏ Pages {round(offset / 10) + 1} / {round(total / 10)}", callback_data="pages")])
 
     elif off_set is None:
-        btn.append(
-            [InlineKeyboardButton(f"❏ {round(int(offset) / 10) + 1} / {round(total / 10)}", callback_data="pages"),
-             InlineKeyboardButton("Next ►", callback_data=f"next_{req}_{key}_{n_offset}")])
+        btn.append([InlineKeyboardButton(f"❏ {round(offset / 10) + 1} / {round(total / 10)}",
+                   callback_data="pages"), InlineKeyboardButton("Next ►", callback_data=f"next_{req}_{key}_{n_offset}")])
 
     else:
-        btn.append(
-            [
-                InlineKeyboardButton(
-                    "◄ Back", callback_data=f"next_{req}_{key}_{off_set}"),
-                InlineKeyboardButton(
-                    f"❏ {round(int(offset) / 10) + 1} / {round(total / 10)}", callback_data="pages"),
-                InlineKeyboardButton(
-                    "Next ►", callback_data=f"next_{req}_{key}_{n_offset}")
-            ],
-        )
+        btn.append([InlineKeyboardButton("◄ Back", callback_data=f"next_{req}_{key}_{off_set}"), InlineKeyboardButton(
+            f"❏ {round(offset / 10) + 1} / {round(total / 10)}", callback_data="pages"), InlineKeyboardButton("Next ►", callback_data=f"next_{req}_{key}_{n_offset}")])
 
     try:
-        await query.edit_message_reply_markup(
-            reply_markup=InlineKeyboardMarkup(btn)
-        )
+        await query.edit_message_reply_markup(reply_markup=InlineKeyboardMarkup(btn))
     except MessageNotModified:
         pass
     await query.answer()
 
 
-@Client.on_callback_query(filters.regex(r"^pmnext"))
+@Client.on_callback_query(filters.regex("^pmnext"))
 async def pm_next_page(bot, query):
     ident, req, key, offset = query.data.split("_")
     try:
         offset = int(offset)
-    except:
+    except Exception:
         offset = 0
     search = BUTTONS.get(key)
     if not search:
         await query.answer("You are using one of my old messages, please send the request again.", show_alert=True)
-        return
 
+        return
     files, n_offset, total = await get_search_results(search, offset=offset, filter=True)
+
     try:
         n_offset = int(n_offset)
-    except:
+    except Exception:
         n_offset = 0
-
     if not files:
         return
-
     fileids = [file.file_id for file in files]
     dbid = fileids[0]
     fileids = "L_I_N_K".join(fileids)
-    btn = [
-        [
-            InlineKeyboardButton(
-                text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", callback_data=f'pmfiles#{file.file_id}'
-            ),
-        ]
-        for file in files
-    ]
+    btn = [[InlineKeyboardButton(text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}",
+                                 callback_data=f'pmfiles#{file.file_id}')] for file in files]
 
     if 0 < offset <= 10:
         off_set = 0
@@ -181,45 +144,22 @@ async def pm_next_page(bot, query):
     else:
         off_set = offset - 10
     if n_offset == 0:
-        btn.append(
-            [InlineKeyboardButton("◄ Back", callback_data=f"pmnext_{req}_{key}_{off_set}"),
-             InlineKeyboardButton(f"❏ Pages {round(int(offset) / 10) + 1} / {round(total / 10)}",
-                                  callback_data="pages")]
-        )
-        btn.insert(0,
-                   [InlineKeyboardButton(
-                       "◈ All Files ◈", callback_data=f'pmfiles#{dbid}')]
-                   )
+        btn.append([InlineKeyboardButton("◄ Back", callback_data=f"pmnext_{req}_{key}_{off_set}"), InlineKeyboardButton(
+            f"❏ Pages {round(offset / 10) + 1} / {round(total / 10)}", callback_data="pages")])
 
     elif off_set is None:
-        btn.append(
-            [InlineKeyboardButton(f"❏ {round(int(offset) / 10) + 1} / {round(total / 10)}", callback_data="pages"),
-             InlineKeyboardButton("Next ►", callback_data=f"pmnext_{req}_{key}_{n_offset}")])
-        btn.insert(0,
-                   [InlineKeyboardButton(
-                       "◈ All Files ◈", callback_data=f'pmfiles#{dbid}')]
-                   )
+        btn.append([InlineKeyboardButton(f"❏ {round(offset / 10) + 1} / {round(total / 10)}", callback_data="pages"),
+                   InlineKeyboardButton("Next ►", callback_data=f"pmnext_{req}_{key}_{n_offset}")])
 
     else:
-        btn.append(
-            [
-                InlineKeyboardButton(
-                    "◄ Back", callback_data=f"pmnext_{req}_{key}_{off_set}"),
-                InlineKeyboardButton(
-                    f"❏ {round(int(offset) / 10) + 1} / {round(total / 10)}", callback_data="pages"),
-                InlineKeyboardButton(
-                    "Next ►", callback_data=f"pmnext_{req}_{key}_{n_offset}")
-            ],
-        )
-        btn.insert(0,
-                   [InlineKeyboardButton(
-                       "◈ All Files ◈", callback_data=f'pmfiles#{dbid}')]
-                   )
+        btn.append([InlineKeyboardButton("◄ Back", callback_data=f"pmnext_{req}_{key}_{off_set}"), InlineKeyboardButton(
+            f"❏ {round(offset / 10) + 1} / {round(total / 10)}", callback_data="pages"), InlineKeyboardButton("Next ►", callback_data=f"pmnext_{req}_{key}_{n_offset}")])
+
+    btn.insert(0, [InlineKeyboardButton(
+        "◈ All Files ◈", callback_data=f'pmfiles#{dbid}')])
 
     try:
-        await query.edit_message_reply_markup(
-            reply_markup=InlineKeyboardMarkup(btn)
-        )
+        await query.edit_message_reply_markup(reply_markup=InlineKeyboardMarkup(btn))
     except MessageNotModified:
         pass
     await query.answer()
@@ -254,7 +194,7 @@ async def advantage_spoll_choker(bot, query):
 
                 await asyncio.sleep(10)
                 await k.delete()
-            except:
+            except Exception:
                 return
 
 
@@ -1208,11 +1148,18 @@ async def advantage_spell_chok(msg):
                     text="Wikipedia 💠", url=f"https://en.m.wikipedia.org/w/index.php?search={name}")
             ]
         ]
-        k = await msg.reply(
-            text="I couldn't find anything related to that.Please Check your spelling",
-            reply_markup=InlineKeyboardMarkup(btns),
-            disable_web_page_preview=True,
-        )
+        try:
+            k = await msg.reply(
+                text="I couldn't find anything related to that.Please Check your spelling",
+                reply_markup=InlineKeyboardMarkup(btns),
+                disable_web_page_preview=True,
+            )
+        except Exception as e:
+            logger.exception(e)
+            k = await msg.reply(
+                text="I couldn't find anything related to that.Please Check your spelling",
+                disable_web_page_preview=True,
+            )
         await asyncio.sleep(30)
         await k.delete()
         return
