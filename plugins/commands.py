@@ -964,10 +964,9 @@ async def delete_all_index_confirm(bot, message):
 
 @Client.on_message(filters.regex('^[A-Z0-9]*$') & filters.private & filters.incoming)
 async def A2Z_tvseries(bot, update):
-    Tvserieslist = ["Abw", "Abjkefgb", "A ther", "A there", "A game",
-                    "Bfhr3k", "Cjcjhv", "vjhb", "cbkv", "vbjkb", "cigf2o"]
-
     listD = await find_tvseries_by_first(update.text.lower())
+    Tvserieslist = [series["name"] for series in listD]
+
     listA = [name for name in Tvserieslist if update.text in name.capitalize()]
     listA.append("Back↩")
     logging.info(f"list d results : {listD}")
