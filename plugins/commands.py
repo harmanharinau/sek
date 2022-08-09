@@ -12,7 +12,7 @@ from info import CHANNELS, ADMINS, AUTH_CHANNEL, LOG_CHANNEL, PICS, BATCH_FILE_C
 from utils import get_settings, get_size, is_subscribed, save_group_settings, temp, send_more_files, gen_url, broadcast_messages, broadcast_notification, split_list
 from database.connections_mdb import active_connection
 from database.quickdb import remove_inst, get_ids, add_sent_files, get_verification, remove_verification, add_verification, count_sent_files, add_update_msg, remove_update_msg, get_update_msg
-from database.tvseriesfilters import add_tvseries_filter, update_tvseries_filter, getlinks, find_tvseries_filter, remove_tvseries
+from database.tvseriesfilters import add_tvseries_filter, update_tvseries_filter, getlinks, find_tvseries_filter, remove_tvseries, find_tvseries_by_first
 from database.notification import find_notification, remove_notification, update_notification, add_notification, find_allusers
 import re
 import json
@@ -966,6 +966,8 @@ async def delete_all_index_confirm(bot, message):
 async def A2Z_tvseries(bot, update):
     Tvserieslist = ["Abw", "Abjkefgb", "A ther", "A there", "A game",
                     "Bfhr3k", "Cjcjhv", "vjhb", "cbkv", "vbjkb", "cigf2o"]
+
+    listD = await find_tvseries_by_first(update.text)
     listA = [name for name in Tvserieslist if update.text in name.capitalize()]
     listA.append("Back↩")
     # for name in Tvserieslist:
@@ -974,7 +976,7 @@ async def A2Z_tvseries(bot, update):
     buttonz = ReplyKeyboardMarkup(split_list(listA, 3), resize_keyboard=True)
     return await bot.send_message(
         chat_id=update.chat.id,
-        text=update.text,
+        text=listD,
         disable_web_page_preview=True,
         reply_markup=buttonz,
         reply_to_message_id=update.id
@@ -999,7 +1001,7 @@ async def tvseries(bot, update):
             ["H", "I", "J", "K", "L", "M"],
             ["N", "O", "P", "Q", "R", "S"],
             ["T", "U", "V", "W", "X", "Y"],
-            ["Z", "0-9", "#", "Home↩"]
+            ["Z", "1-9", "Home↩"]
         ],
         resize_keyboard=True
     )
