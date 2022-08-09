@@ -14,7 +14,7 @@ async def add_notification(userId, stats):
 
     try:
         mycol.insert_one(mydict)
-    except:
+    except Exception:
         logger.exception('Some error occured!', exc_info=True)
 
 
@@ -24,7 +24,7 @@ async def update_notification(userId, stats):
     newvalues = {"$set": {"stats": str(stats)}}
     try:
         mycol.update_one(filter, newvalues)
-    except:
+    except Exception:
         logger.exception('Some error occured!', exc_info=True)
 
 
@@ -36,10 +36,7 @@ async def remove_notification(userId):
 
 async def find_allusers():
     mycol = mydb["notification"]
-    list = []
-    for x in mycol.find():
-        list.append(x["userId"])
-    return list
+    return [x["userId"] for x in mycol.find()]
 
 
 async def find_notification(userId):
