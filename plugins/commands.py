@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 BATCH_FILES = {}
 
 
-@Client.on_message(filters.command("start") & filters.incoming)
+@Client.on_message((filters.command("start") | filters.regex('Start')) & filters.incoming)
 async def start(client, message):
     if message.chat.type in ['group', 'supergroup']:
         buttons = [
@@ -98,14 +98,6 @@ async def start(client, message):
         )
         return
     if len(message.command) == 2 and message.command[1] in ["subscribe", "error", "okay", "help"]:
-        buttonz = ReplyKeyboardMarkup(
-            [
-                ["Tv▫Series🔷"],
-                ["Start", "Help", "About"]
-
-            ],
-            resize_keyboard=True
-        )
         buttons = [[
             InlineKeyboardButton('➕ Add Me To Your Groups ➕',
                                  url=f'http://t.me/{temp.U_NAME}?startgroup=true')
@@ -122,7 +114,7 @@ async def start(client, message):
             photo=random.choice(PICS),
             caption=script.START_TXT.format(
                 message.from_user.mention, temp.U_NAME, temp.B_NAME),
-            reply_markup=buttonz,
+            reply_markup=reply_markup,
 
         )
         return
@@ -790,7 +782,7 @@ async def devve(bot, message):
         await message.reply(str(e))
 
 
-@Client.on_message(filters.command('notification') & filters.incoming)
+@Client.on_message((filters.command('notification') | filters.regex('Notification')) & filters.incoming)
 async def get_notification(bot, message):
     await message.reply_text(
         'Get Movies/ Tv series On realse Time 〽. Turned on notifications, you can change anytime',
@@ -1025,7 +1017,7 @@ async def homeseries(bot, update):
     buttonz = ReplyKeyboardMarkup(
         [
             ["Tv▫Series🔷"],
-            ["Start", "Help", "About"]
+            ["Start", "Notification"]
 
         ],
         resize_keyboard=True
