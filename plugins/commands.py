@@ -9,7 +9,7 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyb
 from database.ia_filterdb import Media, get_file_details, unpack_new_file_id
 from database.users_chats_db import db
 from info import CHANNELS, ADMINS, AUTH_CHANNEL, LOG_CHANNEL, PICS, BATCH_FILE_CAPTION, CUSTOM_FILE_CAPTION, PROTECT_CONTENT
-from utils import get_settings, get_size, is_subscribed, save_group_settings, temp, send_more_files, gen_url, broadcast_messages, broadcast_notification, split
+from utils import get_settings, get_size, is_subscribed, save_group_settings, temp, send_more_files, gen_url, broadcast_messages, broadcast_notification, split_list
 from database.connections_mdb import active_connection
 from database.quickdb import remove_inst, get_ids, add_sent_files, get_verification, remove_verification, add_verification, count_sent_files, add_update_msg, remove_update_msg, get_update_msg
 from database.tvseriesfilters import add_tvseries_filter, update_tvseries_filter, getlinks, find_tvseries_filter, remove_tvseries
@@ -979,7 +979,7 @@ async def A2Z_tvseries(bot, update):
     # for name in Tvserieslist:
     #     if update.text in name:
     #         name.append(listA)
-    buttonz = ReplyKeyboardMarkup(split(listA, 3), resize_keyboard=True)
+    buttonz = ReplyKeyboardMarkup(split_list(listA, 3), resize_keyboard=True)
     return await bot.send_message(
         chat_id=update.chat.id,
         text=update.text,
