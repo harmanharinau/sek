@@ -970,13 +970,14 @@ async def A2Z_tvseries(bot, update):
     listD = await find_tvseries_by_first(update.text)
     listA = [name for name in Tvserieslist if update.text in name.capitalize()]
     listA.append("Back↩")
+    logging.info(f"list d results : {listD}")
     # for name in Tvserieslist:
     #     if update.text in name:
     #         name.append(listA)
     buttonz = ReplyKeyboardMarkup(split_list(listA, 3), resize_keyboard=True)
     return await bot.send_message(
         chat_id=update.chat.id,
-        text=listD,
+        text=update.text,
         disable_web_page_preview=True,
         reply_markup=buttonz,
         reply_to_message_id=update.id
