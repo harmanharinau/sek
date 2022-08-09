@@ -42,8 +42,10 @@ async def give_filter(client, message):
 
 @Client.on_message(filters.private & filters.text & filters.incoming)
 async def pm_give_filter(client, message):
-    await pm_auto_filter(client, message)
-    await tvseries_filters(client, message)
+    k = await tvseries_filters(client, message)
+
+    if k is False:
+        await pm_auto_filter(client, message)
 
 
 @Client.on_callback_query(filters.regex("^next"))
@@ -1234,6 +1236,8 @@ async def tvseries_filters(client, message, text=False):
     elif name:
         seriess = await find_tvseries_filter(name)
 
+        if len(seriess) > 4:
+            return False
     else:
         return False
 
