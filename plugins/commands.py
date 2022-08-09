@@ -967,7 +967,7 @@ async def A2Z_tvseries(bot, update):
     Tvserieslist = ["Abw", "Abjkefgb", "A ther", "A there", "A game",
                     "Bfhr3k", "Cjcjhv", "vjhb", "cbkv", "vbjkb", "cigf2o"]
 
-    listD = await find_tvseries_by_first(update.text)
+    listD = await find_tvseries_by_first(update.text.lower())
     listA = [name for name in Tvserieslist if update.text in name.capitalize()]
     listA.append("Back↩")
     logging.info(f"list d results : {listD}")
