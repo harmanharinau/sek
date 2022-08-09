@@ -979,20 +979,29 @@ async def A2Z_tvseries(bot, update):
     )
 
 
-@Client.on_message(filters.regex('^[A-Za-z0-9]*$') & filters.private & filters.incoming)
-async def A2z_tvseries(bot, update):
-    listD = await find_tvseries_filter(update.text.lower())
-    Tvserieslist = [series["quality"] for series in listD]
-    Tvserieslist.append("Back↩")
-    buttonz = ReplyKeyboardMarkup(split_list(
-        Tvserieslist, 3), resize_keyboard=True)
-    return await bot.send_message(
-        chat_id=update.chat.id,
-        text="Select Tv Series Qulity | if not found please request in @TMWAD",
-        disable_web_page_preview=True,
-        reply_markup=buttonz,
-        reply_to_message_id=update.id
-    )
+# @Client.on_message(filters.regex('^[A-Za-z0-9]*$') & filters.private & filters.incoming)
+# async def A2z_tvseries(bot, update):
+#     name = update.text.lower()
+#     if "-|-" in name:
+#         series = name.split("-|-", 1)[0]
+#         quality = name.split("-|-", 1)[1]
+#         listD = await find_tvseries_filter(series)
+#         Tvserieslist = [f"{name}-|-{series['quality']}" for series in listD]
+
+#     listD = await find_tvseries_filter(name)
+#     if listD is None:
+#         return
+#     Tvserieslist = [f"{name}-|-{series['quality']}" for series in listD]
+#     Tvserieslist.append("Back↩")
+#     buttonz = ReplyKeyboardMarkup(split_list(
+#         Tvserieslist, 3), resize_keyboard=True)
+#     return await bot.send_message(
+#         chat_id=update.chat.id,
+#         text="Select Tv Series Qulity | if not found please request in @TMWAD",
+#         disable_web_page_preview=True,
+#         reply_markup=buttonz,
+#         reply_to_message_id=update.id
+#     )
 
 
 @Client.on_message((filters.regex('Tv▫Series🔷') | filters.regex("Back↩")) & filters.private)
