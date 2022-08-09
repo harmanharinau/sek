@@ -966,17 +966,13 @@ async def delete_all_index_confirm(bot, message):
 async def A2Z_tvseries(bot, update):
     listD = await find_tvseries_by_first(update.text.lower())
     Tvserieslist = [series["name"] for series in listD]
-
-    listA = [name for name in Tvserieslist if update.text in name.capitalize()]
-    listA.append("Back↩")
-    logging.info(f"list d results : {listD}")
-    # for name in Tvserieslist:
-    #     if update.text in name:
-    #         name.append(listA)
-    buttonz = ReplyKeyboardMarkup(split_list(listA, 3), resize_keyboard=True)
+    Tvserieslist = list(dict.fromkeys(Tvserieslist))
+    Tvserieslist.append("Back↩")
+    buttonz = ReplyKeyboardMarkup(split_list(
+        Tvserieslist, 3), resize_keyboard=True)
     return await bot.send_message(
         chat_id=update.chat.id,
-        text=update.text,
+        text="Select Tv Series Name | if not found please request in @TMWAD",
         disable_web_page_preview=True,
         reply_markup=buttonz,
         reply_to_message_id=update.id
@@ -985,10 +981,16 @@ async def A2Z_tvseries(bot, update):
 
 @Client.on_message(filters.regex('^[A-Za-z0-9]*$') & filters.private & filters.incoming)
 async def A2z_tvseries(bot, update):
+    listD = await find_tvseries_filter(update.text.lower())
+    Tvserieslist = [series["quality"] for series in listD]
+    Tvserieslist.append("Back↩")
+    buttonz = ReplyKeyboardMarkup(split_list(
+        Tvserieslist, 3), resize_keyboard=True)
     return await bot.send_message(
         chat_id=update.chat.id,
-        text=update.text,
+        text="Select Tv Series Qulity | if not found please request in @TMWAD",
         disable_web_page_preview=True,
+        reply_markup=buttonz,
         reply_to_message_id=update.id
     )
 

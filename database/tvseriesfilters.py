@@ -44,7 +44,7 @@ async def getlinks():
 
 async def find_tvseries_filter(name):
     mycol = mydb["tvseries"]
-    return list(mycol.find({'name': {'$regex': f'{name}'}}))
+    return list(mycol.find({'name': {'$regex': f'^{name}'}}))
 
 
 async def find_tvseries_by_first(letter):
