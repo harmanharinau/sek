@@ -1327,6 +1327,8 @@ async def tvseries_filters(client, message, text=False):
                     logger.exception(e)
                     cap = "Here is what i found for your Request"
                     await message.reply_text(cap, reply_markup=InlineKeyboardMarkup(btns))
+
+                os.remove(img_location)
         else:
             cap = "Here is what i found for your Request"
             await message.reply_text(cap, reply_markup=InlineKeyboardMarkup(btns))
