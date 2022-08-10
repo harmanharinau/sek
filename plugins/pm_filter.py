@@ -4,8 +4,7 @@ import re
 import ast
 import time
 from PIL import Image
-import requests
-from io import BytesIO
+import urllib.request
 from pyrogram.errors.exceptions.bad_request_400 import MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty, MessageEmpty
 from Script import script
 import pyrogram
@@ -1299,8 +1298,8 @@ async def tvseries_filters(client, message, text=False):
             if imdb.get('poster'):
                 try:
                     pic = imdb.get('poster')
-                    response = requests.get(pic)
-                    im = Image.open(BytesIO(response.content))
+                    urllib.request.urlretrieve(pic, "gfg.png")
+                    im = Image.open("gfg.png")
                     width, height = im.size
                     left = 0
                     right = width
