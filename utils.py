@@ -68,23 +68,22 @@ async def is_subscribed(bot, query):
 
 async def get_poster(query, bulk=False, id=False, file=None):
     if not id:
-        query = (query.strip()).lower()
+        query = query.strip().lower()
         title = query
-        year = re.findall(r'[1-2]\d{3}$', query, re.IGNORECASE)
+        year = re.findall('[1-2]\d{3}$', query, re.IGNORECASE)
         if year:
             year = list_to_str(year[:1])
-            title = (query.replace(year, "")).strip()
+            title = query.replace(year, "").strip()
         elif file is not None:
-            year = re.findall(r'[1-2]\d{3}', file, re.IGNORECASE)
+            year = re.findall('[1-2]\d{3}', file, re.IGNORECASE)
             if year:
                 year = list_to_str(year[:1])
         else:
             year = None
         try:
             movieid = imdb.search_movie(title.lower(), results=10)
-        except:
+        except Exception:
             return None
-
         if not movieid:
             return None
         if year:
@@ -96,6 +95,7 @@ async def get_poster(query, bulk=False, id=False, file=None):
             filtered = movieid
         movieid = list(filter(lambda k: k.get('kind') in [
                        'movie', 'tv series'], filtered))
+
         if not movieid:
             movieid = filtered
         if bulk:
@@ -118,37 +118,8 @@ async def get_poster(query, bulk=False, id=False, file=None):
     else:
         plot = movie.get('plot outline')
     if plot and len(plot) > 800:
-        plot = plot[0:800] + "..."
-
-    return {
-        'title': movie.get('title'),
-        'votes': movie.get('votes'),
-        "aka": list_to_str(movie.get("akas")),
-        "seasons": movie.get("number of seasons"),
-        "box_office": movie.get('box office'),
-        'localized_title': movie.get('localized title'),
-        'kind': movie.get("kind"),
-        "imdb_id": f"tt{movie.get('imdbID')}",
-        "cast": list_to_str(movie.get("cast")),
-        "runtime": list_to_str(movie.get("runtimes")),
-        "countries": list_to_str(movie.get("countries")),
-        "certificates": list_to_str(movie.get("certificates")),
-        "languages": list_to_str(movie.get("languages")),
-        "director": list_to_str(movie.get("director")),
-        "writer": list_to_str(movie.get("writer")),
-        "producer": list_to_str(movie.get("producer")),
-        "composer": list_to_str(movie.get("composer")),
-        "cinematographer": list_to_str(movie.get("cinematographer")),
-        "music_team": list_to_str(movie.get("music department")),
-        "distributors": list_to_str(movie.get("distributors")),
-        'release_date': date,
-        'year': movie.get('year'),
-        'genres': list_to_str(movie.get("genres")),
-        'poster': movie.get('full-size cover url'),
-        'plot': plot,
-        'rating': str(movie.get("rating")),
-        'url': f'https://www.imdb.com/title/tt{movieid}'
-    }
+        plot = f"{plot[:800]}..."
+    return {'title': movie.get('title'), 'votes': movie.get('votes'), "aka": list_to_str(movie.get("akas")), "seasons": movie.get("number of seasons"), "box_office": movie.get('box office'), 'localized_title': movie.get('localized title'), 'kind': movie.get("kind"), "imdb_id": f"tt{movie.get('imdbID')}", "cast": list_to_str(movie.get("cast")), "runtime": list_to_str(movie.get("runtimes")), "countries": list_to_str(movie.get("countries")), "certificates": list_to_str(movie.get("certificates")), "languages": list_to_str(movie.get("languages")), "director": list_to_str(movie.get("director")), "writer": list_to_str(movie.get("writer")), "producer": list_to_str(movie.get("producer")), "composer": list_to_str(movie.get("composer")), "cinematographer": list_to_str(movie.get("cinematographer")), "music_team": list_to_str(movie.get("music department")), "distributors": list_to_str(movie.get("distributors")), 'release_date': date, 'year': movie.get('year'), 'genres': list_to_str(movie.get("genres")), 'poster': movie.get('full-size cover url'), 'plot': plot, 'rating': str(movie.get("rating")), 'url': f'https://www.imdb.com/title/tt{movieid}'}
 # https://github.com/odysseusm
 
 
@@ -444,14 +415,11 @@ def getseries(name):
 
 def gen_url(link):
     urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url={link}'
-    #urllink = f'https://semawur.com/st/?api=ee503477175b248fa734b0f2c0fa6f352bd8892d&url={link}'
-    #urllink = f'https://earn4link.in/st?api=6149354a6ef418bbbcdb0d87c6490ebe63c0a2a5&url={link}'
-    #urllink = f'https://rocklinks.net/st?api=85b949240ee33cb797db1efc7aa94cb265c6ad35&url={link}'
+
     try:
         urllink = shortner.tinyurl.short(urllink)
-    except:
+    except Exception:
         urllink = urllink
-
     return urllink
 
 # def geny_url(file_id):
@@ -468,18 +436,8 @@ def split_list(l, n):
 
 def get_file_id(msg: Message):
     if msg.media:
-        for message_type in (
-            "photo",
-            "animation",
-            "audio",
-            "document",
-            "video",
-            "video_note",
-            "voice",
-            "sticker"
-        ):
-            obj = getattr(msg, message_type)
-            if obj:
+        for message_type in ("photo", "animation", "audio", "document", "video", "video_note", "voice", "sticker"):
+            if obj := getattr(msg, message_type):
                 setattr(obj, "message_type", message_type)
                 return obj
 
@@ -572,58 +530,47 @@ def split_quotes(text: str) -> List:
 
 def parser(text, keyword):
     if "buttonalert" in text:
-        text = (text.replace("\n", "\\n").replace("\t", "\\t"))
+        text = text.replace("\n", "\\n").replace("\t", "\\t")
     buttons = []
     note_data = ""
     prev = 0
     i = 0
     alerts = []
     for match in BTN_URL_REGEX.finditer(text):
-        # Check if btnurl is escaped
         n_escapes = 0
         to_check = match.start(1) - 1
         while to_check > 0 and text[to_check] == "\\":
             n_escapes += 1
             to_check -= 1
-
-        # if even, not escaped -> create button
         if n_escapes % 2 == 0:
             note_data += text[prev:match.start(1)]
             prev = match.end(1)
             if match.group(3) == "buttonalert":
-                # create a thruple with button label, url, and newline status
                 if bool(match.group(5)) and buttons:
-                    buttons[-1].append(InlineKeyboardButton(
-                        text=match.group(2),
-                        callback_data=f"alertmessage:{i}:{keyword}"
-                    ))
+                    buttons[-1].append(InlineKeyboardButton(text=match.group(2),
+                                       callback_data=f"alertmessage:{i}:{keyword}"))
+
                 else:
-                    buttons.append([InlineKeyboardButton(
-                        text=match.group(2),
-                        callback_data=f"alertmessage:{i}:{keyword}"
-                    )])
+                    buttons.append([InlineKeyboardButton(text=match.group(
+                        2), callback_data=f"alertmessage:{i}:{keyword}")])
+
                 i += 1
                 alerts.append(match.group(4))
             elif bool(match.group(5)) and buttons:
-                buttons[-1].append(InlineKeyboardButton(
-                    text=match.group(2),
-                    url=match.group(4).replace(" ", "")
-                ))
+                buttons[-1].append(InlineKeyboardButton(text=match.group(2),
+                                   url=match.group(4).replace(" ", "")))
+
             else:
                 buttons.append([InlineKeyboardButton(
-                    text=match.group(2),
-                    url=match.group(4).replace(" ", "")
-                )])
+                    text=match.group(2), url=match.group(4).replace(" ", ""))])
 
         else:
             note_data += text[prev:to_check]
             prev = match.start(1) - 1
-    else:
-        note_data += text[prev:]
-
+    note_data += text[prev:]
     try:
         return note_data, buttons, alerts
-    except:
+    except Exception:
         return note_data, buttons, None
 
 
@@ -650,4 +597,4 @@ def humanbytes(size):
     while size > power:
         size /= power
         n += 1
-    return str(round(size, 2)) + " " + Dic_powerN[n] + 'B'
+    return f"{str(round(size, 2))} {Dic_powerN[n]}B"

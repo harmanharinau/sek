@@ -1,9 +1,11 @@
 # Kanged From @TroJanZheX
 import asyncio
+import os
 import re
 import ast
 import time
-
+from PIL import Image
+import urllib.request
 from pyrogram.errors.exceptions.bad_request_400 import MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty, MessageEmpty
 from Script import script
 import pyrogram
@@ -32,6 +34,8 @@ logger.setLevel(logging.ERROR)
 BUTTONS = {}
 SPELL_CHECK = {}
 
+DOWNLOAD_LOCATION = "./DOWNLOADS"
+
 
 @Client.on_message(filters.group & filters.text & filters.incoming)
 async def give_filter(client, message):
@@ -42,8 +46,10 @@ async def give_filter(client, message):
 
 @Client.on_message(filters.private & filters.text & filters.incoming)
 async def pm_give_filter(client, message):
-    await pm_auto_filter(client, message)
-    await tvseries_filters(client, message)
+    k = await tvseries_filters(client, message)
+
+    if k is False:
+        await pm_auto_filter(client, message)
 
 
 @Client.on_callback_query(filters.regex("^next"))
@@ -1234,6 +1240,8 @@ async def tvseries_filters(client, message, text=False):
     elif name:
         seriess = await find_tvseries_filter(name)
 
+        if len(seriess) > 4:
+            return False
     else:
         return False
 
@@ -1292,15 +1300,35 @@ async def tvseries_filters(client, message, text=False):
             )
             if imdb.get('poster'):
                 try:
-                    await message.reply_photo(photo=imdb.get('poster'), caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btns))
-                except (MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty):
+                    if not os.path.isdir(DOWNLOAD_LOCATION):
+                        os.makedirs(DOWNLOAD_LOCATION)
                     pic = imdb.get('poster')
-                    poster = pic.replace('.jpg', "._V1_UX360.jpg")
+                    urllib.request.urlretrieve(pic, "gfg.png")
+                    im = Image.open("gfg.png")
+                    width, height = im.size
+                    left = 0
+                    right = width
+                    top = height / 5
+                    bottom = height * 3 / 5
+                    pic = im.crop((left, top, right, bottom))
+                    img_location = DOWNLOAD_LOCATION + "tvseries" + ".png"
+                    pic.save(img_location)
+
+                except Exception as e:
+                    logger.exception(e)
+                    pic = imdb.get('poster')
+
+                try:
+                    await message.reply_photo(photo=img_location, caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btns))
+                except (MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty):
+                    poster = img_location.replace('.jpg', "._V1_UX360.jpg")
                     await message.reply_photo(photo=poster, caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btns))
                 except Exception as e:
                     logger.exception(e)
                     cap = "Here is what i found for your Request"
                     await message.reply_text(cap, reply_markup=InlineKeyboardMarkup(btns))
+
+                os.remove(img_location)
         else:
             cap = "Here is what i found for your Request"
             await message.reply_text(cap, reply_markup=InlineKeyboardMarkup(btns))

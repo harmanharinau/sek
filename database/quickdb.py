@@ -50,9 +50,7 @@ async def add_sent_files(userid, fileid):
 
 async def count_sent_files():
     mycol = mydb["sentfiledb"]
-    files = mycol.count()
-
-    return files
+    return mycol.count()
 
 
 async def add_verification(user_id, stats, file_id, updat_time):
@@ -62,7 +60,7 @@ async def add_verification(user_id, stats, file_id, updat_time):
 
     try:
         x = mycol.insert_one(mydict)
-    except:
+    except Exception:
         logger.exception('Some error occured!', exc_info=True)
 
 
@@ -87,7 +85,7 @@ async def add_update_msg(total_users, files):
 
     try:
         x = mycol.insert_one(mydict)
-    except:
+    except Exception:
         logger.exception('Some error occured!', exc_info=True)
 
 

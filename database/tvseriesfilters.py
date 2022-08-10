@@ -15,7 +15,7 @@ async def add_tvseries_filter(name, language, quality, seasonlink):
 
     try:
         mycol.insert_one(mydict)
-    except:
+    except Exception:
         logger.exception('Some error occured!', exc_info=True)
 
 
@@ -24,9 +24,10 @@ async def update_tvseries_filter(name, language, quality, seasonlink):
     filter = {'name': str(name)}
     newvalues = {"$set": {"language": str(language), "quality": str(
         quality), "seasonlink": str(seasonlink)}}
+
     try:
         mycol.update_one(filter, newvalues)
-    except:
+    except Exception:
         logger.exception('Some error occured!', exc_info=True)
 
 
@@ -38,27 +39,16 @@ async def remove_tvseries(name):
 
 async def getlinks():
     mycol = mydb["tvseries"]
-    list = []
-    for x in mycol.find():
-        list.append(x)
-    return list
-# async def getlinks(name):
-#     mycol = mydb["tvseries"]
-#     for x in mycol.find({},{ "_id": 0, "name": 1, "language": 1, "quality": 1,"seasonlink": 1}):
-#         return x
+    return list(mycol.find())
 
 
 async def find_tvseries_filter(name):
     mycol = mydb["tvseries"]
-    list = []
-    # db.users.find({"name": /m/}) db.users.find({'name': {'$regex': f'{name}'}})
-    for x in mycol.find({'name': {'$regex': f'{name}'}}):
-        list.append(x)
-    return list
-#     myquery = { "name": str(name) }
-#     myquery = { "name": { "$regex": str(name) } }
-#     mydoc = mycol.find(myquery)
-#     for x in mydoc:
-#         return x
+    return list(mycol.find({'name': {'$regex': f'^{name}'}}))
+
+
+async def find_tvseries_by_first(letter):
+    mycol = mydb["tvseries"]
+    return list(mycol.find({'name': {'$regex': f'^{letter}'}}))
 
 # https://www.w3schools.com/python/python_mongodb_query.asp

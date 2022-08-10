@@ -5,14 +5,14 @@ import asyncio
 from Script import script
 from pyrogram import Client, filters
 from pyrogram.errors import ChatAdminRequired, FloodWait
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup
 from database.ia_filterdb import Media, get_file_details, unpack_new_file_id
 from database.users_chats_db import db
 from info import CHANNELS, ADMINS, AUTH_CHANNEL, LOG_CHANNEL, PICS, BATCH_FILE_CAPTION, CUSTOM_FILE_CAPTION, PROTECT_CONTENT
-from utils import get_settings, get_size, is_subscribed, save_group_settings, temp, send_more_files, gen_url, broadcast_messages, broadcast_notification
+from utils import get_settings, get_size, is_subscribed, save_group_settings, temp, send_more_files, gen_url, broadcast_messages, broadcast_notification, split_list
 from database.connections_mdb import active_connection
 from database.quickdb import remove_inst, get_ids, add_sent_files, get_verification, remove_verification, add_verification, count_sent_files, add_update_msg, remove_update_msg, get_update_msg
-from database.tvseriesfilters import add_tvseries_filter, update_tvseries_filter, getlinks, find_tvseries_filter, remove_tvseries
+from database.tvseriesfilters import add_tvseries_filter, update_tvseries_filter, getlinks, find_tvseries_filter, remove_tvseries, find_tvseries_by_first
 from database.notification import find_notification, remove_notification, update_notification, add_notification, find_allusers
 import re
 import json
@@ -23,9 +23,8 @@ logger = logging.getLogger(__name__)
 BATCH_FILES = {}
 
 
-@Client.on_message(filters.command("start") & filters.incoming)
+@Client.on_message((filters.command("start") | filters.regex('Start')) & filters.incoming)
 async def start(client, message):
-
     if message.chat.type in ['group', 'supergroup']:
         buttons = [
             [
@@ -68,6 +67,9 @@ async def start(client, message):
             reply_markup=reply_markup,
         )
         return
+
+    user_stats = await get_verification(message.from_user.id)
+
     if AUTH_CHANNEL and not await is_subscribed(client, message):
         btn = [
             [
@@ -780,7 +782,7 @@ async def devve(bot, message):
         await message.reply(str(e))
 
 
-@Client.on_message(filters.command('notification') & filters.incoming)
+@Client.on_message((filters.command('notification') | filters.regex('Notification')) & filters.incoming)
 async def get_notification(bot, message):
     await message.reply_text(
         'Get Movies/ Tv series On realse Time 〽. Turned on notifications, you can change anytime',
@@ -958,6 +960,88 @@ async def delete_all_index_confirm(bot, message):
     await Media.collection.drop()
     await message.answer('Piracy Is Crime')
     await message.message.edit('Succesfully Deleted All The Indexed Files.')
+
+
+@Client.on_message(filters.regex('^[A-Z0-9]*$') & filters.private & filters.incoming)
+async def A2Z_tvseries(bot, update):
+    listD = await find_tvseries_by_first(update.text.lower())
+    Tvserieslist = [series["name"] for series in listD]
+    Tvserieslist = list(dict.fromkeys(Tvserieslist))
+    Tvserieslist.append("Back↩")
+    buttonz = ReplyKeyboardMarkup(split_list(
+        Tvserieslist, 3), resize_keyboard=True)
+    return await bot.send_message(
+        chat_id=update.chat.id,
+        text="Select Tv Series Name | if not found please request in @TMWAD",
+        disable_web_page_preview=True,
+        reply_markup=buttonz,
+        reply_to_message_id=update.id
+    )
+
+
+# @Client.on_message(filters.regex('^[A-Za-z0-9]*$') & filters.private & filters.incoming)
+# async def A2z_tvseries(bot, update):
+#     name = update.text.lower()
+#     if "-|-" in name:
+#         series = name.split("-|-", 1)[0]
+#         quality = name.split("-|-", 1)[1]
+#         listD = await find_tvseries_filter(series)
+#         Tvserieslist = [f"{name}-|-{series['quality']}" for series in listD]
+
+#     listD = await find_tvseries_filter(name)
+#     if listD is None:
+#         return
+#     Tvserieslist = [f"{name}-|-{series['quality']}" for series in listD]
+#     Tvserieslist.append("Back↩")
+#     buttonz = ReplyKeyboardMarkup(split_list(
+#         Tvserieslist, 3), resize_keyboard=True)
+#     return await bot.send_message(
+#         chat_id=update.chat.id,
+#         text="Select Tv Series Qulity | if not found please request in @TMWAD",
+#         disable_web_page_preview=True,
+#         reply_markup=buttonz,
+#         reply_to_message_id=update.id
+#     )
+
+
+@Client.on_message((filters.regex('Tv▫Series🔷') | filters.regex("Back↩")) & filters.private)
+async def tvseries(bot, update):
+    buttonz = ReplyKeyboardMarkup(
+        [
+            ["A", "B", "C", "E", "F", "G"],
+            ["H", "I", "J", "K", "L", "M"],
+            ["N", "O", "P", "Q", "R", "S"],
+            ["T", "U", "V", "W", "X", "Y"],
+            ["Z", "1-9", "Home↩"]
+        ],
+        resize_keyboard=True
+    )
+    await bot.send_message(
+        chat_id=update.chat.id,
+        text="Selecet First leter of tv series",
+        disable_web_page_preview=True,
+        reply_markup=buttonz,
+        reply_to_message_id=update.id
+    )
+
+
+@Client.on_message(filters.regex('Home↩') & filters.private)
+async def homeseries(bot, update):
+    buttonz = ReplyKeyboardMarkup(
+        [
+            ["Tv▫Series🔷"],
+            ["Start", "Notification"]
+
+        ],
+        resize_keyboard=True
+    )
+    await bot.send_message(
+        chat_id=update.chat.id,
+        text="Selecet First leter of tv series",
+        disable_web_page_preview=True,
+        reply_markup=buttonz,
+        reply_to_message_id=update.id
+    )
 
 
 @Client.on_message(filters.command('settings'))
