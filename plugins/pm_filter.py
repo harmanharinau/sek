@@ -1,5 +1,6 @@
 # Kanged From @TroJanZheX
 import asyncio
+import os
 import re
 import ast
 import time
@@ -32,6 +33,8 @@ logger.setLevel(logging.ERROR)
 
 BUTTONS = {}
 SPELL_CHECK = {}
+
+DOWNLOAD_LOCATION = "./DOWNLOADS"
 
 
 @Client.on_message(filters.group & filters.text & filters.incoming)
@@ -1297,6 +1300,8 @@ async def tvseries_filters(client, message, text=False):
             )
             if imdb.get('poster'):
                 try:
+                    if not os.path.isdir(DOWNLOAD_LOCATION):
+                        os.makedirs(DOWNLOAD_LOCATION)
                     pic = imdb.get('poster')
                     urllib.request.urlretrieve(pic, "gfg.png")
                     im = Image.open("gfg.png")
@@ -1305,16 +1310,18 @@ async def tvseries_filters(client, message, text=False):
                     right = width
                     top = height / 5
                     bottom = height * 3 / 5
-
                     pic = im.crop((left, top, right, bottom))
+                    img_location = DOWNLOAD_LOCATION + "tvseries" + ".png"
+                    pic.save(img_location)
+
                 except Exception as e:
                     logger.exception(e)
                     pic = imdb.get('poster')
 
                 try:
-                    await message.reply_photo(photo=pic, caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btns))
+                    await message.reply_photo(photo=img_location, caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btns))
                 except (MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty):
-                    poster = pic.replace('.jpg', "._V1_UX360.jpg")
+                    poster = img_location.replace('.jpg', "._V1_UX360.jpg")
                     await message.reply_photo(photo=poster, caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btns))
                 except Exception as e:
                     logger.exception(e)
