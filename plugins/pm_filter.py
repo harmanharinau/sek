@@ -3,7 +3,7 @@ import asyncio
 import re
 import ast
 import time
-
+from PIL import Image
 from pyrogram.errors.exceptions.bad_request_400 import MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty, MessageEmpty
 from Script import script
 import pyrogram
@@ -1296,9 +1296,22 @@ async def tvseries_filters(client, message, text=False):
             )
             if imdb.get('poster'):
                 try:
-                    await message.reply_photo(photo=imdb.get('poster'), caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btns))
-                except (MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty):
                     pic = imdb.get('poster')
+                    im = Image.open(pic)
+                    width, height = im.size
+                    left = 0
+                    right = width
+                    top = height / 5
+                    bottom = height * 3 / 5
+
+                    pic = im.crop((left, top, right, bottom))
+                except Exception as e:
+                    logger.exception(e)
+                    pic = imdb.get('poster')
+
+                try:
+                    await message.reply_photo(photo=pic, caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btns))
+                except (MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty):
                     poster = pic.replace('.jpg', "._V1_UX360.jpg")
                     await message.reply_photo(photo=poster, caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btns))
                 except Exception as e:
