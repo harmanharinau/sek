@@ -78,7 +78,8 @@ async def next_page(bot, query):
     dbid = fileids[0]
     fileids = "L_I_N_K".join(fileids)
     user_stats = await get_verification(query.from_user.id)
-    if user_stats is None:
+
+    if user_stats is None or str(user_stats["stats"]) == 'unverified':
         btn = [[InlineKeyboardButton(text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", url=gen_url(
             f'https://telegram.dog/SpaciousUniverseBot?start=FEND-{file.file_id}'))] for file in files]
 
@@ -599,7 +600,8 @@ async def cb_handler(client: Client, query: CallbackQuery):
                         sendmsglist.append(k)
                         await add_sent_files(query.from_user.id, file.file_id)
 
-                    await query.answer("𝕋𝕙𝕒𝕟𝕜 𝕐𝕠𝕦 𝔽𝕠𝕣 𝕌𝕤𝕚𝕟𝕘 𝕄𝕖 \n\n⭐Rate Me: <a href='https://t.me/tlgrmcbot?start=spaciousuniversebot-review'>Here</a>")
+                    # https://adsly.me/ad/XeIPtWxC7v
+                    await query.answer("𝕋𝕙𝕒𝕟𝕜 𝕐𝕠𝕦 𝔽𝕠𝕣 𝕌𝕤𝕚𝕟𝕘 𝕄𝕖 \n\n⭐Rate Me: <a href='https://adsly.me/ad/XeIPtWxC7v'>Here</a>")
                     kk = await client.send_message(
                         chat_id=query.from_user.id,
                         text="""
@@ -896,7 +898,7 @@ async def auto_filter(client, msg, spoll=False):
 
     user_stats = await get_verification(msg.from_user.id)
 
-    if user_stats is None:
+    if user_stats is None or str(user_stats["stats"]) == 'unverified':
         btn = [
             [
                 InlineKeyboardButton(
