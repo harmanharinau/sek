@@ -56,15 +56,18 @@ async def gen_link_batch(bot, message):  # sourcery skip: low-code-quality
     match = regex.match(first)
     if not match:
         return await message.reply('Invalid link')
-    f_chat_id = match[4]
-    f_msg_id = int(match[5])
+    f_chat_id = match.group(4)
+    f_msg_id = int(match.group(5))
+    match = regex.match(last)
+    l_chat_id = match.group(4)
+    l_msg_id = int(match.group(5))
+
+    blimit = abs(l_msg_id - f_msg_id)
     if f_chat_id.isnumeric():
         f_chat_id = int(f"-100{f_chat_id}")
-    match = regex.match(last)
     if not match:
         return await message.reply('Invalid link')
-    l_chat_id = match[4]
-    l_msg_id = int(match[5])
+
     if l_chat_id.isnumeric():
         l_chat_id = int(f"-100{l_chat_id}")
     if f_chat_id != l_chat_id:
@@ -91,11 +94,9 @@ async def gen_link_batch(bot, message):  # sourcery skip: low-code-quality
     outlist = []
     og_msg = 0
     tot = 0
-    batch_total = int(float(l_chat_id)) - int(float(f_chat_id))
-    f_msg = f_chat_id
-    for _ in batch_total:
+    while True:
         tot += 1
-        msg = await bot.get_messages(chat_id, f_msg)
+        msg = await bot.get_messages(chat_id, f_msg_id)
         if msg.empty or msg.service:
             continue
         if not msg.media:
@@ -120,7 +121,10 @@ async def gen_link_batch(bot, message):  # sourcery skip: low-code-quality
 
             except Exception:
                 pass
-        f_msg += 1
+
+        if tot == blimit:
+            break
+
     with open(f"batchmode_{message.from_user.id}.json", "w+") as out:
         json.dump(outlist, out)
     post = await bot.send_document(LOG_CHANNEL, f"batchmode_{message.from_user.id}.json", file_name="Batch.json", caption="⚠️Generated for filestore.")
