@@ -112,7 +112,7 @@ async def gen_link_batch(bot, message):  # sourcery skip: low-code-quality
             file_type = msg.media
             file = getattr(msg, file_type)
             caption = getattr(msg, 'caption', '')
-            logger.info(file, caption)
+            logger.info(file_type)
             if caption:
                 caption = caption.html
             if file:
@@ -134,6 +134,7 @@ async def gen_link_batch(bot, message):  # sourcery skip: low-code-quality
             break
 
         msg_id += 1
+        logger.info(msg_id)
 
     with open(f"batchmode_{message.from_user.id}.json", "w+") as out:
         json.dump(outlist, out)
