@@ -271,7 +271,7 @@ async def start(client, message):
 
                 await asyncio.sleep(2)
 
-            await message.reply("𝕋𝕙𝕒𝕟𝕜 𝕐𝕠𝕦 𝔽𝕠𝕣 𝕌𝕤𝕚𝕟𝕘 𝕄𝕖 \n\n⭐Rate Me: <a href='https://adsly.me/ad/XeIPtWxC7v'>Here</a>")
+            await message.reply("𝕋𝕙𝕒𝕟𝕜 𝕐𝕠𝕦 𝔽𝕠𝕣 𝕌𝕤𝕚𝕟𝕘 𝕄𝕖 \n\n⭐Rate Me: <a href='https://t.me/tlgrmcbot?start=spaciousuniversebot-review'>Here</a>")
             kk = await client.send_message(
                 chat_id=message.from_user.id,
                 text="""
@@ -445,7 +445,7 @@ async def start(client, message):
                     continue
                 await asyncio.sleep(2)
             await sts.delete()
-            await message.reply("𝕋𝕙𝕒𝕟𝕜 𝕐𝕠𝕦 𝔽𝕠𝕣 𝕌𝕤𝕚𝕟𝕘 𝕄𝕖 \n\n⭐Rate Me: <a href='https://adsly.me/ad/XeIPtWxC7v'>Here</a>")
+            await message.reply("𝕋𝕙𝕒𝕟𝕜 𝕐𝕠𝕦 𝔽𝕠𝕣 𝕌𝕤𝕚𝕟𝕘 𝕄𝕖 \n\n⭐Rate Me: <a href='https://t.me/tlgrmcbot?start=spaciousuniversebot-review'>Here</a>")
             kk = await client.send_message(
                 chat_id=message.from_user.id,
                 text="""
@@ -510,7 +510,7 @@ async def start(client, message):
                         continue
                 await asyncio.sleep(1)
             await sts.delete()
-            await message.reply("𝕋𝕙𝕒𝕟𝕜 𝕐𝕠𝕦 𝔽𝕠𝕣 𝕌𝕤𝕚𝕟𝕘 𝕄𝕖 \n\n⭐Rate Me: <a href='https://adsly.me/ad/XeIPtWxC7v'>Here</a>")
+            await message.reply("𝕋𝕙𝕒𝕟𝕜 𝕐𝕠𝕦 𝔽𝕠𝕣 𝕌𝕤𝕚𝕟𝕘 𝕄𝕖 \n\n⭐Rate Me: <a href='https://t.me/tlgrmcbot?start=spaciousuniversebot-review'>Here</a>")
             kk = await client.send_message(
                 chat_id=message.from_user.id,
                 text="""
@@ -672,7 +672,7 @@ async def start(client, message):
                 await add_sent_files(message.from_user.id, file.file_id)
                 await asyncio.sleep(2)
 
-            await message.reply("𝕋𝕙𝕒𝕟𝕜 𝕐𝕠𝕦 𝔽𝕠𝕣 𝕌𝕤𝕚𝕟𝕘 𝕄𝕖 \n\n⭐Rate Me: <a href='https://adsly.me/ad/XeIPtWxC7v'>Here</a>")
+            await message.reply("𝕋𝕙𝕒𝕟𝕜 𝕐𝕠𝕦 𝔽𝕠𝕣 𝕌𝕤𝕚𝕟𝕘 𝕄𝕖 \n\n⭐Rate Me: <a href='https://t.me/tlgrmcbot?start=spaciousuniversebot-review'>Here</a>")
             kk = await client.send_message(
                 chat_id=message.from_user.id,
                 text="""
