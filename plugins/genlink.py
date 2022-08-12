@@ -28,10 +28,9 @@ async def gen_link_s(bot, message):
     for file_type in ("document", "video"):
         media = getattr(message, file_type, None)
         if media is not None:
+            media.file_type = file_type
+            media.caption = message.caption
             break
-
-    media.file_type = file_type
-    media.caption = message.caption
 
     if file_type not in ["video", 'document']:
         return await message.reply("Reply to a supported media")
