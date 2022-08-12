@@ -25,8 +25,15 @@ async def gen_link_s(bot, message):
     replied = message.reply_to_message
     if not replied:
         return await message.reply('Reply to a message to get a shareable link.')
-    file_type = replied.media
-    if file_type not in ["video", 'audio', 'document']:
+    for file_type in ("document", "video"):
+        media = getattr(message, file_type, None)
+        if media is not None:
+            break
+
+        media.file_type = file_type
+        media.caption = message.caption
+
+    if file_type not in ["video", 'document']:
         return await message.reply("Reply to a supported media")
     if message.has_protected_content and message.chat.id not in ADMINS:
         return await message.reply("okDa")
@@ -107,9 +114,11 @@ async def gen_link_batch(bot, message):  # sourcery skip: low-code-quality
         if msg.empty or msg.service:
             continue
         if not msg.media:
+            logger.info("skiped")
             continue
         try:
-            file = getattr(message, msg.media.value)
+            file = getattr(msg, msg.media.value)
+            logger.info(file)
             caption = getattr(msg, 'caption', '')
             if caption:
                 caption = caption.html
