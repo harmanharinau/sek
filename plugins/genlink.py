@@ -91,7 +91,8 @@ async def gen_link_batch(bot, message):  # sourcery skip: low-code-quality
     # file store without db channel
     og_msg = 0
     tot = 0
-    async for msg in bot.get_messages(f_chat_id, [l_msg_id, f_msg_id]):
+    batch_list = bot.get_messages(f_chat_id, [f_msg_id, l_msg_id])
+    for msg in batch_list:
         tot += 1
         if msg.empty or msg.service:
             continue
