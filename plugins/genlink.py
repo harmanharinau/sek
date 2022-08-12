@@ -99,7 +99,7 @@ async def gen_link_batch(bot, message):  # sourcery skip: low-code-quality
         msg_id += 1
         try:
             msg = await bot.get_messages(message.from_user.id, msg_id)
-            logger.info(msg.media)
+            logger.info(f"{msg.media}#########{msg_id}")
         except Exception as e:
             logger.info(e)
             continue
@@ -129,7 +129,7 @@ async def gen_link_batch(bot, message):  # sourcery skip: low-code-quality
             except Exception:
                 pass
 
-        if tot == blimit:
+        if msg_id == l_msg_id:
             break
 
     with open(f"batchmode_{message.from_user.id}.json", "w+") as out:
