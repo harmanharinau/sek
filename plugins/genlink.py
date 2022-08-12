@@ -93,9 +93,10 @@ async def gen_link_batch(bot, message):  # sourcery skip: low-code-quality
     outlist = []
     og_msg = 0
     tot = 0
-    msg_id = f_msg_id
+    msg_id = f_msg_id - 1
     while True:
         tot += 1
+        msg_id += 1
         logger.info("################")
         try:
             logger.info("################Start")
@@ -136,7 +137,6 @@ async def gen_link_batch(bot, message):  # sourcery skip: low-code-quality
         if tot == blimit:
             break
 
-        msg_id += 1
         logger.info(msg_id)
 
     with open(f"batchmode_{message.from_user.id}.json", "w+") as out:
