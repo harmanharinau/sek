@@ -97,26 +97,21 @@ async def gen_link_batch(bot, message):  # sourcery skip: low-code-quality
     while True:
         tot += 1
         msg_id += 1
-        logger.info("################")
         try:
-            logger.info("################Start")
             msg = await bot.get_messages(message.from_user.id, msg_id)
-            logger.info("################End")
+            logger.info(msg.media)
         except Exception as e:
             logger.info(e)
             continue
 
         if msg.empty or msg.service:
-            logger.info(106)
             continue
         if not msg.media:
-            logger.info(109)
             continue
         try:
             file_type = msg.media
             file = getattr(msg, file_type)
             caption = getattr(msg, 'caption', '')
-            logger.info(file_type)
             if caption:
                 caption = caption.html
             if file:
@@ -136,8 +131,6 @@ async def gen_link_batch(bot, message):  # sourcery skip: low-code-quality
 
         if tot == blimit:
             break
-
-        logger.info(msg_id)
 
     with open(f"batchmode_{message.from_user.id}.json", "w+") as out:
         json.dump(outlist, out)
