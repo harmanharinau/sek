@@ -91,11 +91,11 @@ async def gen_link_batch(bot, message):  # sourcery skip: low-code-quality
     outlist = []
     og_msg = 0
     tot = 0
-    batch_list = bot.get_messages(chat_id, [f_msg_id, l_msg_id])
-    for msg in batch_list:
-        logger.info(msg.id)
-    for msg in batch_list:
+    batch_total = abs(l_chat_id - f_chat_id)
+    f_msg = f_chat_id
+    for _ in batch_total:
         tot += 1
+        msg = await bot.get_messages(chat_id, f_msg)
         if msg.empty or msg.service:
             continue
         if not msg.media:
@@ -120,6 +120,7 @@ async def gen_link_batch(bot, message):  # sourcery skip: low-code-quality
 
             except Exception:
                 pass
+        f_msg += 1
     with open(f"batchmode_{message.from_user.id}.json", "w+") as out:
         json.dump(outlist, out)
     post = await bot.send_document(LOG_CHANNEL, f"batchmode_{message.from_user.id}.json", file_name="Batch.json", caption="⚠️Generated for filestore.")
