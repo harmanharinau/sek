@@ -17,9 +17,7 @@ logger.setLevel(logging.INFO)
 async def allowed(_, __, message):
     if PUBLIC_FILE_STORE:
         return True
-    if message.from_user and message.from_user.id in ADMINS:
-        return True
-    return False
+    return bool(message.from_user and message.from_user.id in ADMINS)
 
 
 @Client.on_message(filters.command(['link', 'plink']) & filters.create(allowed))
@@ -94,9 +92,13 @@ async def gen_link_batch(bot, message):  # sourcery skip: low-code-quality
     outlist = []
     og_msg = 0
     tot = 0
+    msg_id = f_msg_id
     while True:
         tot += 1
-        msg = await bot.get_messages(chat_id, f_msg_id)
+        try:
+            msg = await bot.get_messages(chat_id, msg_id)
+        except Exception:
+            continue
         if msg.empty or msg.service:
             continue
         if not msg.media:
@@ -124,6 +126,8 @@ async def gen_link_batch(bot, message):  # sourcery skip: low-code-quality
 
         if tot == blimit:
             break
+
+        msg_id += 1
 
     with open(f"batchmode_{message.from_user.id}.json", "w+") as out:
         json.dump(outlist, out)
