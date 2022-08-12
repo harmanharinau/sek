@@ -97,8 +97,10 @@ async def gen_link_batch(bot, message):  # sourcery skip: low-code-quality
         tot += 1
         try:
             msg = await bot.get_messages(chat_id, msg_id)
-        except Exception:
+        except Exception as e:
+            logger.info(e.value)
             continue
+
         if msg.empty or msg.service:
             continue
         if not msg.media:
@@ -107,6 +109,7 @@ async def gen_link_batch(bot, message):  # sourcery skip: low-code-quality
             file_type = msg.media
             file = getattr(msg, file_type)
             caption = getattr(msg, 'caption', '')
+            logger.info(file, caption)
             if caption:
                 caption = caption.html
             if file:
@@ -117,7 +120,7 @@ async def gen_link_batch(bot, message):  # sourcery skip: low-code-quality
                 outlist.append(file)
         except Exception:
             pass
-        if not og_msg % 20:
+        if og_msg % 5:
             try:
                 await sts.edit(FRMT.format(total=l_msg_id - f_msg_id, current=tot, rem=l_msg_id - f_msg_id - tot, sts="Saving Messages"))
 
