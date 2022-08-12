@@ -92,6 +92,7 @@ async def gen_link_batch(bot, message):  # sourcery skip: low-code-quality
     og_msg = 0
     tot = 0
     batch_list = bot.get_messages(f_chat_id, [f_msg_id, l_msg_id])
+    logger.info(batch_list)
     for msg in batch_list:
         tot += 1
         if msg.empty or msg.service:
