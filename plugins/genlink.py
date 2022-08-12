@@ -97,7 +97,9 @@ async def gen_link_batch(bot, message):  # sourcery skip: low-code-quality
     while True:
         tot += 1
         try:
-            msg = await bot.get_messages(chat_id, msg_id)
+            logger.info("################Start")
+            msg = await bot.get_messages(chat_id=message.from_user.id, message_id=msg_id)
+            logger.info("################End")
         except Exception as e:
             logger.info(e.value)
             continue
