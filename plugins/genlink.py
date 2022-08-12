@@ -129,7 +129,7 @@ async def gen_link_batch(bot, message):  # sourcery skip: low-code-quality
             except Exception:
                 pass
 
-        if msg_id == l_msg_id:
+        if msg_id >= l_msg_id:
             break
 
     with open(f"batchmode_{message.from_user.id}.json", "w+") as out:
