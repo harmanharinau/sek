@@ -40,6 +40,7 @@ async def gen_link_s(bot, message):
 
 @Client.on_message(filters.command(['batch', 'pbatch']) & filters.create(allowed))
 async def gen_link_batch(bot, message):  # sourcery skip: low-code-quality
+    logger.info(message.text)
     if " " not in message.text:
         return await message.reply("Use correct format.\nExample <code>/batch https://t.me/TeamEvamaria/10 https://t.me/TeamEvamaria/20</code>.")
 
@@ -102,8 +103,10 @@ async def gen_link_batch(bot, message):  # sourcery skip: low-code-quality
             continue
 
         if msg.empty or msg.service:
+            logger.info(106)
             continue
         if not msg.media:
+            logger.info(109)
             continue
         try:
             file_type = msg.media
@@ -120,7 +123,7 @@ async def gen_link_batch(bot, message):  # sourcery skip: low-code-quality
                 outlist.append(file)
         except Exception:
             pass
-        if og_msg % 5:
+        if not og_msg % 5:
             try:
                 await sts.edit(FRMT.format(total=l_msg_id - f_msg_id, current=tot, rem=l_msg_id - f_msg_id - tot, sts="Saving Messages"))
 
