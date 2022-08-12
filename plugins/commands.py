@@ -460,67 +460,6 @@ async def start(client, message):
 
             return await kk.delete()
 
-        elif data.split("-", 1)[0] == "DSTORE":
-            sts = await message.reply("Please wait")
-            b_string = data.split("-", 1)[1]
-            decoded = (base64.urlsafe_b64decode(
-                b_string + "=" * (-len(b_string) % 4))).decode("ascii")
-            try:
-                f_msg_id, l_msg_id, f_chat_id, protect = decoded.split("_", 3)
-            except:
-                f_msg_id, l_msg_id, f_chat_id = decoded.split("_", 2)
-                protect = "/pbatch" if PROTECT_CONTENT else "batch"
-            diff = int(l_msg_id) - int(f_msg_id)
-            async for msg in client.get_messages(int(f_chat_id), int(l_msg_id), int(f_msg_id)):
-                if msg.media:
-                    media = getattr(msg, msg.media)
-                    if BATCH_FILE_CAPTION:
-                        try:
-                            f_caption = BATCH_FILE_CAPTION.format(file_name=getattr(media, 'file_name', ''), file_size=getattr(
-                                media, 'file_size', ''), file_caption=getattr(msg, 'caption', ''))
-                        except Exception as e:
-                            logger.exception(e)
-                            f_caption = getattr(msg, 'caption', '')
-                    else:
-                        media = getattr(msg, msg.media)
-                        file_name = getattr(media, 'file_name', '')
-                        f_caption = getattr(msg, 'caption', file_name)
-                    try:
-                        k = await msg.copy(message.chat.id, caption=f_caption, protect_content=True if protect == "/pbatch" else False)
-                        await add_sent_files(message.from_user.id, message.chat.id)
-                    except FloodWait as e:
-                        await asyncio.sleep(e.x)
-                        k = await msg.copy(message.chat.id, caption=f_caption, protect_content=True if protect == "/pbatch" else False)
-                        await add_sent_files(message.from_user.id, message.chat.id)
-                    except Exception as e:
-                        logger.exception(e)
-                        continue
-                elif msg.empty:
-                    continue
-                else:
-                    try:
-                        k = await msg.copy(message.chat.id, protect_content=True if protect == "/pbatch" else False)
-                        await add_sent_files(message.from_user.id, message.chat.id)
-                    except FloodWait as e:
-                        await asyncio.sleep(e.x)
-                        k = await msg.copy(message.chat.id, protect_content=True if protect == "/pbatch" else False)
-                        await add_sent_files(message.from_user.id, message.chat.id)
-                    except Exception as e:
-                        logger.exception(e)
-                        continue
-                await asyncio.sleep(1)
-            await sts.delete()
-            await message.reply("𝕋𝕙𝕒𝕟𝕜 𝕐𝕠𝕦 𝔽𝕠𝕣 𝕌𝕤𝕚𝕟𝕘 𝕄𝕖 \n\n⭐Rate Me: <a href='https://t.me/tlgrmcbot?start=spaciousuniversebot-review'>Here</a>")
-            kk = await client.send_message(
-                chat_id=message.from_user.id,
-                text="""
-                This Files Will delete in 10min Please Forward To Saved Messages folder before download. \n\nTurned On /notification for get new movie|tv Serieses
-                """)
-
-            await asyncio.sleep(600)
-            await k.delete()
-            return await kk.delete()
-
         idstring = await get_ids(file_id)
 
         if idstring:
