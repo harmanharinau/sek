@@ -91,7 +91,8 @@ async def gen_link_batch(bot, message):  # sourcery skip: low-code-quality
     outlist = []
     og_msg = 0
     tot = 0
-    batch_total = abs(int(l_chat_id) - int(f_chat_id))
+    logger.info(f_chat_id, l_chat_id)
+    batch_total = int(l_chat_id) - int(f_chat_id)
     f_msg = f_chat_id
     for _ in batch_total:
         tot += 1
