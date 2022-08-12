@@ -109,8 +109,7 @@ async def gen_link_batch(bot, message):  # sourcery skip: low-code-quality
         if not msg.media:
             continue
         try:
-            file_type = msg.media
-            file = getattr(msg, file_type)
+            file = getattr(message, msg.media.value)
             caption = getattr(msg, 'caption', '')
             if caption:
                 caption = caption.html
