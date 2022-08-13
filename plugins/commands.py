@@ -773,7 +773,7 @@ async def sendnotifications(bot, message):
     count = 0
     msg = await message.reply("Processing...⏳", quote=True)
     for usersId in usersIdList:
-        await broadcast_notification(usersId, b_msg)
+        await broadcast_notification(int(usersId), b_msg)
         await asyncio.sleep(2)
         count += 1
 
