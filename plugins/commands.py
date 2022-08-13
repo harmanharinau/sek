@@ -943,7 +943,7 @@ async def A2Z_tvseries(bot, update):
 #     )
 
 
-@Client.on_message((filters.regex('Tv▫Series🔷') | filters.regex("Back↩")) & filters.private)
+@Client.on_message((filters.command('settings') | filters.regex('Tv▫Series🔷') | filters.regex("Back↩")) & filters.private)
 async def tvseries(bot, update):
     buttonz = ReplyKeyboardMarkup(
         [
