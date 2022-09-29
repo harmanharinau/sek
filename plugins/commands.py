@@ -271,7 +271,7 @@ async def start(client, message):
 
                 await asyncio.sleep(2)
 
-            await message.reply("𝕋𝕙𝕒𝕟𝕜 𝕐𝕠𝕦 𝔽𝕠𝕣 𝕌𝕤𝕚𝕟𝕘 𝕄𝕖 \n\n⭐Rate Me: <a href='https://t.me/tlgrmcbot?start=spaciousuniversebot-review'>Here</a>")
+            await message.reply("𝕋𝕙𝕒𝕟𝕜 𝕐𝕠𝕦 𝔽𝕠𝕣 𝕌𝕤𝕚𝕟𝕘 𝕄𝕖 \n\n⭐Rate Me: <a href='https://t.me/tlgrmcbot?start=Sundisk_Cinemas_bot-review'>Here</a>")
             kk = await client.send_message(
                 chat_id=message.from_user.id,
                 text="""
@@ -292,7 +292,7 @@ async def start(client, message):
         await add_verification(message.from_user.id, 'unverified', file_id, t)
         button = [[
             InlineKeyboardButton(
-                '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start=REAL-{data}'))
+                '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/Sundisk_Cinemas_bot?start=REAL-{data}'))
         ]]
         return await message.reply(
             text="""
@@ -313,7 +313,7 @@ async def start(client, message):
             current_time = time.strftime("%D  %H:%M:%S", t)
             button = [[
                 InlineKeyboardButton(
-                    'Get Files', url=f'https://telegram.dog/SpaciousUniverseBot?start={file_id}')
+                    'Get Files', url=f'https://telegram.dog/Sundisk_Cinemas_bot?start={file_id}')
             ]]
             return await message.reply(
                 text=f"""
@@ -330,7 +330,7 @@ async def start(client, message):
             current_time = time.strftime("%D  %H:%M:%S", t)
             button = [[
                 InlineKeyboardButton(
-                    'Get Files', url=f'https://telegram.dog/SpaciousUniverseBot?start={file_id}')
+                    'Get Files', url=f'https://telegram.dog/Sundisk_Cinemas_bot?start={file_id}')
             ]]
             return await message.reply(
                 text=f"""
@@ -346,7 +346,7 @@ async def start(client, message):
             current_time = time.strftime("%D  %H:%M:%S", t)
             button = [[
                 InlineKeyboardButton(
-                    '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start=REAL-{data}'))
+                    '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/Sundisk_Cinemas_bot?start=REAL-{data}'))
             ]]
             return await message.reply(
                 text=f"""
@@ -361,7 +361,7 @@ async def start(client, message):
         await add_verification(message.from_user.id, 'unverified', file_id, t)
         button = [[
             InlineKeyboardButton(
-                '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start=REAL-{data}'))
+                '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/Sundisk_Cinemas_bot?start=REAL-{data}'))
         ]]
         return await message.reply(
             text="""
@@ -378,7 +378,7 @@ async def start(client, message):
         await add_verification(message.from_user.id, 'unverified', file_id, user_stats["updat_time"])
         button = [[
             InlineKeyboardButton(
-                '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start=REAL-{data}'))
+                '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/Sundisk_Cinemas_bot?start=REAL-{data}'))
         ]]
         return await message.reply(
             text="""
@@ -445,7 +445,7 @@ async def start(client, message):
                     continue
                 await asyncio.sleep(2)
             await sts.delete()
-            await message.reply("𝕋𝕙𝕒𝕟𝕜 𝕐𝕠𝕦 𝔽𝕠𝕣 𝕌𝕤𝕚𝕟𝕘 𝕄𝕖 \n\n⭐Rate Me: <a href='https://t.me/tlgrmcbot?start=spaciousuniversebot-review'>Here</a>")
+            await message.reply("𝕋𝕙𝕒𝕟𝕜 𝕐𝕠𝕦 𝔽𝕠𝕣 𝕌𝕤𝕚𝕟𝕘 𝕄𝕖 \n\n⭐Rate Me: <a href='https://t.me/tlgrmcbot?start=Sundisk_Cinemas_bot-review'>Here</a>")
             kk = await client.send_message(
                 chat_id=message.from_user.id,
                 text="""
@@ -611,7 +611,7 @@ async def start(client, message):
                 await add_sent_files(message.from_user.id, file.file_id)
                 await asyncio.sleep(2)
 
-            await message.reply("𝕋𝕙𝕒𝕟𝕜 𝕐𝕠𝕦 𝔽𝕠𝕣 𝕌𝕤𝕚𝕟𝕘 𝕄𝕖 \n\n⭐Rate Me: <a href='https://t.me/tlgrmcbot?start=spaciousuniversebot-review'>Here</a>")
+            await message.reply("𝕋𝕙𝕒𝕟𝕜 𝕐𝕠𝕦 𝔽𝕠𝕣 𝕌𝕤𝕚𝕟𝕘 𝕄𝕖 \n\n⭐Rate Me: <a href='https://t.me/tlgrmcbot?start=Sundisk_Cinemas_bot-review'>Here</a>")
             kk = await client.send_message(
                 chat_id=message.from_user.id,
                 text="""
