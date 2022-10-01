@@ -1,5 +1,6 @@
 import logging
 from pyrogram.errors import InputUserDeactivated, UserNotParticipant, FloodWait, UserIsBlocked, PeerIdInvalid
+from database.quickdb import find_api
 from info import AUTH_CHANNEL, LONG_IMDB_DESCRIPTION, MAX_LIST_ELM
 from imdb import IMDb
 import asyncio
@@ -413,20 +414,11 @@ def getseries(name):
 #     return urllink
 
 
-def gen_url(link):
-    urllink = f'https://rocklinks.net/st?api=85b949240ee33cb797db1efc7aa94cb265c6ad35&url={link}'
-
-    try:
-        urllink = shortner.tinyurl.short(urllink)
-    except Exception:
-        urllink = urllink
-    return urllink
-
-# def geny_url(file_id):
-#     urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url=https://telegram.dog/SpaciousUniverseBot?start={file_id}'
-#     #urllink = f'https://semawur.com/st/?api=ee503477175b248fa734b0f2c0fa6f352bd8892d&url=https://telegram.dog/SpaciousUniverseBot?start={file_id}'
-#     #urllink = url_shortener.tinyurl.short(urllink)
-#     return urllink
+def gen_url(link, userId):
+    if api := find_api(userId):
+        return f"https://sundisk.in/st?api={api}&url={link}"
+    else:
+        return link
 
 
 def split_list(l, n):

@@ -11,7 +11,7 @@ from database.users_chats_db import db
 from info import CHANNELS, ADMINS, AUTH_CHANNEL, LOG_CHANNEL, PICS, BATCH_FILE_CAPTION, CUSTOM_FILE_CAPTION, PROTECT_CONTENT
 from utils import get_settings, get_size, is_subscribed, save_group_settings, temp, send_more_files, gen_url, broadcast_messages, broadcast_notification, split_list
 from database.connections_mdb import active_connection
-from database.quickdb import remove_inst, get_ids, add_sent_files, get_verification, remove_verification, add_verification, count_sent_files, add_update_msg, remove_update_msg, get_update_msg
+from database.quickdb import remove_inst, get_ids, add_sent_files, get_verification, remove_verification, add_verification, count_sent_files, add_update_msg, remove_update_msg, get_update_msg, add_api
 from database.tvseriesfilters import add_tvseries_filter, update_tvseries_filter, getlinks, find_tvseries_filter, remove_tvseries, find_tvseries_by_first
 from database.notification import find_notification, remove_notification, update_notification, add_notification, find_allusers
 import re
@@ -679,6 +679,22 @@ async def tvseries_remover(bot, message):
 async def tvseries_get(bot, message):
     k = await getlinks()
     await message.reply(k)
+
+
+@Client.on_message(filters.command("add_api") & filters.incoming)
+async def api_adder(bot, message):
+    sts = await message.reply("Checking Your Request...")
+    if " " not in message.text:
+        return await message.reply("Use correct format.<code>/add_api  GROUP_ID YOUR_API</code>\n\n\nExample <code>/add_api -1001547683045 23smxlh32yq2ghfh27d9xyww259az578</code>.")
+    data = message.text.strip().split(" ")
+    try:
+        cmd, userid, api = data
+        await add_api(userid, api)
+        await message.reply("your api added")
+
+    except:
+        return await message.reply("Sorry some error occuerd.")
+    await sts.delete()
 
 
 @Client.on_message(filters.command('channel') & filters.user(ADMINS))
