@@ -16,7 +16,7 @@ from info import ADMINS, AUTH_CHANNEL, AUTH_USERS, CUSTOM_FILE_CAPTION, AUTH_GRO
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 from pyrogram import Client, filters
 from pyrogram.errors import FloodWait, UserIsBlocked, MessageNotModified, PeerIdInvalid
-from utils import get_size, is_subscribed, get_poster, search_gagala, temp, get_settings, save_group_settings, get_name, getseries, send_more_files, gen_url
+from utils import get_size, is_subscribed, get_poster, search_gagala, temp, get_settings, save_group_settings, getseries, send_more_files, gen_url
 from database.users_chats_db import db
 from database.ia_filterdb import Media, get_file_details, get_search_results
 from database.tvseriesfilters import add_tvseries_filter, update_tvseries_filter, getlinks, find_tvseries_filter, remove_tvseries
@@ -71,18 +71,12 @@ async def next_page(bot, query):
     user_stats = await get_verification(query.from_user.id)
 
     if user_stats is None or str(user_stats["stats"]) == 'unverified':
-        btn = [[InlineKeyboardButton(text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", url=gen_url(
-            f'https://telegram.dog/SpaciousUniverseBot?start=FEND-{file.file_id}'))] for file in files]
-
-        btn.insert(0, [InlineKeyboardButton("◈ All Files ◈", url=gen_url(
-            f'https://telegram.dog/SpaciousUniverseBot?start=FEND-{dbid}'))])
+        btn = [[InlineKeyboardButton(text=f"{get_size(file.file_size)} ║ {file.file_name}", url=gen_url(
+            f'https://telegram.dog/Sundisk_Cinemas_bot?start=FEND-{file.file_id}'))] for file in files]
 
     else:
-        btn = [[InlineKeyboardButton(text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}",
+        btn = [[InlineKeyboardButton(text=f"{get_size(file.file_size)} ║ {file.file_name}",
                                      callback_data=f'gpfiles#{file.file_id}')] for file in files]
-
-        btn.insert(0, [InlineKeyboardButton(
-            "◈ All Files ◈", callback_data=f'gpfiles#{dbid}')])
 
     if 0 < offset <= 10:
         off_set = 0
@@ -132,7 +126,7 @@ async def pm_next_page(bot, query):
     fileids = [file.file_id for file in files]
     dbid = fileids[0]
     fileids = "L_I_N_K".join(fileids)
-    btn = [[InlineKeyboardButton(text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}",
+    btn = [[InlineKeyboardButton(text=f"{get_size(file.file_size)} ║ {file.file_name}",
                                  callback_data=f'pmfiles#{file.file_id}')] for file in files]
 
     if 0 < offset <= 10:
@@ -152,9 +146,6 @@ async def pm_next_page(bot, query):
     else:
         btn.append([InlineKeyboardButton("◄ Back", callback_data=f"pmnext_{req}_{key}_{off_set}"), InlineKeyboardButton(
             f"❏ {round(offset / 10) + 1} / {round(total / 10)}", callback_data="pages"), InlineKeyboardButton("Next ►", callback_data=f"pmnext_{req}_{key}_{n_offset}")])
-
-    btn.insert(0, [InlineKeyboardButton(
-        "◈ All Files ◈", callback_data=f'pmfiles#{dbid}')])
 
     try:
         await query.edit_message_reply_markup(reply_markup=InlineKeyboardMarkup(btn))
@@ -398,7 +389,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await add_verification(query.from_user.id, 'unverified', file_id, t)
             button = [[
                 InlineKeyboardButton(
-                    '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start=REAL-{file_id}'))
+                    '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/Sundisk_Cinemas_bot?start=REAL-{file_id}'))
             ]]
             return await client.send_message(
                 chat_id=query.from_user.id,
@@ -416,7 +407,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await add_verification(query.from_user.id, 'unverified', file_id, t)
             button = [[
                 InlineKeyboardButton(
-                    '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start=REAL-{file_id}'))
+                    '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/Sundisk_Cinemas_bot?start=REAL-{file_id}'))
             ]]
             return await client.send_message(
                 chat_id=query.from_user.id,
@@ -434,7 +425,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await add_verification(query.from_user.id, 'unverified', file_id, t)
             button = [[
                 InlineKeyboardButton(
-                    '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start=REAL-{file_id}'))
+                    '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/Sundisk_Cinemas_bot?start=REAL-{file_id}'))
             ]]
             return await client.send_message(
                 chat_id=query.from_user.id,
@@ -452,7 +443,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await add_verification(query.from_user.id, 'unverified', file_id, user_stats["updat_time"])
             button = [[
                 InlineKeyboardButton(
-                    '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start=REAL-{file_id}'))
+                    '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/Sundisk_Cinemas_bot?start=REAL-{file_id}'))
             ]]
             return await client.send_message(
                 chat_id=query.from_user.id,
@@ -556,11 +547,11 @@ async def cb_handler(client: Client, query: CallbackQuery):
                     logger.exception(e)
                 f_caption = f_caption
             if f_caption is None:
-                f_caption = f"{get_name(files.file_name)}"
+                f_caption = f"{files.file_name}"
 
             try:
                 if AUTH_CHANNEL and not await is_subscribed(client, query):
-                    return await query.answer(url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start=REAL-{file_id}'))
+                    return await query.answer(url=gen_url(f'https://telegram.dog/Sundisk_Cinemas_bot?start=REAL-{file_id}'))
 
                 k = await client.send_cached_media(
                     chat_id=query.from_user.id,
@@ -606,9 +597,9 @@ async def cb_handler(client: Client, query: CallbackQuery):
             except UserIsBlocked:
                 await query.answer('Unblock the bot!', show_alert=True)
             except PeerIdInvalid:
-                await query.answer(url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start=REAL-{file_id}'))
+                await query.answer(url=gen_url(f'https://telegram.dog/Sundisk_Cinemas_bot?start=REAL-{file_id}'))
             except Exception as e:
-                await query.answer(url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start=REAL-{file_id}'))
+                await query.answer(url=gen_url(f'https://telegram.dog/Sundisk_Cinemas_bot?start=REAL-{file_id}'))
 
     elif query.data.startswith("checksub"):
         if AUTH_CHANNEL and not await is_subscribed(client, query):
@@ -647,7 +638,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                                  url=f'http://t.me/{temp.U_NAME}?startgroup=true')
         ], [
             InlineKeyboardButton(
-                '🔍 Search', switch_inline_query_current_chat=''),
+                '🌐 website', url='http://sundisk.in'),
             InlineKeyboardButton('🤖 Updates', url='https://t.me/TMWAD')
         ], [
             InlineKeyboardButton('ℹ️ Help', callback_data='help'),
@@ -892,29 +883,21 @@ async def auto_filter(client, msg, spoll=False):
         btn = [
             [
                 InlineKeyboardButton(
-                    text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start=FEND-{file.file_id}')
+                    text=f"{get_size(file.file_size)} ║ {file.file_name}", url=gen_url(f'https://telegram.dog/Sundisk_Cinemas_bot?start=FEND-{file.file_id}')
                 ),
             ]
             for file in files
         ]
-        btn.insert(0,
-                   [InlineKeyboardButton(
-                       "◈ All Files ◈", url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start=FEND-{dbid}'))]
-                   )
 
     else:
         btn = [
             [
                 InlineKeyboardButton(
-                    text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", callback_data=f'gpfiles#{file.file_id}'
+                    text=f"{get_size(file.file_size)} ║ {file.file_name}", callback_data=f'gpfiles#{file.file_id}'
                 ),
             ]
             for file in files
         ]
-        btn.insert(0,
-                   [InlineKeyboardButton(
-                       "◈ All Files ◈", callback_data=f'gpfiles#{dbid}')]
-                   )
 
     if offset != "":
         key = f"{message.chat.id}-{message.id}"
@@ -1006,7 +989,7 @@ async def auto_filter(client, msg, spoll=False):
     btn = [
         [
             InlineKeyboardButton(
-                text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", callback_data=f'pmfiles#{file.file_id}'
+                text=f"{get_size(file.file_size)} ║ {file.file_name}", callback_data=f'pmfiles#{file.file_id}'
             ),
         ]
         for file in files
@@ -1020,19 +1003,11 @@ async def auto_filter(client, msg, spoll=False):
             [InlineKeyboardButton(text=f"❏ 1/{round(int(total_results) / 10)}", callback_data="pages"),
              InlineKeyboardButton(text="Next ►", callback_data=f"pmnext_{req}_{key}_{offset}")]
         )
-        btn.insert(0,
-                   [InlineKeyboardButton(
-                       "◈ All Files ◈", callback_data=f'pmfiles#{dbid}')]
-                   )
 
     else:
         btn.append(
             [InlineKeyboardButton(text="❏ 1/1", callback_data="pages")]
         )
-        btn.insert(0,
-                   [InlineKeyboardButton(
-                       "◈ All Files ◈", callback_data=f'pmfiles#{dbid}')]
-                   )
 
     imdb = await get_poster(search, file=(files[0]).file_name)
     if imdb:
