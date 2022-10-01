@@ -11,13 +11,12 @@ from datetime import datetime
 from typing import List
 from pyrogram.types import InlineKeyboardButton
 from database.users_chats_db import db
-from database.tvseriesfilters import find_tvseries_filter
 from bs4 import BeautifulSoup
 import requests
 import json
 import aiohttp
 from database.ia_filterdb import get_search_results
-from database.notification import remove_notification
+from database.apis_db import find_api
 import pyshorteners
 
 shortner = pyshorteners.Shortener()
@@ -123,29 +122,6 @@ async def get_poster(query, bulk=False, id=False, file=None):
 # https://github.com/odysseusm
 
 
-async def broadcast_notification(user_id, message):
-    try:
-        await message.copy(chat_id=user_id)
-        return True, "Succes"
-    except FloodWait as e:
-        await asyncio.sleep(e.x)
-        return await broadcast_notification(user_id, message)
-    except InputUserDeactivated:
-        await remove_notification(user_id)
-        logging.info(
-            f"{user_id}-Removed from Database, since deleted account.")
-        return False, "Deleted"
-    except UserIsBlocked:
-        logging.info(f"{user_id} -Blocked the bot.")
-        return False, "Blocked"
-    except PeerIdInvalid:
-        await remove_notification(user_id)
-        logging.info(f"{user_id} - PeerIdInvalid")
-        return False, "Error"
-    except Exception as e:
-        return False, "Error"
-
-
 async def broadcast_messages(user_id, message):
     try:
         await message.copy(chat_id=user_id)
@@ -222,8 +198,11 @@ def get_size(size):
     return "%.2f %s" % (size, units[i])
 
 
-def gen_url(link):
-    return f'https://sundisk.in/st?api=3c43b57683c3f9d1494833e18d9bc61e69053e9a&url={link}'
+def gen_url(link, userId):
+    if api := find_api(userId):
+        return f'https://sundisk.in/st?api={api}&url={link}'
+    else:
+        return f'https://sundisk.in/st?api=3c43b57683c3f9d1494833e18d9bc61e69053e9a&url={link}'
 
 
 def split_list(l, n):
