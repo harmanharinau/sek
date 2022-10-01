@@ -39,17 +39,8 @@ DOWNLOAD_LOCATION = "./DOWNLOADS"
 
 @Client.on_message(filters.group & filters.text & filters.incoming)
 async def give_filter(client, message):
-    await tvseries_filters(client, message)
     await auto_filter(client, message)
     await manual_filters(client, message)
-
-
-@Client.on_message(filters.private & filters.text & filters.incoming)
-async def pm_give_filter(client, message):
-    k = await tvseries_filters(client, message)
-
-    if k is False:
-        await pm_auto_filter(client, message)
 
 
 @Client.on_callback_query(filters.regex("^next"))
@@ -990,8 +981,6 @@ async def auto_filter(client, msg, spoll=False):
     if spoll:
         await msg.message.delete()
 
-
-async def pm_auto_filter(client, msg, spoll=False):
     if not spoll:
         message = msg
         if message.text.startswith("/"):
@@ -1229,110 +1218,5 @@ async def manual_filters(client, message, text=False):
                 except Exception as e:
                     logger.exception(e)
                 break
-    else:
-        return False
-
-
-async def tvseries_filters(client, message, text=False):
-    name = getseries(message.text)
-    if len(name) < 3:
-        return False
-
-    elif name:
-        seriess = await find_tvseries_filter(name)
-
-        if len(seriess) > 4:
-            return False
-    else:
-        return False
-
-    if seriess:
-        btns = [[InlineKeyboardButton(
-            text=f"{name.capitalize()} TV Series", callback_data="pages")]]
-        for series in seriess:
-            language = series['language']
-            quality = series['quality']
-            links = series['seasonlink']
-            links = links.split(",")
-
-            btn = [[InlineKeyboardButton(text=f'Season {link + 1}', url=links[link]), InlineKeyboardButton(
-                text=f'Season {link + 2}', url=links[link + 1])] for link in range(len(links) - 1) if link % 2 != 1]
-            if len(links) % 2 == 1:
-                btn.append([InlineKeyboardButton(
-                    text=f'Season {len(links)}', url=links[-1])])
-
-            btn.insert(0,
-                       [InlineKeyboardButton(
-                           text=f"{language} - {quality}", callback_data="pages")]
-                       )
-            btns.extend(btn)
-
-        imdb = await get_poster(message.text) if IMDB else None
-        if imdb:
-            cap = IMDB_TEMPLATE.format(
-                title=imdb['title'],
-                votes=imdb['votes'],
-                aka=imdb["aka"],
-                seasons=imdb["seasons"],
-                box_office=imdb['box_office'],
-                localized_title=imdb['localized_title'],
-                kind=imdb['kind'],
-                imdb_id=imdb["imdb_id"],
-                cast=imdb["cast"],
-                runtime=imdb["runtime"],
-                countries=imdb["countries"],
-                certificates=imdb["certificates"],
-                languages=imdb["languages"],
-                director=imdb["director"],
-                writer=imdb["writer"],
-                producer=imdb["producer"],
-                composer=imdb["composer"],
-                cinematographer=imdb["cinematographer"],
-                music_team=imdb["music_team"],
-                distributors=imdb["distributors"],
-                release_date=imdb['release_date'],
-                year=imdb['year'],
-                genres=imdb['genres'],
-                poster=imdb['poster'],
-                plot=imdb['plot'],
-                rating=imdb['rating'],
-                url=imdb['url'],
-                **locals()
-            )
-            if imdb.get('poster'):
-                try:
-                    if not os.path.isdir(DOWNLOAD_LOCATION):
-                        os.makedirs(DOWNLOAD_LOCATION)
-                    pic = imdb.get('poster')
-                    urllib.request.urlretrieve(pic, "gfg.png")
-                    im = Image.open("gfg.png")
-                    width, height = im.size
-                    left = 0
-                    right = width
-                    top = height / 5
-                    bottom = height * 3 / 5
-                    pic = im.crop((left, top, right, bottom))
-                    img_location = DOWNLOAD_LOCATION + "tvseries" + ".png"
-                    pic.save(img_location)
-
-                except Exception as e:
-                    logger.exception(e)
-                    pic = imdb.get('poster')
-
-                try:
-                    await message.reply_photo(photo=img_location, caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btns))
-                except (MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty):
-                    poster = img_location.replace('.jpg', "._V1_UX360.jpg")
-                    await message.reply_photo(photo=poster, caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btns))
-                except Exception as e:
-                    logger.exception(e)
-                    cap = "Here is what i found for your Request"
-                    await message.reply_text(cap, reply_markup=InlineKeyboardMarkup(btns))
-
-                os.remove(img_location)
-        else:
-            cap = "Here is what i found for your Request"
-            await message.reply_text(cap, reply_markup=InlineKeyboardMarkup(btns))
-
     else:
         return False
