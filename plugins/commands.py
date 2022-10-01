@@ -28,7 +28,8 @@ async def start(client, message):
     if message.chat.type in ['group', 'supergroup']:
         buttons = [
             [
-                InlineKeyboardButton('🤖 Updates', url='https://t.me/TMWAD')
+                InlineKeyboardButton(
+                    '🤖 Updates', url='https://t.me/SunDisk_official')
             ],
             [
                 InlineKeyboardButton(
@@ -54,7 +55,8 @@ async def start(client, message):
         ], [
             InlineKeyboardButton(
                 '🌐 Website',  url='http://sundisk.in'),
-            InlineKeyboardButton('🤖 Updates', url='https://t.me/TMWAD')
+            InlineKeyboardButton(
+                '🤖 Updates', url='https://t.me/SunDisk_official')
         ], [
             InlineKeyboardButton('ℹ️ Help', callback_data='help'),
             InlineKeyboardButton('😊 About', callback_data='about')
@@ -74,7 +76,7 @@ async def start(client, message):
         btn = [
             [
                 InlineKeyboardButton(
-                    "🤖 Join Updates Channel", url="https://t.me/TMWAD"
+                    "🤖 Join Updates Channel", url="https://t.me/SunDisk_official"
                 )
             ]
         ]
@@ -104,7 +106,8 @@ async def start(client, message):
         ], [
             InlineKeyboardButton(
                 '🌐 website', url='http://sundisk.in'),
-            InlineKeyboardButton('🤖 Updates', url='https://t.me/TMWAD')
+            InlineKeyboardButton(
+                '🤖 Updates', url='https://t.me/SunDisk_official')
         ], [
             InlineKeyboardButton('ℹ️ Help', callback_data='help'),
             InlineKeyboardButton('😊 About', callback_data='about')

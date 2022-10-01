@@ -639,7 +639,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         ], [
             InlineKeyboardButton(
                 '🌐 website', url='http://sundisk.in'),
-            InlineKeyboardButton('🤖 Updates', url='https://t.me/TMWAD')
+            InlineKeyboardButton('🤖 Updates', url='https://t.me/SunDisk_official')
         ], [
             InlineKeyboardButton('ℹ️ Help', callback_data='help'),
             InlineKeyboardButton('😊 About', callback_data='about')
@@ -672,7 +672,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         )
     elif query.data == "about":
         buttons = [[
-            InlineKeyboardButton('🤖 Updates', url='https://t.me/TMWAD'),
+            InlineKeyboardButton('🤖 Updates', url='https://t.me/SunDisk_official'),
             InlineKeyboardButton('💸 cpm', callback_data='source')
         ], [
             InlineKeyboardButton('🏠 Home', callback_data='start'),
