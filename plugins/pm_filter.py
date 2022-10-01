@@ -684,21 +684,21 @@ async def cb_handler(client: Client, query: CallbackQuery):
         ]]
         reply_markup = InlineKeyboardMarkup(buttons)
         await query.message.edit_text(
-            text=script.HELP_TXT.format(query.from_user.mention),
+            text=script.HELP_TXT,
             reply_markup=reply_markup,
 
         )
     elif query.data == "about":
         buttons = [[
             InlineKeyboardButton('🤖 Updates', url='https://t.me/TMWAD'),
-            InlineKeyboardButton('♥️ Source', callback_data='source')
+            InlineKeyboardButton('💸 cpm', callback_data='source')
         ], [
             InlineKeyboardButton('🏠 Home', callback_data='start'),
             InlineKeyboardButton('🔐 Close', callback_data='close_data')
         ]]
         reply_markup = InlineKeyboardMarkup(buttons)
         await query.message.edit_text(
-            text=script.ABOUT_TXT.format(temp.B_NAME),
+            text=script.ABOUT_TXT,
             reply_markup=reply_markup,
 
         )

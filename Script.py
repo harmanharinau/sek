@@ -1,7 +1,8 @@
 class script(object):
     START_TXT = """ℍ𝕖𝕝𝕝𝕠 {},
-    𝕀𝕞 <a href=https://t.me/{}>{}</a>, 𝕁𝕦𝕤𝕥 𝔸𝕕𝕕 𝕄𝕖 𝕋𝕠 𝕐𝕠𝕦𝕣 𝔾𝕣𝕠𝕦𝕡𝕤 𝕋𝕠 𝔼𝕒𝕣𝕟 𝕐𝕠𝕦𝕣 ℙ𝕣𝕠𝕗𝕚𝕥 💸"""
-    HELP_TXT = """𝙷𝙴𝚈 {}
+
+𝕀𝕞 <a href=https://t.me/{}>{}</a>, 𝕁𝕦𝕤𝕥 𝔸𝕕𝕕 𝕄𝕖 𝕋𝕠 𝕐𝕠𝕦𝕣 𝔾𝕣𝕠𝕦𝕡𝕤 𝕋𝕠 𝔼𝕒𝕣𝕟 𝕐𝕠𝕦𝕣 ℙ𝕣𝕠𝕗𝕚𝕥 💸"""
+    HELP_TXT = """
 How To Use Bot ? 🔘
 
 To Use Ldisk Movie Search You Just Have A Account In sundisk.in |
@@ -14,7 +15,7 @@ To Connect Your Api Give Command /add_api your api  .
 
 Now Enjoy Your Profit 💸."""
     ABOUT_TXT = """
-Welcome To sundisk.in {} 
+Welcome To sundisk.in
 
 This is the free link Converter. Just sign up through our website and then login and short your link and Share your shorten links and earn money 💰.
 
