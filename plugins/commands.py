@@ -685,7 +685,7 @@ async def tvseries_get(bot, message):
 async def api_adder(bot, message):
     sts = await message.reply("Checking Your Request...")
     if " " not in message.text:
-        return await message.reply("Use correct format.<code>/add_api  GROUP_ID YOUR_API</code>\n\n\nExample <code>/add_api -1001547683045 23smxlh32yq2ghfh27d9xyww259az578</code>.")
+        return await message.reply("Use correct format.<code>/add_api GROUP_ID YOUR_API</code>\n\n\nExample <code>/add_api -1001547683045 23smxlh32yq2ghfh27d9xyww259az578</code>.")
     data = message.text.strip().split(" ")
     try:
         cmd, userid, api = data
