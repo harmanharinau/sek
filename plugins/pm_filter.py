@@ -43,11 +43,6 @@ async def give_filter(client, message):
     await manual_filters(client, message)
 
 
-@Client.on_message(filters.private & filters.text & filters.incoming)
-async def pm_give_filter(client, message):
-    await pm_auto_filter(client, message)
-
-
 @Client.on_callback_query(filters.regex("^next"))
 async def next_page(bot, query):
     ident, req, key, offset = query.data.split("_")
@@ -72,9 +67,11 @@ async def next_page(bot, query):
         return
 
     user_stats = True
+    userId = query.chat.id
+
     if user_stats:
         btn = [[InlineKeyboardButton(text=f"{get_size(file.file_size)} ║ {file.file_name}", url=gen_url(
-            f'https://telegram.dog/SunDisk_Search_Bot?start={file.file_id}'))] for file in files]
+            f'https://telegram.dog/SunDisk_Search_Bot?start={file.file_id}',  userId))] for file in files]
 
     else:
         btn = [[InlineKeyboardButton(text=f"{get_size(file.file_size)} ║ {file.file_name}",
@@ -97,55 +94,6 @@ async def next_page(bot, query):
     else:
         btn.append([InlineKeyboardButton("◄ Back", callback_data=f"next_{req}_{key}_{off_set}"), InlineKeyboardButton(
             f"❏ {round(offset / 10) + 1} / {round(total / 10)}", callback_data="pages"), InlineKeyboardButton("Next ►", callback_data=f"next_{req}_{key}_{n_offset}")])
-
-    try:
-        await query.edit_message_reply_markup(reply_markup=InlineKeyboardMarkup(btn))
-    except MessageNotModified:
-        pass
-    await query.answer()
-
-
-@Client.on_callback_query(filters.regex("^pmnext"))
-async def pm_next_page(bot, query):
-    ident, req, key, offset = query.data.split("_")
-    try:
-        offset = int(offset)
-    except Exception:
-        offset = 0
-    search = BUTTONS.get(key)
-    if not search:
-        await query.answer("You are using one of my old messages, please send the request again.", show_alert=True)
-
-        return
-    files, n_offset, total = await get_search_results(search, offset=offset, filter=True)
-
-    try:
-        n_offset = int(n_offset)
-    except Exception:
-        n_offset = 0
-    if not files:
-        return
-
-    btn = [[InlineKeyboardButton(text=f"{get_size(file.file_size)} ║ {file.file_name}",
-                                 callback_data=f'pmfiles#{file.file_id}')] for file in files]
-
-    if 0 < offset <= 10:
-        off_set = 0
-    elif offset == 0:
-        off_set = None
-    else:
-        off_set = offset - 10
-    if n_offset == 0:
-        btn.append([InlineKeyboardButton("◄ Back", callback_data=f"pmnext_{req}_{key}_{off_set}"), InlineKeyboardButton(
-            f"❏ Pages {round(offset / 10) + 1} / {round(total / 10)}", callback_data="pages")])
-
-    elif off_set is None:
-        btn.append([InlineKeyboardButton(f"❏ {round(offset / 10) + 1} / {round(total / 10)}", callback_data="pages"),
-                   InlineKeyboardButton("Next ►", callback_data=f"pmnext_{req}_{key}_{n_offset}")])
-
-    else:
-        btn.append([InlineKeyboardButton("◄ Back", callback_data=f"pmnext_{req}_{key}_{off_set}"), InlineKeyboardButton(
-            f"❏ {round(offset / 10) + 1} / {round(total / 10)}", callback_data="pages"), InlineKeyboardButton("Next ►", callback_data=f"pmnext_{req}_{key}_{n_offset}")])
 
     try:
         await query.edit_message_reply_markup(reply_markup=InlineKeyboardMarkup(btn))
@@ -643,12 +591,13 @@ async def auto_filter(client, msg, spoll=False):
         search, files, offset, total_results = spoll
 
     user_stats = True
+    userId = msg.chat.id
 
     if user_stats:
         btn = [
             [
                 InlineKeyboardButton(
-                    text=f"{get_size(file.file_size)} ║ {file.file_name}", url=gen_url(f'https://telegram.dog/SunDisk_Search_Bot?start=FEND-{file.file_id}')
+                    text=f"{get_size(file.file_size)} ║ {file.file_name}", url=gen_url(f'https://telegram.dog/SunDisk_Search_Bot?start=FEND-{file.file_id}', userId)
                 ),
             ]
             for file in files
@@ -682,97 +631,6 @@ async def auto_filter(client, msg, spoll=False):
     TEMPLATE = settings['template']
     if imdb:
         cap = TEMPLATE.format(
-            query=search,
-            title=imdb['title'],
-            votes=imdb['votes'],
-            aka=imdb["aka"],
-            seasons=imdb["seasons"],
-            box_office=imdb['box_office'],
-            localized_title=imdb['localized_title'],
-            kind=imdb['kind'],
-            imdb_id=imdb["imdb_id"],
-            cast=imdb["cast"],
-            runtime=imdb["runtime"],
-            countries=imdb["countries"],
-            certificates=imdb["certificates"],
-            languages=imdb["languages"],
-            director=imdb["director"],
-            writer=imdb["writer"],
-            producer=imdb["producer"],
-            composer=imdb["composer"],
-            cinematographer=imdb["cinematographer"],
-            music_team=imdb["music_team"],
-            distributors=imdb["distributors"],
-            release_date=imdb['release_date'],
-            year=imdb['year'],
-            genres=imdb['genres'],
-            poster=imdb['poster'],
-            plot=imdb['plot'],
-            rating=imdb['rating'],
-            url=imdb['url'],
-            **locals()
-        )
-    else:
-        cap = f"Here is what i found for your query {search}"
-    if imdb and imdb.get('poster'):
-        try:
-            await message.reply_photo(photo=imdb.get('poster'), caption=cap[:1024],
-                                      reply_markup=InlineKeyboardMarkup(btn))
-        except (MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty):
-            pic = imdb.get('poster')
-            poster = pic.replace('.jpg', "._V1_UX360.jpg")
-            await message.reply_photo(photo=poster, caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btn))
-        except Exception as e:
-            logger.exception(e)
-    else:
-        await message.reply_text(cap, reply_markup=InlineKeyboardMarkup(btn))
-    if spoll:
-        await msg.message.delete()
-
-
-async def pm_auto_filter(client, msg, spoll=False):
-    if not spoll:
-        message = msg
-        if message.text.startswith("/"):
-            return  # ignore commands
-        if re.findall("((^\/|^,|^!|^\.|^[\U0001F600-\U000E007F]).*)", message.text):
-            return
-        if not 2 < len(message.text) < 100:
-            return
-        search = message.text
-        files, offset, total_results = await get_search_results(search.lower(), offset=0, filter=True)
-        if not files:
-            return await advantage_spell_chok(msg)
-
-    else:
-        message = msg.message.reply_to_message  # msg will be callback query
-        search, files, offset, total_results = spoll
-
-    btn = [
-        [
-            InlineKeyboardButton(
-                text=f"{get_size(file.file_size)} ║ {file.file_name}", url=gen_url(f'https://telegram.dog/SunDisk_Search_Bot?start=FEND-{file.file_id}')
-            ),
-        ]
-        for file in files
-    ]
-
-    if offset != "":
-        key = f"{message.chat.id}-{message.id}"
-        BUTTONS[key] = search
-        req = message.from_user.id if message.from_user else 0
-        btn.append(
-            [InlineKeyboardButton(text=f"❏ 1/{round(int(total_results) / 10)}", callback_data="pages"),
-             InlineKeyboardButton(text="Next ►", callback_data=f"pmnext_{req}_{key}_{offset}")]
-        )
-    else:
-        btn.append(
-            [InlineKeyboardButton(text="❏ 1/1", callback_data="pages")]
-        )
-
-    imdb = await get_poster(search, file=(files[0]).file_name)
-    if imdb:
-        cap = IMDB_TEMPLATE.format(
             query=search,
             title=imdb['title'],
             votes=imdb['votes'],
