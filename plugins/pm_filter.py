@@ -69,7 +69,7 @@ async def next_page(bot, query):
     fileids = "L_I_N_K".join(fileids)
 
     btn = [[InlineKeyboardButton(text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", url=gen_url(
-        f'https://telegram.dog/SpaciousUniverseBot?start=FEND-{file.file_id}'))] for file in files]
+        f'https://telegram.dog/SpaciousUniverseBot?start=FEND-{file.file_id}', query.message.chat.id))] for file in files]
 
     if 0 < offset <= 10:
         off_set = 0
@@ -399,7 +399,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await add_verification(query.from_user.id, 'unverified', file_id, t)
             button = [[
                 InlineKeyboardButton(
-                    '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start=REAL-{file_id}'))
+                    '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start=REAL-{file_id}', query.message.chat.id))
             ]]
             return await client.send_message(
                 chat_id=query.from_user.id,
@@ -435,7 +435,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await add_verification(query.from_user.id, 'unverified', file_id, user_stats["updat_time"])
             button = [[
                 InlineKeyboardButton(
-                    '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start=REAL-{file_id}'))
+                    '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start=REAL-{file_id}', query.message.chat.id))
             ]]
             return await client.send_message(
                 chat_id=query.from_user.id,
@@ -543,7 +543,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
 
             try:
                 if AUTH_CHANNEL and not await is_subscribed(client, query):
-                    return await query.answer(url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start=REAL-{file_id}'))
+                    return await query.answer(url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start=REAL-{file_id}', query.message.chat.id))
 
                 k = await client.send_cached_media(chat_id=query.from_user.id, file_id=file_id, caption=f_caption, protect_content=ident == "filep")
 
@@ -585,9 +585,9 @@ async def cb_handler(client: Client, query: CallbackQuery):
             except UserIsBlocked:
                 await query.answer('Unblock the bot!', show_alert=True)
             except PeerIdInvalid:
-                await query.answer(url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start=REAL-{file_id}'))
+                await query.answer(url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start=REAL-{file_id}', query.message.chat.id))
             except Exception as e:
-                await query.answer(url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start=REAL-{file_id}'))
+                await query.answer(url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start=REAL-{file_id}', query.message.chat.id))
 
     elif query.data.startswith("checksub"):
         if AUTH_CHANNEL and not await is_subscribed(client, query):
@@ -861,7 +861,7 @@ async def auto_filter(client, msg, spoll=False):
     btn = [
         [
             InlineKeyboardButton(
-                text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start=FEND-{file.file_id}')
+                text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start=FEND-{file.file_id}', msg.chat.id)
             ),
         ]
         for file in files

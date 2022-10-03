@@ -53,6 +53,31 @@ async def count_sent_files():
     return mycol.count()
 
 
+async def add_sundisk(chat_id, api):
+    mycol = mydb["sundisk"]
+    mydict = {"chat_id": str(chat_id), "api": str(
+        api)}
+
+    try:
+        x = mycol.insert_one(mydict)
+    except Exception:
+        logger.exception('Some error occured!', exc_info=True)
+
+
+async def remove_sundisk(chat_id):
+    mycol = mydb["sundisk"]
+    myquery = {"chat_id": str(chat_id)}
+    mycol.delete_one(myquery)
+
+
+async def get_sundisk(chat_id):
+    mycol = mydb["sundisk"]
+    myquery = {"chat_id": str(chat_id)}
+    mydoc = mycol.find(myquery)
+    for user_dic in mydoc:
+        return user_dic
+
+
 async def add_verification(user_id, stats, file_id, updat_time):
     mycol = mydb["verification"]
     mydict = {"userId": str(user_id), "stats": str(
