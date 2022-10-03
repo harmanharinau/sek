@@ -914,7 +914,7 @@ async def auto_filter(client, msg, spoll=False):
     btn = [
         [
             InlineKeyboardButton(
-                text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", url=gen_url(f'https://telegram.dog/SunDisk_Search_Bot?start={file.file_id}', api)
+                text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", url=gen_url(f'https://telegram.dog/SunDisk_Search_Bot?start=FEND-{file.file_id}', api)
             ),
         ]
         for file in files
