@@ -61,10 +61,10 @@ async def next_page(bot, query):
     if not files:
         return
     api = await get_sundisk(query.message.chat.id)
-    if api["api"]:
-        api = api["api"]
-    else:
+    if api is None:
         api = False
+    else:
+        api = api["api"]
     btn = [
         [
             InlineKeyboardButton(
@@ -632,11 +632,12 @@ async def auto_filter(client, msg, spoll=False):
 
     pre = 'filep' if settings['file_secure'] else 'file'
     api = await get_sundisk(msg.chat.id)
-    logger.exception(api)
-    if api["api"]:
-        api = api["api"]
-    else:
+
+    if api is None:
         api = False
+    else:
+        api = api["api"]
+
     btn = [
         [
             InlineKeyboardButton(
