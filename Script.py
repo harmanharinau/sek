@@ -105,39 +105,3 @@ Added By - {}
 ID - <code>{}</code>
 Name - {}
 """
-    POST_TEXT = """
-𝗕𝗮𝗲 𝗦𝘂𝘇𝘆 𝗕𝗼𝘁 𝗨𝗽𝗱𝗮𝘁𝗲 
-
-🔹 New Features :
-
-    - Remove the Old Added Verification method now no need to verify yourself for every request. you Only need to Verify yourself at once. (for 24 hours full access) 
-And you need to update verification expire within 24 hours. 
-
-    - Now, You Can Use Bot In Both Privet Chat And Groups
-
-    - Added Advance TV Series Filters. 
-
-    - Added button to get all files on the regular page 
-
-    - When sending files bot Automatically sends similar files to a user 
-
-    - Added Delete Timer ( You need to forward files to your `save message chat` before downloading ) 
-
-    - Added `/notification` Feature. it's update you new movie / Tv series ( For get notification you should turned on notification | go to bot and send /notification command ) [ Update 7/26 ]
-
-Add Bae Suzy To Your Group & Enjoy 
-
-@SpaciousUniverseBot | @TMWAD
-
-Bot Stats:
-
-» Today Sended Files: {} 
-» New Users: {}
-» Newly Added Files: {}
-
-• Total Users: {}
-• Total Files: {}
-
-Updated Time: {}
-
-"""

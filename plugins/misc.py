@@ -1,5 +1,5 @@
 import os
-from pyrogram import Client, filters
+from pyrogram import Client, filters, enums
 from pyrogram.errors.exceptions.bad_request_400 import UserNotParticipant, MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty
 from info import IMDB_TEMPLATE
 from utils import extract_user, get_file_id, get_poster, last_online
@@ -10,22 +10,21 @@ import logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.ERROR)
 
-
 @Client.on_message(filters.command('id'))
 async def showid(client, message):
     chat_type = message.chat.type
-    if chat_type == "private":
+    if chat_type == enums.ChatType.PRIVATE:
         user_id = message.chat.id
         first = message.from_user.first_name
         last = message.from_user.last_name or ""
-        username = message.from_user.username or ""
+        username = message.from_user.username
         dc_id = message.from_user.dc_id or ""
         await message.reply_text(
             f"<b>➲ First Name:</b> {first}\n<b>➲ Last Name:</b> {last}\n<b>➲ Username:</b> {username}\n<b>➲ Telegram ID:</b> <code>{user_id}</code>\n<b>➲ Data Centre:</b> <code>{dc_id}</code>",
             quote=True
         )
 
-    elif chat_type in ["group", "supergroup"]:
+    elif chat_type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
         _id = ""
         _id += (
             "<b>➲ Chat ID</b>: "
@@ -55,7 +54,6 @@ async def showid(client, message):
             quote=True
         )
 
-
 @Client.on_message(filters.command(["info"]))
 async def who_is(client, message):
     # https://github.com/SpEcHiDe/PyroGramBot/blob/master/pyrobot/plugins/admemes/whois.py#L19
@@ -84,11 +82,11 @@ async def who_is(client, message):
     message_out_str += f"<b>➲Data Centre:</b> <code>{dc_id}</code>\n"
     message_out_str += f"<b>➲User Name:</b> @{username}\n"
     message_out_str += f"<b>➲User 𝖫𝗂𝗇𝗄:</b> <a href='tg://user?id={from_user.id}'><b>Click Here</b></a>\n"
-    if message.chat.type in (("supergroup", "channel")):
+    if message.chat.type in ((enums.ChatType.SUPERGROUP, enums.ChatType.CHANNEL)):
         try:
             chat_member_p = await message.chat.get_member(from_user.id)
-            joined_date = datetime.fromtimestamp(
-                chat_member_p.joined_date or time.time()
+            joined_date = (
+                chat_member_p.joined_date or datetime.now()
             ).strftime("%Y.%m.%d %H:%M:%S")
             message_out_str += (
                 "<b>➲Joined this Chat on:</b> <code>"
@@ -111,6 +109,7 @@ async def who_is(client, message):
             quote=True,
             reply_markup=reply_markup,
             caption=message_out_str,
+            parse_mode=enums.ParseMode.HTML,
             disable_notification=True
         )
         os.remove(local_user_photo)
@@ -123,10 +122,10 @@ async def who_is(client, message):
             text=message_out_str,
             reply_markup=reply_markup,
             quote=True,
+            parse_mode=enums.ParseMode.HTML,
             disable_notification=True
         )
     await status_message.delete()
-
 
 @Client.on_message(filters.command(["imdb", 'search']))
 async def imdb_search(client, message):
@@ -149,50 +148,49 @@ async def imdb_search(client, message):
     else:
         await message.reply('Give me a movie / series Name')
 
-
 @Client.on_callback_query(filters.regex('^imdb'))
 async def imdb_callback(bot: Client, quer_y: CallbackQuery):
     i, movie = quer_y.data.split('#')
     imdb = await get_poster(query=movie, id=True)
     btn = [
-        [
-            InlineKeyboardButton(
-                text=f"{imdb.get('title')}",
-                url=imdb['url'],
-            )
+            [
+                InlineKeyboardButton(
+                    text=f"{imdb.get('title')}",
+                    url=imdb['url'],
+                )
+            ]
         ]
-    ]
     message = quer_y.message.reply_to_message or quer_y.message
     if imdb:
         caption = IMDB_TEMPLATE.format(
-            query=imdb['title'],
-            title=imdb['title'],
-            votes=imdb['votes'],
-            aka=imdb["aka"],
-            seasons=imdb["seasons"],
-            box_office=imdb['box_office'],
-            localized_title=imdb['localized_title'],
-            kind=imdb['kind'],
-            imdb_id=imdb["imdb_id"],
-            cast=imdb["cast"],
-            runtime=imdb["runtime"],
-            countries=imdb["countries"],
-            certificates=imdb["certificates"],
-            languages=imdb["languages"],
-            director=imdb["director"],
-            writer=imdb["writer"],
-            producer=imdb["producer"],
-            composer=imdb["composer"],
-            cinematographer=imdb["cinematographer"],
-            music_team=imdb["music_team"],
-            distributors=imdb["distributors"],
-            release_date=imdb['release_date'],
-            year=imdb['year'],
-            genres=imdb['genres'],
-            poster=imdb['poster'],
-            plot=imdb['plot'],
-            rating=imdb['rating'],
-            url=imdb['url'],
+            query = imdb['title'],
+            title = imdb['title'],
+            votes = imdb['votes'],
+            aka = imdb["aka"],
+            seasons = imdb["seasons"],
+            box_office = imdb['box_office'],
+            localized_title = imdb['localized_title'],
+            kind = imdb['kind'],
+            imdb_id = imdb["imdb_id"],
+            cast = imdb["cast"],
+            runtime = imdb["runtime"],
+            countries = imdb["countries"],
+            certificates = imdb["certificates"],
+            languages = imdb["languages"],
+            director = imdb["director"],
+            writer = imdb["writer"],
+            producer = imdb["producer"],
+            composer = imdb["composer"],
+            cinematographer = imdb["cinematographer"],
+            music_team = imdb["music_team"],
+            distributors = imdb["distributors"],
+            release_date = imdb['release_date'],
+            year = imdb['year'],
+            genres = imdb['genres'],
+            poster = imdb['poster'],
+            plot = imdb['plot'],
+            rating = imdb['rating'],
+            url = imdb['url'],
             **locals()
         )
     else:
@@ -211,3 +209,6 @@ async def imdb_callback(bot: Client, quer_y: CallbackQuery):
     else:
         await quer_y.message.edit(caption, reply_markup=InlineKeyboardMarkup(btn), disable_web_page_preview=False)
     await quer_y.answer()
+        
+
+        

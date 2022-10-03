@@ -3,24 +3,16 @@ from pyrogram.errors import InputUserDeactivated, UserNotParticipant, FloodWait,
 from info import AUTH_CHANNEL, LONG_IMDB_DESCRIPTION, MAX_LIST_ELM
 from imdb import IMDb
 import asyncio
-from pyrogram.types import Message
+from pyrogram.types import Message, InlineKeyboardButton
+from pyrogram import enums
 from typing import Union
 import re
 import os
 from datetime import datetime
 from typing import List
-from pyrogram.types import InlineKeyboardButton
 from database.users_chats_db import db
-from database.tvseriesfilters import find_tvseries_filter
 from bs4 import BeautifulSoup
 import requests
-import json
-import aiohttp
-from database.ia_filterdb import get_search_results
-from database.notification import remove_notification
-import pyshorteners
-
-shortner = pyshorteners.Shortener()
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -29,28 +21,24 @@ BTN_URL_REGEX = re.compile(
     r"(\[([^\[]+?)\]\((buttonurl|buttonalert):(?:/{0,2})(.+?)(:same)?\))"
 )
 
-imdb = IMDb()
+imdb = IMDb() 
 
 BANNED = {}
 SMART_OPEN = '“'
 SMART_CLOSE = '”'
 START_CHAR = ('\'', '"', SMART_OPEN)
-btns = []
 
-# temp db for banned
-
-
+# temp db for banned 
 class temp(object):
     BANNED_USERS = []
     BANNED_CHATS = []
     ME = None
-    CURRENT = int(os.environ.get("SKIP", 2))
+    CURRENT=int(os.environ.get("SKIP", 2))
     CANCEL = False
     MELCOW = {}
     U_NAME = None
     B_NAME = None
     SETTINGS = {}
-
 
 async def is_subscribed(bot, query):
     try:
@@ -65,37 +53,31 @@ async def is_subscribed(bot, query):
 
     return False
 
-
 async def get_poster(query, bulk=False, id=False, file=None):
     if not id:
-        query = query.strip().lower()
+        # https://t.me/GetTGLink/4183
+        query = (query.strip()).lower()
         title = query
-        year = re.findall('[1-2]\d{3}$', query, re.IGNORECASE)
+        year = re.findall(r'[1-2]\d{3}$', query, re.IGNORECASE)
         if year:
             year = list_to_str(year[:1])
-            title = query.replace(year, "").strip()
+            title = (query.replace(year, "")).strip()
         elif file is not None:
-            year = re.findall('[1-2]\d{3}', file, re.IGNORECASE)
+            year = re.findall(r'[1-2]\d{3}', file, re.IGNORECASE)
             if year:
-                year = list_to_str(year[:1])
+                year = list_to_str(year[:1]) 
         else:
             year = None
-        try:
-            movieid = imdb.search_movie(title.lower(), results=10)
-        except Exception:
-            return None
+        movieid = imdb.search_movie(title.lower(), results=10)
         if not movieid:
             return None
         if year:
-            filtered = list(filter(lambda k: str(
-                k.get('year')) == str(year), movieid))
+            filtered=list(filter(lambda k: str(k.get('year')) == str(year), movieid))
             if not filtered:
                 filtered = movieid
         else:
             filtered = movieid
-        movieid = list(filter(lambda k: k.get('kind') in [
-                       'movie', 'tv series'], filtered))
-
+        movieid=list(filter(lambda k: k.get('kind') in ['movie', 'tv series'], filtered))
         if not movieid:
             movieid = filtered
         if bulk:
@@ -118,45 +100,49 @@ async def get_poster(query, bulk=False, id=False, file=None):
     else:
         plot = movie.get('plot outline')
     if plot and len(plot) > 800:
-        plot = f"{plot[:800]}..."
-    return {'title': movie.get('title'), 'votes': movie.get('votes'), "aka": list_to_str(movie.get("akas")), "seasons": movie.get("number of seasons"), "box_office": movie.get('box office'), 'localized_title': movie.get('localized title'), 'kind': movie.get("kind"), "imdb_id": f"tt{movie.get('imdbID')}", "cast": list_to_str(movie.get("cast")), "runtime": list_to_str(movie.get("runtimes")), "countries": list_to_str(movie.get("countries")), "certificates": list_to_str(movie.get("certificates")), "languages": list_to_str(movie.get("languages")), "director": list_to_str(movie.get("director")), "writer": list_to_str(movie.get("writer")), "producer": list_to_str(movie.get("producer")), "composer": list_to_str(movie.get("composer")), "cinematographer": list_to_str(movie.get("cinematographer")), "music_team": list_to_str(movie.get("music department")), "distributors": list_to_str(movie.get("distributors")), 'release_date': date, 'year': movie.get('year'), 'genres': list_to_str(movie.get("genres")), 'poster': movie.get('full-size cover url'), 'plot': plot, 'rating': str(movie.get("rating")), 'url': f'https://www.imdb.com/title/tt{movieid}'}
-# https://github.com/odysseusm
+        plot = plot[0:800] + "..."
 
-
-async def broadcast_notification(user_id, message):
-    try:
-        await message.copy(chat_id=user_id)
-        return True, "Succes"
-    except FloodWait as e:
-        await asyncio.sleep(e.x)
-        return await broadcast_notification(user_id, message)
-    except InputUserDeactivated:
-        await remove_notification(user_id)
-        logging.info(
-            f"{user_id}-Removed from Database, since deleted account.")
-        return False, "Deleted"
-    except UserIsBlocked:
-        logging.info(f"{user_id} -Blocked the bot.")
-        return False, "Blocked"
-    except PeerIdInvalid:
-        await remove_notification(user_id)
-        logging.info(f"{user_id} - PeerIdInvalid")
-        return False, "Error"
-    except Exception as e:
-        return False, "Error"
-
+    return {
+        'title': movie.get('title'),
+        'votes': movie.get('votes'),
+        "aka": list_to_str(movie.get("akas")),
+        "seasons": movie.get("number of seasons"),
+        "box_office": movie.get('box office'),
+        'localized_title': movie.get('localized title'),
+        'kind': movie.get("kind"),
+        "imdb_id": f"tt{movie.get('imdbID')}",
+        "cast": list_to_str(movie.get("cast")),
+        "runtime": list_to_str(movie.get("runtimes")),
+        "countries": list_to_str(movie.get("countries")),
+        "certificates": list_to_str(movie.get("certificates")),
+        "languages": list_to_str(movie.get("languages")),
+        "director": list_to_str(movie.get("director")),
+        "writer":list_to_str(movie.get("writer")),
+        "producer":list_to_str(movie.get("producer")),
+        "composer":list_to_str(movie.get("composer")) ,
+        "cinematographer":list_to_str(movie.get("cinematographer")),
+        "music_team": list_to_str(movie.get("music department")),
+        "distributors": list_to_str(movie.get("distributors")),
+        'release_date': date,
+        'year': movie.get('year'),
+        'genres': list_to_str(movie.get("genres")),
+        'poster': movie.get('full-size cover url'),
+        'plot': plot,
+        'rating': str(movie.get("rating")),
+        'url':f'https://www.imdb.com/title/tt{movieid}'
+    }
+# https://github.com/odysseusmax/animated-lamp/blob/2ef4730eb2b5f0596ed6d03e7b05243d93e3415b/bot/utils/broadcast.py#L37
 
 async def broadcast_messages(user_id, message):
     try:
         await message.copy(chat_id=user_id)
-        return True, "Succes"
+        return True, "Success"
     except FloodWait as e:
         await asyncio.sleep(e.x)
         return await broadcast_messages(user_id, message)
     except InputUserDeactivated:
         await db.delete_user(int(user_id))
-        logging.info(
-            f"{user_id}-Removed from Database, since deleted account.")
+        logging.info(f"{user_id}-Removed from Database, since deleted account.")
         return False, "Deleted"
     except UserIsBlocked:
         logging.info(f"{user_id} -Blocked the bot.")
@@ -168,18 +154,17 @@ async def broadcast_messages(user_id, message):
     except Exception as e:
         return False, "Error"
 
-
 async def search_gagala(text):
     usr_agent = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
         'Chrome/61.0.3163.100 Safari/537.36'
-    }
+        }
     text = text.replace(" ", '+')
     url = f'https://www.google.com/search?q={text}'
     response = requests.get(url, headers=usr_agent)
     response.raise_for_status()
     soup = BeautifulSoup(response.text, 'html.parser')
-    titles = soup.find_all('h3')
+    titles = soup.find_all( 'h3' )
     return [title.getText() for title in titles]
 
 
@@ -189,28 +174,13 @@ async def get_settings(group_id):
         settings = await db.get_settings(group_id)
         temp.SETTINGS[group_id] = settings
     return settings
-
-
+    
 async def save_group_settings(group_id, key, value):
     current = await get_settings(group_id)
     current[key] = value
     temp.SETTINGS[group_id] = current
     await db.update_settings(group_id, current)
-
-
-async def send_more_files(name):
-    name = get_name(name)
-    name = name.split(".")[:3]
-    name = ' '.join(name)
-    name = name.split(" ")[:3]
-    name = ' '.join(name)
-    files, offset, total_results = await get_search_results(name.lower(), offset=0, filter=True)
-    if len(files) > 15:
-        files = files[:15]
-    if files:
-        return files
-
-
+    
 def get_size(size):
     """Get size in readable format"""
 
@@ -222,220 +192,26 @@ def get_size(size):
         size /= 1024.0
     return "%.2f %s" % (size, units[i])
 
-
-def get_name(name):
-    name = name.lower()
-    name = name.replace("@cc", '')
-    name = name.replace("telegram", '')
-    name = name.replace("www", '')
-    name = name.replace("join", '')
-    name = name.replace("tg", '')
-    name = name.replace("link", '')
-    name = name.replace("@", '')
-    name = name.replace("Team_Tony", '')
-    name = name.replace("massmovies0", '')
-    name = name.replace("bullmoviee", '')
-    name = name.replace("massmovies", '')
-    name = name.replace("filmy4cab", '')
-    name = name.replace("maassmovies", '')
-    name = name.replace("theproffesorr", '')
-    name = name.replace("primeroom", '')
-    name = name.replace("team_hdt", '')
-    name = name.replace("Pulikesi_Meme", '')
-    name = name.replace("telugudubbing", '')
-    name = name.replace("rickychannel", '')
-    name = name.replace("tif", '')
-    name = name.replace("cvm", '')
-    name = name.replace("playtk", '')
-    name = name.replace("tel", '')
-    name = name.replace("hw", '')
-    name = name.replace("f&t", '')
-    name = name.replace("fimy", '')
-    name = name.replace("film", '')
-    name = name.replace("xyz", '')
-    name = name.replace("fbm", '')
-    name = name.replace("mwkott", '')
-    name = name.replace("team_hdt", '')
-    name = name.replace("worldcinematoday", '')
-    name = name.replace("cinematic_world", '')
-    name = name.replace("cinema", '')
-    name = name.replace("hotstar", '')
-    name = name.replace("jesseverse", '')
-    name = name.replace("apdackup", '')
-    name = name.replace("streamersHub", '')
-    name = name.replace("tg", '')
-    name = name.replace("movies", '')
-    name = name.replace("[ava]", '')
-    name = name.replace("tamilrockers", '')
-    name = name.replace("imax5", '')
-    name = name.replace("kerala rock", '')
-    name = name.replace("ott", '')
-    name = name.replace("rarefilms", '')
-    name = name.replace("linkzz", '')
-    name = name.replace("movems", '')
-    name = name.replace("moviezz", '')
-    name = name.replace("clipmate", '')
-    name = name.replace("southtamilall", '')
-    name = name.replace("apdbackup", '')
-    name = name.replace("wmr", '')
-    name = name.replace("web", '')
-    name = name.replace("rowdystudios", '')
-    name = name.replace("alpacinodump", '')
-    name = name.replace("fans", '')
-    name = name.replace("movie", '')
-    name = name.replace("mlf", '')
-    name = name.replace("[rmk]", '')
-    name = name.replace("[mc]", '')
-    name = name.replace("[mfa]", '')
-    name = name.replace("[mm]", '')
-    name = name.replace("[me]", '')
-    name = name.replace("[", '')
-    name = name.replace("]", '')
-    name = name.replace("mlm", '')
-    name = name.replace("RMK", '')
-    name = name.replace("1tamilmv", '')
-    name = name.replace("linkz", '')
-    name = name.replace("tamilMob", '')
-    name = name.replace("tg", '')
-    name = name.replace("bollyarchives", '')
-    name = name.replace("🎞", '')
-    name = name.replace("🎬", '')
-    name = name.replace("(", '')
-    name = name.replace(")", '')
-    name = name.replace(" ", '.')
-    name = name.replace("_", '.')
-    name = name.replace("...", '.')
-    name = name.replace("..", '.')
-
-    if name[0] == '.':
-        name = name[1:]
-    name = name.capitalize()
-    return name
-
-
-def getseries(name):
-    name = name.lower()
-    name = name.replace("season", "")
-    name = name.replace("series", "")
-    name = name.replace("tv", "")
-    name = name.replace("episode", "")
-    name = name.replace("480p", "")
-    name = name.replace("720p", "")
-    name = name.replace("1080p", "")
-    name = name.replace("hindi", "")
-    name = name.replace("tamil", "")
-    name = name.replace("english", "")
-    name = name.replace("web", "")
-    # name = ''.join([i for i in name if not i.isdigit()])
-    name = name.replace(" ", "")
-    return name
-
-
-# async def get_url(fileid):
-#     ident, file_id = fileid.split("#")
-#     url = 'https://shorturllink.in/api'
-#     link = f'https://telegram.dog/SpaciousUniverseBot?start={ident}_{file_id}'
-#     api = '3ef6a62253efbe7a63dd29201b2f9c661bd15795'
-#     params = {
-#         'api': api,
-#         'url': link
-#     }
-#     try:
-#         async with aiohttp.ClientSession() as app:
-#             async with app.get(url, params=params, raise_for_status=True, ssl=False) as results:
-#                 data = await results.json()
-#                 if data["status"] == "success":
-#                     urllink = data['shortenedUrl']
-#                     return urllink
-#                 else:
-#                     urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url={link}'
-#                     urllink = url_shortener.tinyurl.short(urllink)
-#                     return urllink
-#     except:
-#         urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url={link}'
-#         urllink = url_shortener.tinyurl.short(urllink)
-#         return urllink
-
-
-# async def geny_url(file_id):
-#     url = 'https://shorturllink.in/api'
-#     link = f'https://telegram.dog/SpaciousUniverseBot?start={file_id}'
-#     api = '3ef6a62253efbe7a63dd29201b2f9c661bd15795'
-#     params = {
-#         'api': api,
-#         'url': link
-#     }
-#     try:
-#         async with aiohttp.ClientSession() as app:
-#             async with app.get(url, params=params, raise_for_status=True, ssl=False) as results:
-#                 data = await results.json()
-#                 if data["status"] == "success":
-#                     urllink = data['shortenedUrl']
-#                     return urllink
-#                 else:
-#                     urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url={link}'
-#                     urllink = url_shortener.tinyurl.short(urllink)
-#                     return urllink
-#     except:
-#         urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url={link}'
-#         urllink = url_shortener.tinyurl.short(urllink)
-#         return urllink
-
-
-# async def gen_url(link):
-#     url = 'https://rocklinks.net/api'
-#     api = '85b949240ee33cb797db1efc7aa94cb265c6ad35'
-#     params = {
-#         'api': api,
-#         'url': link
-#     }
-#     try:
-#         async with aiohttp.ClientSession() as app:
-#             async with app.get(url, params=params, raise_for_status=True, ssl=False) as results:
-#                 data = await results.json()
-#                 if data["status"] == "success":
-#                     urllink = data['shortenedUrl']
-#                     return urllink
-#     except:
-#         urllink = f'https://rocklinks.net/st?api=85b949240ee33cb797db1efc7aa94cb265c6ad35&url={link}'
-#         urllink = shortner.tinyurl.short(urllink)
-#         return urllink
-
-
-# def get_url(fileid):
-#     ident, file_id = fileid.split("#")
-#     #urllink = f'https://playdisk.xyz/st?api=3ba547cddecb2156a75b2ab37c9fecdbf5655d7f&url=https://telegram.dog/SpaciousUniverseBot?start={ident}_{file_id}'
-#     #urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url=https://telegram.dog/SpaciousUniverseBot?start={ident}_{file_id}'
-#     urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url=https://telegram.dog/SpaciousUniverseBot?start={ident}_{file_id}'
-#     #urllink = f'https://semawur.com/st/?api=ee503477175b248fa734b0f2c0fa6f352bd8892d&url=https://telegram.dog/SpaciousUniverseBot?start={ident}_{file_id}'
-#     #urllink = f'https://www.iamkt.xyz/st?api=41bd4ad28cde15c72c1baa6d16f05577cee0a90f&url=https://telegram.dog/SpaciousUniverseBot?start={ident}_{file_id}'
-#     #urllink = url_shortener.tinyurl.short(urllink)
-#     return urllink
-
-
-def gen_url(link):
-    urllink = f'https://rocklinks.net/st?api=85b949240ee33cb797db1efc7aa94cb265c6ad35&url={link}'
-    return urllink
-
-# def geny_url(file_id):
-#     urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url=https://telegram.dog/SpaciousUniverseBot?start={file_id}'
-#     #urllink = f'https://semawur.com/st/?api=ee503477175b248fa734b0f2c0fa6f352bd8892d&url=https://telegram.dog/SpaciousUniverseBot?start={file_id}'
-#     #urllink = url_shortener.tinyurl.short(urllink)
-#     return urllink
-
-
 def split_list(l, n):
     for i in range(0, len(l), n):
-        yield l[i:i + n]
-
+        yield l[i:i + n]  
 
 def get_file_id(msg: Message):
     if msg.media:
-        for message_type in ("photo", "animation", "audio", "document", "video", "video_note", "voice", "sticker"):
-            if obj := getattr(msg, message_type):
+        for message_type in (
+            "photo",
+            "animation",
+            "audio",
+            "document",
+            "video",
+            "video_note",
+            "voice",
+            "sticker"
+        ):
+            obj = getattr(msg, message_type)
+            if obj:
                 setattr(obj, "message_type", message_type)
                 return obj
-
 
 def extract_user(message: Message) -> Union[int, str]:
     """extracts the user from a message"""
@@ -449,9 +225,9 @@ def extract_user(message: Message) -> Union[int, str]:
     elif len(message.command) > 1:
         if (
             len(message.entities) > 1 and
-            message.entities[1].type == "text_mention"
+            message.entities[1].type == enums.MessageEntityType.TEXT_MENTION
         ):
-
+           
             required_entity = message.entities[1]
             user_id = required_entity.user.id
             user_first_name = required_entity.user.first_name
@@ -468,7 +244,6 @@ def extract_user(message: Message) -> Union[int, str]:
         user_first_name = message.from_user.first_name
     return (user_id, user_first_name)
 
-
 def list_to_str(k):
     if not k:
         return "N/A"
@@ -480,24 +255,22 @@ def list_to_str(k):
     else:
         return ' '.join(f'{elem}, ' for elem in k)
 
-
 def last_online(from_user):
     time = ""
     if from_user.is_bot:
         time += "🤖 Bot :("
-    elif from_user.status == 'recently':
+    elif from_user.status == enums.UserStatus.RECENTLY:
         time += "Recently"
-    elif from_user.status == 'within_week':
+    elif from_user.status == enums.UserStatus.LAST_WEEK:
         time += "Within the last week"
-    elif from_user.status == 'within_month':
+    elif from_user.status == enums.UserStatus.LAST_MONTH:
         time += "Within the last month"
-    elif from_user.status == 'long_time_ago':
+    elif from_user.status == enums.UserStatus.LONG_AGO:
         time += "A long time ago :("
-    elif from_user.status == 'online':
+    elif from_user.status == enums.UserStatus.ONLINE:
         time += "Currently Online"
-    elif from_user.status == 'offline':
-        time += datetime.fromtimestamp(
-            from_user.last_online_date).strftime("%a, %d %b %Y, %H:%M:%S")
+    elif from_user.status == enums.UserStatus.OFFLINE:
+        time += from_user.last_online_date.strftime("%a, %d %b %Y, %H:%M:%S")
     return time
 
 
@@ -522,52 +295,61 @@ def split_quotes(text: str) -> List:
         key = text[0] + text[0]
     return list(filter(None, [key, rest]))
 
-
 def parser(text, keyword):
     if "buttonalert" in text:
-        text = text.replace("\n", "\\n").replace("\t", "\\t")
+        text = (text.replace("\n", "\\n").replace("\t", "\\t"))
     buttons = []
     note_data = ""
     prev = 0
     i = 0
     alerts = []
     for match in BTN_URL_REGEX.finditer(text):
+        # Check if btnurl is escaped
         n_escapes = 0
         to_check = match.start(1) - 1
         while to_check > 0 and text[to_check] == "\\":
             n_escapes += 1
             to_check -= 1
+
+        # if even, not escaped -> create button
         if n_escapes % 2 == 0:
             note_data += text[prev:match.start(1)]
             prev = match.end(1)
             if match.group(3) == "buttonalert":
+                # create a thruple with button label, url, and newline status
                 if bool(match.group(5)) and buttons:
-                    buttons[-1].append(InlineKeyboardButton(text=match.group(2),
-                                       callback_data=f"alertmessage:{i}:{keyword}"))
-
+                    buttons[-1].append(InlineKeyboardButton(
+                        text=match.group(2),
+                        callback_data=f"alertmessage:{i}:{keyword}"
+                    ))
                 else:
-                    buttons.append([InlineKeyboardButton(text=match.group(
-                        2), callback_data=f"alertmessage:{i}:{keyword}")])
-
+                    buttons.append([InlineKeyboardButton(
+                        text=match.group(2),
+                        callback_data=f"alertmessage:{i}:{keyword}"
+                    )])
                 i += 1
                 alerts.append(match.group(4))
             elif bool(match.group(5)) and buttons:
-                buttons[-1].append(InlineKeyboardButton(text=match.group(2),
-                                   url=match.group(4).replace(" ", "")))
-
+                buttons[-1].append(InlineKeyboardButton(
+                    text=match.group(2),
+                    url=match.group(4).replace(" ", "")
+                ))
             else:
                 buttons.append([InlineKeyboardButton(
-                    text=match.group(2), url=match.group(4).replace(" ", ""))])
+                    text=match.group(2),
+                    url=match.group(4).replace(" ", "")
+                )])
 
         else:
             note_data += text[prev:to_check]
             prev = match.start(1) - 1
-    note_data += text[prev:]
+    else:
+        note_data += text[prev:]
+
     try:
         return note_data, buttons, alerts
-    except Exception:
+    except:
         return note_data, buttons, None
-
 
 def remove_escapes(text: str) -> str:
     res = ""
@@ -592,4 +374,4 @@ def humanbytes(size):
     while size > power:
         size /= power
         n += 1
-    return f"{str(round(size, 2))} {Dic_powerN[n]}B"
+    return str(round(size, 2)) + " " + Dic_powerN[n] + 'B'

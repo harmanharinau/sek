@@ -1,4 +1,4 @@
-from pyrogram import Client, filters
+from pyrogram import Client, filters, enums
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from pyrogram.errors.exceptions.bad_request_400 import MessageTooLong, PeerIdInvalid
 from info import ADMINS, LOG_CHANNEL, SUPPORT_CHAT, MELCOW_NEW_USERS
@@ -38,7 +38,7 @@ async def save_group(bot, message):
             return
         buttons = [[
             InlineKeyboardButton('ℹ️ Help', url=f"https://t.me/{temp.U_NAME}?start=help"),
-            InlineKeyboardButton('📢 Updates', url='https://t.me/TMWAD')
+            InlineKeyboardButton('📢 Updates', url='https://t.me/TeamEvamaria')
         ]]
         reply_markup=InlineKeyboardMarkup(buttons)
         await message.reply_text(
@@ -159,7 +159,7 @@ async def gen_invite(bot, message):
     chat = message.command[1]
     try:
         chat = int(chat)
-    except Exception:
+    except:
         return await message.reply('Give Me A Valid Chat ID')
     try:
         link = await bot.create_chat_invite_link(chat)
@@ -171,6 +171,7 @@ async def gen_invite(bot, message):
 
 @Client.on_message(filters.command('ban') & filters.user(ADMINS))
 async def ban_a_user(bot, message):
+    # https://t.me/GetTGLink/4185
     if len(message.command) == 1:
         return await message.reply('Give me a user id / username')
     r = message.text.split(None)
@@ -213,13 +214,14 @@ async def unban_a_user(bot, message):
     else:
         chat = message.command[1]
         reason = "No reason Provided"
-        
-    chat = int(chat)
+    try:
+        chat = int(chat)
+    except:
+        pass
     try:
         k = await bot.get_users(chat)
     except PeerIdInvalid:
         return await message.reply("This is an invalid user, make sure ia have met him before.")
-
     except IndexError:
         return await message.reply("Thismight be a channel, make sure its a user.")
     except Exception as e:
