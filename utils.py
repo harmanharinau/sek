@@ -11,6 +11,7 @@ import os
 from datetime import datetime
 from typing import List
 from database.users_chats_db import db
+from database.apisdb import get_sundisk, add_sundisk, remove_sundisk
 from bs4 import BeautifulSoup
 import requests
 
@@ -139,8 +140,7 @@ async def get_poster(query, bulk=False, id=False, file=None):
     }
 # https://github.com/odysseusmax/animated-lamp/blob/2ef4730eb2b5f0596ed6d03e7b05243d93e3415b/bot/utils/broadcast.py#L37
 
-
-async def broadcast_messages(user_id, message):
+nc def broadcast_messages(user_id, message):
     try:
         await message.copy(chat_id=user_id)
         return True, "Success"
@@ -163,7 +163,9 @@ async def broadcast_messages(user_id, message):
         return False, "Error"
 
 
-async def gen_link(link, api):
+async def gen_link(link, api_chat):
+    apis = await get_sundisk(chat_id)
+    api - 1
     return f"https://sundisk.in/st?api={api}&url={link}" if api else link
 
 

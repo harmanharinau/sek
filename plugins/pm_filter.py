@@ -60,15 +60,11 @@ async def next_page(bot, query):
 
     if not files:
         return
-    api = await get_sundisk(query.message.chat.id)
-    if api is None:
-        api = False
-    else:
-        api = api["api"]
+    api_id = query.message.chat.id
     btn = [
         [
             InlineKeyboardButton(
-                text=f"[{get_size(file.file_size)}] {file.file_name}", url=gen_link(f"https://t.me/{temp.U_NAME}?start={file.file_id}", api)
+                text=f"[{get_size(file.file_size)}] {file.file_name}", url=gen_link(f"https://t.me/{temp.U_NAME}?start={file.file_id}", api_id)
             ),
         ]
         for file in files
@@ -631,17 +627,12 @@ async def auto_filter(client, msg, spoll=False):
         search, files, offset, total_results = spoll
 
     pre = 'filep' if settings['file_secure'] else 'file'
-    api = await get_sundisk(msg.chat.id)
-
-    if api is None:
-        api = False
-    else:
-        api = api["api"]
+    api_id = msg.chat.id
 
     btn = [
         [
             InlineKeyboardButton(
-                text=f"[{get_size(file.file_size)}] {file.file_name}", url=gen_link(f"https://t.me/{temp.U_NAME}?start={file.file_id}", api)
+                text=f"[{get_size(file.file_size)}] {file.file_name}", url=gen_link(f"https://t.me/{temp.U_NAME}?start={file.file_id}", api_id)
             ),
         ]
         for file in files
