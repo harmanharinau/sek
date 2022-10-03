@@ -180,11 +180,8 @@ async def start(client, message):
         pre, file_id = ((base64.urlsafe_b64decode(
             data + "=" * (-len(data) % 4))).decode("ascii")).split("_", 1)
         try:
-            msg = await client.send_cached_media(
-                chat_id=message.from_user.id,
-                file_id=file_id,
-                protect_content=True if pre == 'filep' else False,
-            )
+            msg = await client.send_cached_media(chat_id=message.from_user.id, file_id=file_id, protect_content=pre == 'filep')
+
             filetype = msg.media
             file = getattr(msg, filetype)
             title = file.file_name
@@ -214,66 +211,7 @@ async def start(client, message):
             f_caption = f_caption
     if f_caption is None:
         f_caption = f"{files.file_name}"
-    await client.send_cached_media(
-        chat_id=message.from_user.id,
-        file_id=file_id,
-        caption=f_caption,
-        protect_content=True if pre == 'filep' else False,
-    )
-
-
-@Client.on_message(filters.command("addseries") & filters.incoming & filters.user(ADMINS))
-async def tvseries_adder(bot, message):
-    sts = await message.reply("Checking Your Request...")
-    if " " not in message.text:
-        return await message.reply("Use correct format.<code>/addseries (name of series without space) (language eng/hindi/tamil/span) (quility 480/ 720/ 1080) (tv series batch links without space , use commas)</code>\n\n\nExample <code>/addseries strangerthings eng 480 https://tinyurl.com/23smxlh3,https://tinyurl.com/2yq2ghfh,https://tinyurl.com/27d9xyww,https://tinyurl.com/259az578</code>.")
-    data = message.text.strip().split(" ")
-    try:
-        cmd, name, lang, quty, links = data
-        await add_tvseries_filter(name, lang, quty, links)
-        await message.reply("your series added")
-
-    except:
-        return await message.reply("May Be Error is you puts space between links: \nUse correct format.<code>/addseries (name of series without space) (language eng/hindi/tamil/span) (quility 480/ 720/ 1080) (tv series batch links without space , use commas)</code>\n\n\nExample <code>/addseries strangerthings eng 480 https://tinyurl.com/23smxlh3,https://tinyurl.com/2yq2ghfh,https://tinyurl.com/27d9xyww,https://tinyurl.com/259az578</code>.")
-    await sts.delete()
-
-
-@Client.on_message(filters.command("updateseries") & filters.incoming & filters.user(ADMINS))
-async def tvseries_updater(bot, message):
-    sts = await message.reply("Checking Your Request...")
-    if " " not in message.text:
-        return await message.reply("Use correct format.<code>/updateseries (name of series without space) (language eng/hindi/tamil/span) (quility 480/ 720/ 1080) (tv series batch links without space , use commas)</code>\n\n\nExample <code>/addseries strangerthings eng 480 https://tinyurl.com/23smxlh3,https://tinyurl.com/2yq2ghfh,https://tinyurl.com/27d9xyww,https://tinyurl.com/259az578</code>.")
-    data = message.text.strip().split(" ")
-    try:
-        cmd, name, lang, quty, links = data
-        await update_tvseries_filter(name, lang, quty, links)
-        await message.reply("your series added")
-
-    except:
-        return await message.reply("May Be Error is you puts space between links: \nUse correct format.<code>/addseries (name of series without space) (language eng/hindi/tamil/span) (quility 480/ 720/ 1080) (tv series batch links without space , use commas)</code>\n\n\nExample <code>/addseries strangerthings eng 480 https://tinyurl.com/23smxlh3,https://tinyurl.com/2yq2ghfh,https://tinyurl.com/27d9xyww,https://tinyurl.com/259az578</code>.")
-    await sts.delete()
-
-
-@Client.on_message(filters.command("removeseries") & filters.incoming & filters.user(ADMINS))
-async def tvseries_remover(bot, message):
-    sts = await message.reply("Checking Your Request...")
-    if " " not in message.text:
-        return await message.reply("Use correct format.<code>/removeseries (name of series without space)")
-    data = message.text.strip().split(" ")
-    try:
-        cmd, name = data
-        await remove_tvseries(name)
-        await message.reply("your series removed")
-
-    except:
-        return await message.reply("Not Found.")
-    await sts.delete()
-
-
-@Client.on_message(filters.command("alltvs") & filters.incoming)
-async def tvseries_get(bot, message):
-    k = await getlinks()
-    await message.reply(k)
+    await client.send_cached_media(chat_id=message.from_user.id, file_id=file_id, caption=f_caption, protect_content=pre == 'filep')
 
 
 @Client.on_message(filters.command('channel') & filters.user(ADMINS))
@@ -305,109 +243,6 @@ async def channel_info(bot, message):
             f.write(text)
         await message.reply_document(file)
         os.remove(file)
-
-
-@Client.on_message(filters.command('dev') & filters.user(ADMINS))
-async def devve(bot, message):
-    try:
-        user_stats = await get_verification(message.from_user.id)
-        await message.reply_text(user_stats)
-    except Exception as e:
-        await message.reply(str(e))
-
-
-@Client.on_message((filters.command('notification') | filters.regex('Notification')) & filters.incoming)
-async def get_notification(bot, message):
-    await message.reply_text(
-        'Get Movies/ Tv series On realse Time 〽. Turned on notifications, you can change anytime',
-        reply_markup=InlineKeyboardMarkup(
-            [
-                [
-                    InlineKeyboardButton(
-                        text="On 🔛", callback_data="notification_on"
-                    ),
-                    InlineKeyboardButton(
-                        text="Off 📴", callback_data="notification_off"
-                    )
-                ]
-            ]
-        ),
-        quote=True,
-    )
-
-
-@Client.on_callback_query(filters.regex(r'^notification_on'))
-async def notification_on(bot, query):
-    user_id = query.from_user.id
-    userStatus = await find_notification(user_id)
-    if userStatus is None:
-        await add_notification(user_id, 'on')
-    else:
-        await update_notification(user_id, 'on')
-
-    return await query.message.edit('Succesfully Turned on notifications 💌. use /notification to change')
-
-
-@Client.on_callback_query(filters.regex(r'^notification_off'))
-async def notification_off(bot, query):
-    user_id = query.from_user.id
-    userStatus = await find_notification(user_id)
-    if userStatus is None:
-        await add_notification(user_id, 'off')
-    else:
-        await update_notification(user_id, 'off')
-    return await query.message.edit('Succesfully Turned off notifications 💌. use /notification to change')
-
-
-@Client.on_message(filters.command('sendnoti') & filters.user(ADMINS))
-async def sendnotifications(bot, message):
-    usersIdList = await find_allusers()
-    b_msg = message.reply_to_message
-    if not b_msg:
-        return await message.reply(f"Reply to message")
-    count = 0
-    msg = await message.reply("Processing...⏳", quote=True)
-    for usersId in usersIdList:
-        await broadcast_notification(int(usersId), b_msg)
-        await asyncio.sleep(2)
-        count += 1
-
-    await msg.delete()
-    return await message.reply(f"Succuesfully sended to {count} users")
-
-
-@Client.on_message(filters.command('tmwad') & filters.user(ADMINS))
-async def tmwad_update(bot, message):
-    updates = await get_update_msg()
-    if updates is not None:
-        await remove_update_msg()
-        prev_day_total_users = updates["totalUsers"]
-        prev_day_total_files = updates["files"]
-
-    else:
-        return
-
-    todaySentFiles = await count_sent_files()
-    total_users = await db.total_users_count()
-    files = await Media.count_documents()
-
-    todayUsers = int(total_users) - int(prev_day_total_users)
-    todayFiles = files - prev_day_total_files
-    t = time.localtime()
-    current_time = time.strftime("%D %H:%M:%S", t)
-
-    await add_update_msg(total_users, files)
-
-    try:
-        await bot.edit_message_text(
-            chat_id=str('TMWAD'),
-            message_id=int(49),
-            text=script.POST_TEXT.format(
-                todaySentFiles, todayUsers, todayFiles, total_users, files, current_time)
-        )
-        return await message.reply("Update Succusfully on @TMWAD")
-    except:
-        logger.exception('Some error occured!', exc_info=True)
 
 
 @Client.on_message(filters.command('logs') & filters.user(ADMINS))

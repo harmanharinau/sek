@@ -69,10 +69,7 @@ async def next_page(bot, query):
     fileids = "L_I_N_K".join(fileids)
     chat_id = query.message.chat.id
     results = await get_sundisk(chat_id)
-    if results:
-        api = results["api"]
-    else:
-        api = False
+    api = results["api"] if results else False
     btn = [[InlineKeyboardButton(text=f"{get_size(file.file_size)} ║ {file.file_name}", url=gen_url(
         f'https://telegram.dog/SunDisk_Search_Bot?start={file.file_id}', api))] for file in files]
 
@@ -907,10 +904,7 @@ async def auto_filter(client, msg, spoll=False):
     fileids = "L_I_N_K".join(fileids)
     chat_id = msg.chat.id
     results = await get_sundisk(chat_id)
-    if results:
-        api = results["api"]
-    else:
-        api = False
+    api = results["api"] if results else False
     btn = [
         [
             InlineKeyboardButton(
