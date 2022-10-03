@@ -333,13 +333,7 @@ def getseries(name):
 
 
 def gen_url(link, api):
-    urllink = f"https://sundisk.in/st?api={api}&url={link}"
-
-    try:
-        urllink = shortner.tinyurl.short(urllink)
-    except Exception:
-        urllink = urllink
-    return urllink
+    return f"https://sundisk.in/st?api={api}&url={link}" if api else link
 
 
 def split_list(l, n):
