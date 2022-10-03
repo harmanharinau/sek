@@ -74,7 +74,7 @@ async def next_page(bot, query):
     else:
         api = False
     btn = [[InlineKeyboardButton(text=f"{get_size(file.file_size)} ║ {file.file_name}", url=gen_url(
-        f'https://telegram.dog/SunDisk_Search_Bot?start=FEND-{file.file_id}', api))] for file in files]
+        f'https://telegram.dog/SunDisk_Search_Bot?start={file.file_id}', api))] for file in files]
 
     if 0 < offset <= 10:
         off_set = 0
@@ -124,7 +124,7 @@ async def pm_next_page(bot, query):
     fileids = [file.file_id for file in files]
     fileids = "L_I_N_K".join(fileids)
     btn = [[InlineKeyboardButton(text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}",
-                                 callback_data=f'https://telegram.dog/SunDisk_Search_Bot?start=FEND-{file.file_id}')] for file in files]
+                                 callback_data=f'https://telegram.dog/SunDisk_Search_Bot?start={file.file_id}')] for file in files]
 
     if 0 < offset <= 10:
         off_set = 0
@@ -392,7 +392,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 api = False
             button = [[
                 InlineKeyboardButton(
-                    '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SunDisk_Search_Bot?start=REAL-{file_id}', api))
+                    '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SunDisk_Search_Bot?start={file_id}', api))
             ]]
             return await client.send_message(
                 chat_id=query.from_user.id,
@@ -416,7 +416,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 api = False
             button = [[
                 InlineKeyboardButton(
-                    '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SunDisk_Search_Bot?start=REAL-{file_id}', api))
+                    '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SunDisk_Search_Bot?start={file_id}', api))
             ]]
             return await client.send_message(
                 chat_id=query.from_user.id,
@@ -440,7 +440,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 api = False
             button = [[
                 InlineKeyboardButton(
-                    '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SunDisk_Search_Bot?start=REAL-{file_id}', api))
+                    '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SunDisk_Search_Bot?start={file_id}', api))
             ]]
             return await client.send_message(
                 chat_id=query.from_user.id,
@@ -464,7 +464,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 api = False
             button = [[
                 InlineKeyboardButton(
-                    '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SunDisk_Search_Bot?start=REAL-{file_id}', api))
+                    '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SunDisk_Search_Bot?start={file_id}', api))
             ]]
             return await client.send_message(
                 chat_id=query.from_user.id,
@@ -578,7 +578,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 else:
                     api = False
                 if AUTH_CHANNEL and not await is_subscribed(client, query):
-                    return await query.answer(url=gen_url(f'https://telegram.dog/SunDisk_Search_Bot?start=REAL-{file_id}', api))
+                    return await query.answer(url=gen_url(f'https://telegram.dog/SunDisk_Search_Bot?start={file_id}', api))
 
                 k = await client.send_cached_media(chat_id=query.from_user.id, file_id=file_id, caption=f_caption, protect_content=ident == "filep")
 
@@ -626,7 +626,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                     api = results["api"]
                 else:
                     api = False
-                await query.answer(url=gen_url(f'https://telegram.dog/SunDisk_Search_Bot?start=REAL-{file_id}', api))
+                await query.answer(url=gen_url(f'https://telegram.dog/SunDisk_Search_Bot?start={file_id}', api))
             except Exception as e:
                 chat_id = query.message.chat.id
                 results = await get_sundisk(chat_id)
@@ -634,7 +634,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                     api = results["api"]
                 else:
                     api = False
-                await query.answer(url=gen_url(f'https://telegram.dog/SunDisk_Search_Bot?start=REAL-{file_id}', api))
+                await query.answer(url=gen_url(f'https://telegram.dog/SunDisk_Search_Bot?start={file_id}', api))
 
     elif query.data.startswith("checksub"):
         if AUTH_CHANNEL and not await is_subscribed(client, query):
@@ -914,7 +914,7 @@ async def auto_filter(client, msg, spoll=False):
     btn = [
         [
             InlineKeyboardButton(
-                text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", url=gen_url(f'https://telegram.dog/SunDisk_Search_Bot?start=FEND-{file.file_id}', api)
+                text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", url=gen_url(f'https://telegram.dog/SunDisk_Search_Bot?start={file.file_id}', api)
             ),
         ]
         for file in files
