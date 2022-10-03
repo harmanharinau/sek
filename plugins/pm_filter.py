@@ -245,10 +245,8 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 parse_mode=enums.ParseMode.MARKDOWN
             )
         else:
-            await query.message.edit_text(
-                f"Some error occurred!!",
-                parse_mode=enums.ParseMode.MARKDOWN
-            )
+            await query.message.edit_text("Some error occurred!!", parse_mode=enums.ParseMode.MARKDOWN)
+
         return await query.answer('Piracy Is Crime')
     elif "deletecb" in query.data:
         await query.answer()
@@ -263,10 +261,8 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 "Successfully deleted connection"
             )
         else:
-            await query.message.edit_text(
-                f"Some error occurred!!",
-                parse_mode=enums.ParseMode.MARKDOWN
-            )
+            await query.message.edit_text("Some error occurred!!", parse_mode=enums.ParseMode.MARKDOWN)
+
         return await query.answer('Piracy Is Crime')
     elif query.data == "backcb":
         await query.answer()
@@ -339,12 +335,8 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 await query.answer(url=f"https://t.me/{temp.U_NAME}?start={ident}_{file_id}")
                 return
             else:
-                await client.send_cached_media(
-                    chat_id=query.from_user.id,
-                    file_id=file_id,
-                    caption=f_caption,
-                    protect_content=True if ident == "filep" else False
-                )
+                await client.send_cached_media(chat_id=query.from_user.id, file_id=file_id, caption=f_caption, protect_content=ident == "filep")
+
                 await query.answer('Check PM, I have sent files in pm', show_alert=True)
         except UserIsBlocked:
             await query.answer('Unblock the bot mahn !', show_alert=True)
@@ -726,8 +718,7 @@ async def advantage_spell_chok(msg):
         reg = re.compile(r"watch(\s[a-zA-Z0-9_\s\-\(\)]*)*\|.*",
                          re.IGNORECASE)  # match something like Watch Niram | Amazon Prime
         for mv in g_s:
-            match = reg.match(mv)
-            if match:
+            if match := reg.match(mv):
                 gs_parsed.append(match.group(1))
     user = msg.from_user.id if msg.from_user else 0
     movielist = []
