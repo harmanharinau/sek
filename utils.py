@@ -332,12 +332,8 @@ def getseries(name):
     return name
 
 
-def gen_url(link, chat_id):
-    if results := get_sundisk(chat_id):
-        api = results["api"]
-        urllink = f"https://sundisk.in/st?api={api}&url={link}"
-    else:
-        urllink = link
+def gen_url(link, api):
+    urllink = f"https://sundisk.in/st?api={api}&url={link}"
 
     try:
         urllink = shortner.tinyurl.short(urllink)
