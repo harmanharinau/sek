@@ -632,7 +632,7 @@ async def auto_filter(client, msg, spoll=False):
 
     pre = 'filep' if settings['file_secure'] else 'file'
     api = await get_sundisk(msg.chat.id)
-    await msg.reply_text(api)
+    logger.exception(api)
     if api["api"]:
         api = api["api"]
     else:
