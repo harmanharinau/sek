@@ -415,11 +415,6 @@ def getseries(name):
 
 def gen_url(link):
     urllink = f'https://rocklinks.net/st?api=85b949240ee33cb797db1efc7aa94cb265c6ad35&url={link}'
-
-    try:
-        urllink = shortner.tinyurl.short(urllink)
-    except Exception:
-        urllink = urllink
     return urllink
 
 # def geny_url(file_id):
