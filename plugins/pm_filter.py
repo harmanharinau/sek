@@ -60,11 +60,12 @@ async def next_page(bot, query):
 
     if not files:
         return
-
+    api = await get_sundisk(query.message.chat.id)
+    api = api["api"]
     btn = [
         [
             InlineKeyboardButton(
-                text=f"[{get_size(file.file_size)}] {file.file_name}", url=gen_link(f"https://t.me/{temp.U_NAME}?start={file.file_id}")
+                text=f"[{get_size(file.file_size)}] {file.file_name}", url=gen_link(f"https://t.me/{temp.U_NAME}?start={file.file_id}", api)
             ),
         ]
         for file in files
@@ -333,10 +334,10 @@ async def cb_handler(client: Client, query: CallbackQuery):
 
         try:
             if AUTH_CHANNEL and not await is_subscribed(client, query):
-                await query.answer(url=gen_link(f"https://t.me/{temp.U_NAME}?start={ident}_{file_id}"))
+                await query.answer(url=f"https://t.me/{temp.U_NAME}?start={ident}_{file_id}")
                 return
             elif settings['botpm']:
-                await query.answer(url=gen_link(f"https://t.me/{temp.U_NAME}?start={ident}_{file_id}"))
+                await query.answer(url=f"https://t.me/{temp.U_NAME}?start={ident}_{file_id}")
                 return
             else:
                 await client.send_cached_media(
@@ -349,9 +350,9 @@ async def cb_handler(client: Client, query: CallbackQuery):
         except UserIsBlocked:
             await query.answer('Unblock the bot mahn !', show_alert=True)
         except PeerIdInvalid:
-            await query.answer(url=gen_link(f"https://t.me/{temp.U_NAME}?start={ident}_{file_id}"))
+            await query.answer(url=f"https://t.me/{temp.U_NAME}?start={ident}_{file_id}")
         except Exception as e:
-            await query.answer(url=gen_link(f"https://t.me/{temp.U_NAME}?start={ident}_{file_id}"))
+            await query.answer(url=f"https://t.me/{temp.U_NAME}?start={ident}_{file_id}")
     elif query.data.startswith("checksub"):
         if AUTH_CHANNEL and not await is_subscribed(client, query):
             await query.answer("I Like Your Smartness, But Don't Be Oversmart 😒", show_alert=True)
@@ -627,10 +628,12 @@ async def auto_filter(client, msg, spoll=False):
         search, files, offset, total_results = spoll
 
     pre = 'filep' if settings['file_secure'] else 'file'
+    api = await get_sundisk(msg.chat.id)
+    api = api["api"]
     btn = [
         [
             InlineKeyboardButton(
-                text=f"[{get_size(file.file_size)}] {file.file_name}", url=gen_link(f"https://t.me/{temp.U_NAME}?start={file.file_id}")
+                text=f"[{get_size(file.file_size)}] {file.file_name}", url=gen_link(f"https://t.me/{temp.U_NAME}?start={file.file_id}", api)
             ),
         ]
         for file in files
