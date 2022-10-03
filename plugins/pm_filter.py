@@ -73,11 +73,11 @@ async def next_page(bot, query):
 
     user_stats = True
     if user_stats:
-        btn = [[InlineKeyboardButton(text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", url=gen_url(
+        btn = [[InlineKeyboardButton(text=f"{get_size(file.file_size)} ║ {file.file_name}", url=gen_url(
             f'https://telegram.dog/SunDisk_Search_Bot?start={file.file_id}'))] for file in files]
 
     else:
-        btn = [[InlineKeyboardButton(text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}",
+        btn = [[InlineKeyboardButton(text=f"{get_size(file.file_size)} ║ {file.file_name}",
                                      callback_data=f'gpfiles#{file.file_id}')] for file in files]
 
     if 0 < offset <= 10:
@@ -126,7 +126,7 @@ async def pm_next_page(bot, query):
     if not files:
         return
 
-    btn = [[InlineKeyboardButton(text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}",
+    btn = [[InlineKeyboardButton(text=f"{get_size(file.file_size)} ║ {file.file_name}",
                                  callback_data=f'pmfiles#{file.file_id}')] for file in files]
 
     if 0 < offset <= 10:
@@ -648,7 +648,7 @@ async def auto_filter(client, msg, spoll=False):
         btn = [
             [
                 InlineKeyboardButton(
-                    text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", url=gen_url(f'https://telegram.dog/SunDisk_Search_Bot?start=FEND-{file.file_id}')
+                    text=f"{get_size(file.file_size)} ║ {file.file_name}", url=gen_url(f'https://telegram.dog/SunDisk_Search_Bot?start=FEND-{file.file_id}')
                 ),
             ]
             for file in files
@@ -658,7 +658,7 @@ async def auto_filter(client, msg, spoll=False):
         btn = [
             [
                 InlineKeyboardButton(
-                    text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", callback_data=f'gpfiles#{file.file_id}'
+                    text=f"{get_size(file.file_size)} ║ {file.file_name}", callback_data=f'gpfiles#{file.file_id}'
                 ),
             ]
             for file in files
@@ -751,7 +751,7 @@ async def pm_auto_filter(client, msg, spoll=False):
     btn = [
         [
             InlineKeyboardButton(
-                text=f"{get_size(file.file_size)} ║ {get_name(file.file_name)}", callback_data=f'pmfiles#{file.file_id}'
+                text=f"{get_size(file.file_size)} ║ {file.file_name}", callback_data=f'pmfiles#{file.file_id}'
             ),
         ]
         for file in files
