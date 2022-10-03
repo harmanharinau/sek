@@ -1,6 +1,5 @@
 import logging
 from pyrogram.errors import InputUserDeactivated, UserNotParticipant, FloodWait, UserIsBlocked, PeerIdInvalid
-from database.quickdb import find_api
 from info import AUTH_CHANNEL, LONG_IMDB_DESCRIPTION, MAX_LIST_ELM
 from imdb import IMDb
 import asyncio
@@ -200,6 +199,7 @@ async def save_group_settings(group_id, key, value):
 
 
 async def send_more_files(name):
+    name = get_name(name)
     name = name.split(".")[:3]
     name = ' '.join(name)
     name = name.split(" ")[:3]
@@ -223,6 +223,96 @@ def get_size(size):
     return "%.2f %s" % (size, units[i])
 
 
+def get_name(name):
+    name = name.lower()
+    name = name.replace("@cc", '')
+    name = name.replace("telegram", '')
+    name = name.replace("www", '')
+    name = name.replace("join", '')
+    name = name.replace("tg", '')
+    name = name.replace("link", '')
+    name = name.replace("@", '')
+    name = name.replace("Team_Tony", '')
+    name = name.replace("massmovies0", '')
+    name = name.replace("bullmoviee", '')
+    name = name.replace("massmovies", '')
+    name = name.replace("filmy4cab", '')
+    name = name.replace("maassmovies", '')
+    name = name.replace("theproffesorr", '')
+    name = name.replace("primeroom", '')
+    name = name.replace("team_hdt", '')
+    name = name.replace("Pulikesi_Meme", '')
+    name = name.replace("telugudubbing", '')
+    name = name.replace("rickychannel", '')
+    name = name.replace("tif", '')
+    name = name.replace("cvm", '')
+    name = name.replace("playtk", '')
+    name = name.replace("tel", '')
+    name = name.replace("hw", '')
+    name = name.replace("f&t", '')
+    name = name.replace("fimy", '')
+    name = name.replace("film", '')
+    name = name.replace("xyz", '')
+    name = name.replace("fbm", '')
+    name = name.replace("mwkott", '')
+    name = name.replace("team_hdt", '')
+    name = name.replace("worldcinematoday", '')
+    name = name.replace("cinematic_world", '')
+    name = name.replace("cinema", '')
+    name = name.replace("hotstar", '')
+    name = name.replace("jesseverse", '')
+    name = name.replace("apdackup", '')
+    name = name.replace("streamersHub", '')
+    name = name.replace("tg", '')
+    name = name.replace("movies", '')
+    name = name.replace("[ava]", '')
+    name = name.replace("tamilrockers", '')
+    name = name.replace("imax5", '')
+    name = name.replace("kerala rock", '')
+    name = name.replace("ott", '')
+    name = name.replace("rarefilms", '')
+    name = name.replace("linkzz", '')
+    name = name.replace("movems", '')
+    name = name.replace("moviezz", '')
+    name = name.replace("clipmate", '')
+    name = name.replace("southtamilall", '')
+    name = name.replace("apdbackup", '')
+    name = name.replace("wmr", '')
+    name = name.replace("web", '')
+    name = name.replace("rowdystudios", '')
+    name = name.replace("alpacinodump", '')
+    name = name.replace("fans", '')
+    name = name.replace("movie", '')
+    name = name.replace("mlf", '')
+    name = name.replace("[rmk]", '')
+    name = name.replace("[mc]", '')
+    name = name.replace("[mfa]", '')
+    name = name.replace("[mm]", '')
+    name = name.replace("[me]", '')
+    name = name.replace("[", '')
+    name = name.replace("]", '')
+    name = name.replace("mlm", '')
+    name = name.replace("RMK", '')
+    name = name.replace("1tamilmv", '')
+    name = name.replace("linkz", '')
+    name = name.replace("tamilMob", '')
+    name = name.replace("tg", '')
+    name = name.replace("bollyarchives", '')
+    name = name.replace("🎞", '')
+    name = name.replace("🎬", '')
+    name = name.replace("(", '')
+    name = name.replace(")", '')
+    name = name.replace(" ", '.')
+    name = name.replace("_", '.')
+    name = name.replace("...", '.')
+    name = name.replace("..", '.')
+
+    if name[0] == '.':
+        name = name[1:]
+    name = name.capitalize()
+    return name
+
+
 def getseries(name):
     name = name.lower()
     name = name.replace("season", "")
@@ -241,11 +331,102 @@ def getseries(name):
     return name
 
 
-def gen_url(link, userId):
-    if api := find_api(userId):
-        return f"https://sundisk.in/st?api={api}&url={link}"
-    else:
-        return link
+# async def get_url(fileid):
+#     ident, file_id = fileid.split("#")
+#     url = 'https://shorturllink.in/api'
+#     link = f'https://telegram.dog/SpaciousUniverseBot?start={ident}_{file_id}'
+#     api = '3ef6a62253efbe7a63dd29201b2f9c661bd15795'
+#     params = {
+#         'api': api,
+#         'url': link
+#     }
+#     try:
+#         async with aiohttp.ClientSession() as app:
+#             async with app.get(url, params=params, raise_for_status=True, ssl=False) as results:
+#                 data = await results.json()
+#                 if data["status"] == "success":
+#                     urllink = data['shortenedUrl']
+#                     return urllink
+#                 else:
+#                     urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url={link}'
+#                     urllink = url_shortener.tinyurl.short(urllink)
+#                     return urllink
+#     except:
+#         urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url={link}'
+#         urllink = url_shortener.tinyurl.short(urllink)
+#         return urllink
+
+
+# async def geny_url(file_id):
+#     url = 'https://shorturllink.in/api'
+#     link = f'https://telegram.dog/SpaciousUniverseBot?start={file_id}'
+#     api = '3ef6a62253efbe7a63dd29201b2f9c661bd15795'
+#     params = {
+#         'api': api,
+#         'url': link
+#     }
+#     try:
+#         async with aiohttp.ClientSession() as app:
+#             async with app.get(url, params=params, raise_for_status=True, ssl=False) as results:
+#                 data = await results.json()
+#                 if data["status"] == "success":
+#                     urllink = data['shortenedUrl']
+#                     return urllink
+#                 else:
+#                     urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url={link}'
+#                     urllink = url_shortener.tinyurl.short(urllink)
+#                     return urllink
+#     except:
+#         urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url={link}'
+#         urllink = url_shortener.tinyurl.short(urllink)
+#         return urllink
+
+
+# async def gen_url(link):
+#     url = 'https://rocklinks.net/api'
+#     api = '85b949240ee33cb797db1efc7aa94cb265c6ad35'
+#     params = {
+#         'api': api,
+#         'url': link
+#     }
+#     try:
+#         async with aiohttp.ClientSession() as app:
+#             async with app.get(url, params=params, raise_for_status=True, ssl=False) as results:
+#                 data = await results.json()
+#                 if data["status"] == "success":
+#                     urllink = data['shortenedUrl']
+#                     return urllink
+#     except:
+#         urllink = f'https://rocklinks.net/st?api=85b949240ee33cb797db1efc7aa94cb265c6ad35&url={link}'
+#         urllink = shortner.tinyurl.short(urllink)
+#         return urllink
+
+
+# def get_url(fileid):
+#     ident, file_id = fileid.split("#")
+#     #urllink = f'https://playdisk.xyz/st?api=3ba547cddecb2156a75b2ab37c9fecdbf5655d7f&url=https://telegram.dog/SpaciousUniverseBot?start={ident}_{file_id}'
+#     #urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url=https://telegram.dog/SpaciousUniverseBot?start={ident}_{file_id}'
+#     urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url=https://telegram.dog/SpaciousUniverseBot?start={ident}_{file_id}'
+#     #urllink = f'https://semawur.com/st/?api=ee503477175b248fa734b0f2c0fa6f352bd8892d&url=https://telegram.dog/SpaciousUniverseBot?start={ident}_{file_id}'
+#     #urllink = f'https://www.iamkt.xyz/st?api=41bd4ad28cde15c72c1baa6d16f05577cee0a90f&url=https://telegram.dog/SpaciousUniverseBot?start={ident}_{file_id}'
+#     #urllink = url_shortener.tinyurl.short(urllink)
+#     return urllink
+
+
+def gen_url(link):
+    urllink = f'https://rocklinks.net/st?api=85b949240ee33cb797db1efc7aa94cb265c6ad35&url={link}'
+
+    try:
+        urllink = shortner.tinyurl.short(urllink)
+    except Exception:
+        urllink = urllink
+    return urllink
+
+# def geny_url(file_id):
+#     urllink = f'https://shorturllink.in/st?api=3ef6a62253efbe7a63dd29201b2f9c661bd15795&url=https://telegram.dog/SpaciousUniverseBot?start={file_id}'
+#     #urllink = f'https://semawur.com/st/?api=ee503477175b248fa734b0f2c0fa6f352bd8892d&url=https://telegram.dog/SpaciousUniverseBot?start={file_id}'
+#     #urllink = url_shortener.tinyurl.short(urllink)
+#     return urllink
 
 
 def split_list(l, n):

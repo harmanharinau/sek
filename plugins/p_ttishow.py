@@ -10,23 +10,21 @@ from pyrogram.errors import ChatAdminRequired
 
 """-----------------------------------------https://t.me/GetTGLink/4179 --------------------------------------"""
 
-
 @Client.on_message(filters.new_chat_members & filters.group)
 async def save_group(bot, message):
     r_j_check = [u.id for u in message.new_chat_members]
     if temp.ME in r_j_check:
         if not await db.get_chat(message.chat.id):
-            total = await bot.get_chat_members_count(message.chat.id)
-            r_j = message.from_user.mention if message.from_user else "Anonymous"
-            await bot.send_message(LOG_CHANNEL, script.LOG_TEXT_G.format(message.chat.title, message.chat.id, total, r_j))
+            total=await bot.get_chat_members_count(message.chat.id)
+            r_j = message.from_user.mention if message.from_user else "Anonymous" 
+            await bot.send_message(LOG_CHANNEL, script.LOG_TEXT_G.format(message.chat.title, message.chat.id, total, r_j))       
             await db.add_chat(message.chat.id, message.chat.title)
         if message.chat.id in temp.BANNED_CHATS:
             # Inspired from a boat of a banana tree
             buttons = [[
-                InlineKeyboardButton(
-                    'Support', url=f'https://t.me/{SUPPORT_CHAT}')
+                InlineKeyboardButton('Support', url=f'https://t.me/{SUPPORT_CHAT}')
             ]]
-            reply_markup = InlineKeyboardMarkup(buttons)
+            reply_markup=InlineKeyboardMarkup(buttons)
             k = await message.reply(
                 text='<b>CHAT NOT ALLOWED 🐞\n\nMy admins has restricted me from working here ! If you want to know more about it contact support..</b>',
                 reply_markup=reply_markup,
@@ -39,12 +37,10 @@ async def save_group(bot, message):
             await bot.leave_chat(message.chat.id)
             return
         buttons = [[
-            InlineKeyboardButton(
-                'ℹ️ Help', url=f"https://t.me/{temp.U_NAME}?start=help"),
-            InlineKeyboardButton(
-                '📢 Updates', url='https://t.me/SunDisk_official')
+            InlineKeyboardButton('ℹ️ Help', url=f"https://t.me/{temp.U_NAME}?start=help"),
+            InlineKeyboardButton('📢 Updates', url='https://t.me/TMWAD')
         ]]
-        reply_markup = InlineKeyboardMarkup(buttons)
+        reply_markup=InlineKeyboardMarkup(buttons)
         await message.reply_text(
             text=f"<b>Thankyou For Adding Me In {message.chat.title} ❣️\n\nIf you have any questions & doubts about using me contact support.</b>",
             reply_markup=reply_markup)
@@ -73,7 +69,7 @@ async def leave_a_chat(bot, message):
         buttons = [[
             InlineKeyboardButton('Support', url=f'https://t.me/{SUPPORT_CHAT}')
         ]]
-        reply_markup = InlineKeyboardMarkup(buttons)
+        reply_markup=InlineKeyboardMarkup(buttons)
         await bot.send_message(
             chat_id=chat,
             text='<b>Hello Friends, \nMy admin has told me to leave from group so i go! If you wanna add me again contact my support group.</b>',
@@ -84,7 +80,6 @@ async def leave_a_chat(bot, message):
         await message.reply(f"left the chat `{chat}`")
     except Exception as e:
         await message.reply(f'Error - {e}')
-
 
 @Client.on_message(filters.command('disable') & filters.user(ADMINS))
 async def disable_chat(bot, message):
@@ -113,9 +108,9 @@ async def disable_chat(bot, message):
         buttons = [[
             InlineKeyboardButton('Support', url=f'https://t.me/{SUPPORT_CHAT}')
         ]]
-        reply_markup = InlineKeyboardMarkup(buttons)
+        reply_markup=InlineKeyboardMarkup(buttons)
         await bot.send_message(
-            chat_id=chat_,
+            chat_id=chat_, 
             text=f'<b>Hello Friends, \nMy admin has told me to leave from group so i go! If you wanna add me again contact my support group.</b> \nReason : <code>{reason}</code>',
             reply_markup=reply_markup)
         await bot.leave_chat(chat_)
@@ -174,7 +169,6 @@ async def gen_invite(bot, message):
         return await message.reply(f'Error {e}')
     await message.reply(f'Here is your Invite Link {link.invite_link}')
 
-
 @Client.on_message(filters.command('ban') & filters.user(ADMINS))
 async def ban_a_user(bot, message):
     if len(message.command) == 1:
@@ -207,6 +201,7 @@ async def ban_a_user(bot, message):
         await message.reply(f"Successfully banned {k.mention}")
 
 
+    
 @Client.on_message(filters.command('unban') & filters.user(ADMINS))
 async def unban_a_user(bot, message):
     if len(message.command) == 1:
@@ -218,7 +213,7 @@ async def unban_a_user(bot, message):
     else:
         chat = message.command[1]
         reason = "No reason Provided"
-
+        
     chat = int(chat)
     try:
         k = await bot.get_users(chat)
@@ -238,6 +233,7 @@ async def unban_a_user(bot, message):
         await message.reply(f"Successfully unbanned {k.mention}")
 
 
+    
 @Client.on_message(filters.command('users') & filters.user(ADMINS))
 async def list_users(bot, message):
     # https://t.me/GetTGLink/4184
@@ -255,7 +251,6 @@ async def list_users(bot, message):
         with open('users.txt', 'w+') as outfile:
             outfile.write(out)
         await message.reply_document('users.txt', caption="List Of Users")
-
 
 @Client.on_message(filters.command('chats') & filters.user(ADMINS))
 async def list_chats(bot, message):

@@ -1,54 +1,21 @@
 class script(object):
-    START_TXT = """ℍ𝕖𝕝𝕝𝕠 {},
+    START_TXT = """𝙷𝙴𝙻𝙾 {},
+𝙼𝚈 𝙽𝙰𝙼𝙴 𝙸𝚂 <a href=https://t.me/{}>{}</a>, 𝙸 𝙲𝙰𝙽 𝙿𝚁𝙾𝚅𝙸𝙳𝙴 𝙼𝙾𝚅𝙸𝙴𝚂, 𝙹𝚄𝚂𝚃 𝙰𝙳𝙳 𝙼𝙴 𝚃𝙾 𝚈𝙾𝚄𝚁 𝙶𝚁𝙾𝚄𝙿 𝙰𝙽𝙳 𝙴𝙽𝙹𝙾𝚈 😍"""
+    HELP_TXT = """𝙷𝙴𝚈 {}
+𝙷𝙴𝚁𝙴 𝙸𝚂 𝚃𝙷𝙴 𝙷𝙴𝙻𝙿 𝙵𝙾𝚁 𝙼𝚈 𝙲𝙾𝙼𝙼𝙰𝙽𝙳𝚂."""
+    ABOUT_TXT = """✯ 𝙼𝚈 𝙽𝙰𝙼𝙴: {}
+✯ 𝙲𝚁𝙴𝙰𝚃𝙾𝚁: <a href=https://t.me/TeamEvamaria>Team Eva Maria</a>
+✯ 𝙻𝙸𝙱𝚁𝙰𝚁𝚈: 𝙿𝚈𝚁𝙾𝙶𝚁𝙰𝙼
+✯ 𝙻𝙰𝙽𝙶𝚄𝙰𝙶𝙴: 𝙿𝚈𝚃𝙷𝙾𝙽 𝟹
+✯ 𝙳𝙰𝚃𝙰 𝙱𝙰𝚂𝙴: 𝙼𝙾𝙽𝙶𝙾 𝙳𝙱
+✯ 𝙱𝙾𝚃 𝚂𝙴𝚁𝚅𝙴𝚁: 𝙷𝙴𝚁𝙾𝙺𝚄
+✯ 𝙱𝚄𝙸𝙻𝙳 𝚂𝚃𝙰𝚃𝚄𝚂: v1.0.1 [ 𝙱𝙴𝚃𝙰 ]"""
+    SOURCE_TXT = """<b>NOTE:</b>
+- Eva Maria is a open source project. 
+- Source - https://github.com/EvamariaTG/EvaMaria  
 
-𝕀𝕞 <a href=https://t.me/{}>{}</a>, 𝕁𝕦𝕤𝕥 𝔸𝕕𝕕 𝕄𝕖 𝕋𝕠 𝕐𝕠𝕦𝕣 𝔾𝕣𝕠𝕦𝕡𝕤 𝕋𝕠 𝔼𝕒𝕣𝕟 𝕐𝕠𝕦𝕣 ℙ𝕣𝕠𝕗𝕚𝕥 💸"""
-    HELP_TXT = """
-How To Use Bot ? 🔘
-
-To Use Ldisk Movie Search You Just Have A Account In sundisk.in |
-
-Go To Dashboard -> Menu -> Tools -> Devoloper Api . 
-
-Copy The Api And Add Ldisk Search Bot In Group .
-
-To Connect Your Api Give Command /add_api your api  .
-
-Now Enjoy Your Profit 💸."""
-    ABOUT_TXT = """
-Welcome To sundisk.in
-
-This is the free link Converter. Just sign up through our website and then login and short your link and Share your shorten links and earn money 💰.
-
-OUR BOTS
-
-Link Convertor  - @
-
-Files Store Bot - @
-
-Help And Support Bot - @
-
-To Use The Bots You Just Have to Login in sundisk.in  And Go To Devolopers Api Copy And send To Bot easy (. ❛ ᴗ ❛.)
-
-Also We Are Making Some More Awesome Bots To Make Your Hard Work Low 😉 Enjoy.
-
-Site Link - sundisk.in
-
-Signup page link - https://sundisk.in/auth/signup
-
-To know more details visit our channel - @"""
-    SOURCE_TXT = """
-    NOTE:
-Current CPM - $1 (About 75-80Rs)
-
-More INFO - https://sundisk.in/member/dashboard
-Minimum Withdrawal Ammount Is 2-5$ For Defferent Withdrawal Types 
-Paypal - 5$ 
-UPI - 3$ 
-Mobile Recharge - 2$
-Tv Recharge -2$ 
-Other Payment Methods Comeing Soon 
-More INFO - https://sundisk.in/member/users/profile
-"""
+<b>DEVS:</b>
+- <a href=https://t.me/TeamEvamaria>Team Eva Maria</a>"""
     MANUELFILTER_TXT = """Help: <b>Filters</b>
 
 - Filter is the feature were users can set automated replies for a particular keyword and EvaMaria will respond whenever a keyword is found the message
@@ -137,4 +104,40 @@ Added By - {}
     LOG_TEXT_P = """#NewUser
 ID - <code>{}</code>
 Name - {}
+"""
+    POST_TEXT = """
+𝗕𝗮𝗲 𝗦𝘂𝘇𝘆 𝗕𝗼𝘁 𝗨𝗽𝗱𝗮𝘁𝗲 
+
+🔹 New Features :
+
+    - Remove the Old Added Verification method now no need to verify yourself for every request. you Only need to Verify yourself at once. (for 24 hours full access) 
+And you need to update verification expire within 24 hours. 
+
+    - Now, You Can Use Bot In Both Privet Chat And Groups
+
+    - Added Advance TV Series Filters. 
+
+    - Added button to get all files on the regular page 
+
+    - When sending files bot Automatically sends similar files to a user 
+
+    - Added Delete Timer ( You need to forward files to your `save message chat` before downloading ) 
+
+    - Added `/notification` Feature. it's update you new movie / Tv series ( For get notification you should turned on notification | go to bot and send /notification command ) [ Update 7/26 ]
+
+Add Bae Suzy To Your Group & Enjoy 
+
+@SpaciousUniverseBot | @TMWAD
+
+Bot Stats:
+
+» Today Sended Files: {} 
+» New Users: {}
+» Newly Added Files: {}
+
+• Total Users: {}
+• Total Files: {}
+
+Updated Time: {}
+
 """

@@ -11,7 +11,7 @@ from database.users_chats_db import db
 from info import CHANNELS, ADMINS, AUTH_CHANNEL, LOG_CHANNEL, PICS, BATCH_FILE_CAPTION, CUSTOM_FILE_CAPTION, PROTECT_CONTENT
 from utils import get_settings, get_size, is_subscribed, save_group_settings, temp, send_more_files, gen_url, broadcast_messages, broadcast_notification, split_list
 from database.connections_mdb import active_connection
-from database.quickdb import remove_inst, get_ids, add_sent_files, get_verification, remove_verification, add_verification, count_sent_files, add_update_msg, remove_update_msg, get_update_msg, add_api
+from database.quickdb import remove_inst, get_ids, add_sent_files, get_verification, remove_verification, add_verification, count_sent_files, add_update_msg, remove_update_msg, get_update_msg
 from database.tvseriesfilters import add_tvseries_filter, update_tvseries_filter, getlinks, find_tvseries_filter, remove_tvseries, find_tvseries_by_first
 from database.notification import find_notification, remove_notification, update_notification, add_notification, find_allusers
 import re
@@ -28,8 +28,7 @@ async def start(client, message):
     if message.chat.type in ['group', 'supergroup']:
         buttons = [
             [
-                InlineKeyboardButton(
-                    '🤖 Updates', url='https://t.me/SunDisk_official')
+                InlineKeyboardButton('🤖 Updates', url='https://t.me/TMWAD')
             ],
             [
                 InlineKeyboardButton(
@@ -54,9 +53,8 @@ async def start(client, message):
                                  url=f'http://t.me/{temp.U_NAME}?startgroup=true')
         ], [
             InlineKeyboardButton(
-                '🌐 Website',  url='http://sundisk.in'),
-            InlineKeyboardButton(
-                '🤖 Updates', url='https://t.me/SunDisk_official')
+                '🔍 Search', switch_inline_query_current_chat=''),
+            InlineKeyboardButton('🤖 Updates', url='https://t.me/TMWAD')
         ], [
             InlineKeyboardButton('ℹ️ Help', callback_data='help'),
             InlineKeyboardButton('😊 About', callback_data='about')
@@ -76,7 +74,7 @@ async def start(client, message):
         btn = [
             [
                 InlineKeyboardButton(
-                    "🤖 Join Updates Channel", url="https://t.me/SunDisk_official"
+                    "🤖 Join Updates Channel", url="https://t.me/TMWAD"
                 )
             ]
         ]
@@ -105,9 +103,8 @@ async def start(client, message):
                                  url=f'http://t.me/{temp.U_NAME}?startgroup=true')
         ], [
             InlineKeyboardButton(
-                '🌐 website', url='http://sundisk.in'),
-            InlineKeyboardButton(
-                '🤖 Updates', url='https://t.me/SunDisk_official')
+                '🔍 Search', switch_inline_query_current_chat=''),
+            InlineKeyboardButton('🤖 Updates', url='https://t.me/TMWAD')
         ], [
             InlineKeyboardButton('ℹ️ Help', callback_data='help'),
             InlineKeyboardButton('😊 About', callback_data='about')
@@ -129,62 +126,559 @@ async def start(client, message):
         file_id = data
         pre = ""
 
-    files_ = await get_file_details(file_id)
-    if not files_:
-        try:
-            msg = await client.send_cached_media(
+    if data.split("-", 1)[0] == "FEND":
+        t = time.time()
+        await remove_verification(message.from_user.id)
+        file_id = data.split("-", 1)[1]
+        await add_verification(message.from_user.id, 'verified', file_id, t)
+
+        tt = time.localtime(t+43200)
+        current_time = time.strftime("%D  %H:%M:%S", tt)
+        await message.reply(
+            text=f"""
+                <p>you'r verified Succusfully. access until {current_time}</p>
+                """
+        )
+        idstring = await get_ids(file_id)
+
+        if idstring:
+            await remove_inst(file_id)
+            idstring = idstring['links']
+            fileids = idstring.split("L_I_N_K")
+            sendmsglist = []
+            for file_id in fileids:
+                files_ = await get_file_details(file_id)
+                if not files_:
+                    try:
+                        msg = await client.send_cached_media(
+                            chat_id=message.from_user.id,
+                            file_id=file_id
+                        )
+                        filetype = msg.media
+                        file = getattr(msg, filetype)
+                        title = file.file_name
+                        size = get_size(file.file_size)
+                        f_caption = f"<code>{title}</code>"
+                        if CUSTOM_FILE_CAPTION:
+                            try:
+                                f_caption = CUSTOM_FILE_CAPTION.format(
+                                    file_name='' if title is None else title, file_size='' if size is None else size, file_caption='')
+                            except:
+                                return
+                        await msg.edit_caption(f_caption)
+                        return
+                    except:
+                        pass
+                files = files_[0]
+                title = files.file_name
+                size = get_size(files.file_size)
+                f_caption = files.caption
+                if CUSTOM_FILE_CAPTION:
+                    try:
+                        f_caption = CUSTOM_FILE_CAPTION.format(
+                            file_name='' if title is None else title, file_size='' if size is None else size, file_caption='' if f_caption is None else f_caption)
+                    except Exception as e:
+                        logger.exception(e)
+                        f_caption = f_caption
+                if f_caption is None:
+                    f_caption = f"{files.file_name}"
+                k = await client.send_cached_media(
+                    chat_id=message.from_user.id,
+                    file_id=file_id,
+                    caption=f_caption,
+                )
+                sendmsglist.append(k)
+                await add_sent_files(message.from_user.id, file_id)
+
+                await asyncio.sleep(2)
+
+            await message.reply('𝕋𝕙𝕒𝕟𝕜 𝕐𝕠𝕦 𝔽𝕠𝕣 𝕌𝕤𝕚𝕟𝕘 𝕄𝕖')
+            kk = await client.send_message(
                 chat_id=message.from_user.id,
-                file_id=file_id
+                text="""
+                This Files Will delete in 10min Please Forward To Saved Messages folder before download. \n\nTurned On /notification for get new movie|tv Serieses
+                """)
+
+            await asyncio.sleep(600)
+
+            for k in sendmsglist:
+                await k.delete()
+
+            sendmsglist = []
+
+            return await kk.delete()
+
+        files_ = await get_file_details(file_id)
+        if not files_:
+            try:
+                pre, file_id = ((base64.urlsafe_b64decode(
+                    data + "=" * (-len(data) % 4))).decode("ascii")).split("_", 1)
+                msg = await client.send_cached_media(
+                    chat_id=message.from_user.id,
+                    file_id=file_id,
+                    protect_content=True if pre == 'filep' else False,
+                )
+                filetype = msg.media
+                file = getattr(msg, filetype)
+                title = file.file_name
+                size = get_size(file.file_size)
+                f_caption = f"<code>{title}</code>"
+                if CUSTOM_FILE_CAPTION:
+                    try:
+                        f_caption = CUSTOM_FILE_CAPTION.format(
+                            file_name='' if title is None else title, file_size='' if size is None else size, file_caption='')
+                    except:
+                        return
+                await msg.edit_caption(f_caption)
+                return
+            except:
+                pass
+            return await message.reply('No such file exist.')
+        files = files_[0]
+        title = files.file_name
+        size = get_size(files.file_size)
+        f_caption = files.caption
+        if CUSTOM_FILE_CAPTION:
+            try:
+                f_caption = CUSTOM_FILE_CAPTION.format(
+                    file_name='' if title is None else title, file_size='' if size is None else size, file_caption='' if f_caption is None else f_caption)
+            except Exception as e:
+                logger.exception(e)
+                f_caption = f_caption
+        if f_caption is None:
+            f_caption = f"{files.file_name}"
+
+        k = await client.send_cached_media(
+            chat_id=message.from_user.id,
+            file_id=file_id,
+            caption=f_caption,
+            protect_content=True if pre == 'filep' else False,
+        )
+        sendmsglist = [k]
+        await add_sent_files(message.from_user.id, file_id)
+
+        files = await send_more_files(title)
+        if files:
+            for file in files[1:]:
+                k = await client.send_cached_media(
+                    chat_id=message.from_user.id,
+                    file_id=file.file_id,
+                    caption=f"<code>{file.file_name}</code>",
+                    protect_content=True if pre == 'filep' else False,
+                )
+                sendmsglist.append(k)
+                await add_sent_files(message.from_user.id, file.file_id)
+
+                await asyncio.sleep(2)
+
+            await message.reply("𝕋𝕙𝕒𝕟𝕜 𝕐𝕠𝕦 𝔽𝕠𝕣 𝕌𝕤𝕚𝕟𝕘 𝕄𝕖 \n\n⭐Rate Me: <a href='https://t.me/tlgrmcbot?start=spaciousuniversebot-review'>Here</a>")
+            kk = await client.send_message(
+                chat_id=message.from_user.id,
+                text="""
+                This Files Will delete in 10min Please Forward To Saved Messages folder before download. \n\nTurned On /notification for get new movie|tv Serieses
+                """)
+
+            await asyncio.sleep(600)
+
+            for k in sendmsglist:
+                await k.delete()
+            sendmsglist = []
+
+            return await kk.delete()
+
+    user_stats = await get_verification(message.from_user.id)
+    if user_stats is None:
+        t = time.time()
+        await add_verification(message.from_user.id, 'unverified', file_id, t)
+        button = [[
+            InlineKeyboardButton(
+                '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start=REAL-{data}'))
+        ]]
+        return await message.reply(
+            text="""
+            <p>you'r not verified today. verfied your self and get unlimited access</p>
+            <br>
+            <small><a href="kalanakt.github.io/projects/telegram/baesuzy/">How To Verify !</a></small>
+            """,
+            reply_markup=InlineKeyboardMarkup(button)
+        )
+    elif data.split("-", 1)[0] == "REAL":
+        file_id = data.split("-", 1)[1]
+        if (str(user_stats["stats"]) == 'unverified') and (str(user_stats["file"]) == file_id):
+            file_id = data.split("-", 1)[1]
+            t = time.time()
+            await remove_verification(message.from_user.id)
+            await add_verification(message.from_user.id, 'verified', file_id, t)
+            t = time.localtime(t+43200)
+            current_time = time.strftime("%D  %H:%M:%S", t)
+            button = [[
+                InlineKeyboardButton(
+                    'Get Files', url=f'https://telegram.dog/SpaciousUniverseBot?start={file_id}')
+            ]]
+            return await message.reply(
+                text=f"""
+                <p>you'r verified Succusfully. access until {current_time}</p>
+                """,
+                reply_markup=InlineKeyboardMarkup(button)
             )
-            filetype = msg.media
-            file = getattr(msg, filetype)
-            title = file.file_name
-            size = get_size(file.file_size)
-            f_caption = f"<code>{title}</code>"
-            if CUSTOM_FILE_CAPTION:
+        elif data.split("-")[1] == "BATCH":
+            file_id = data.split("-", 2)[2]
+            t = time.time()
+            await remove_verification(message.from_user.id)
+            await add_verification(message.from_user.id, 'verified', file_id, t)
+            t = time.localtime(t+43200)
+            current_time = time.strftime("%D  %H:%M:%S", t)
+            button = [[
+                InlineKeyboardButton(
+                    'Get Files', url=f'https://telegram.dog/SpaciousUniverseBot?start={file_id}')
+            ]]
+            return await message.reply(
+                text=f"""
+                <p>you'r verified Succusfully. access until {current_time}</p>
+                """,
+                reply_markup=InlineKeyboardMarkup(button)
+            )
+        else:
+            t = time.time()
+            await remove_verification(message.from_user.id)
+            await add_verification(message.from_user.id, 'unverified', file_id, t)
+            t = time.localtime(t+43200)
+            current_time = time.strftime("%D  %H:%M:%S", t)
+            button = [[
+                InlineKeyboardButton(
+                    '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start=REAL-{data}'))
+            ]]
+            return await message.reply(
+                text=f"""
+                <p>you'r using my old messages. please verify first</p>
+                """,
+                reply_markup=InlineKeyboardMarkup(button)
+            )
+
+    elif (str(user_stats["stats"]) == 'unverified') and (str(user_stats["file"]) != file_id):
+        t = time.time()
+        await remove_verification(message.from_user.id)
+        await add_verification(message.from_user.id, 'unverified', file_id, t)
+        button = [[
+            InlineKeyboardButton(
+                '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start=REAL-{data}'))
+        ]]
+        return await message.reply(
+            text="""
+            <p>you'r not verified today. verfied your self and get unlimited access</p>
+            <br>
+            <small><a href="kalanakt.github.io/projects/telegram/baesuzy/">How To Verify !</a></small>
+            """,
+            reply_markup=InlineKeyboardMarkup(button)
+        )
+
+    elif (time.time() - int(float(user_stats["updat_time"]))) > 43200:
+        t = time.time()
+        await remove_verification(message.from_user.id)
+        await add_verification(message.from_user.id, 'unverified', file_id, user_stats["updat_time"])
+        button = [[
+            InlineKeyboardButton(
+                '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start=REAL-{data}'))
+        ]]
+        return await message.reply(
+            text="""
+            <p>Your Verification Time Is expired. please verify again</p>
+            <br>
+            <small><a href="kalanakt.github.io/projects/telegram/baesuzy/">How To Verify</a></small>
+            """,
+            reply_markup=InlineKeyboardMarkup(button)
+        )
+
+    elif str(user_stats["stats"]) == 'verified':
+        if data.split("-", 1)[0] == "BATCH":
+            sts = await message.reply("Please wait")
+            file_id = data.split("-", 1)[1]
+            msgs = BATCH_FILES.get(file_id)
+            sendmsglist = []
+            if not msgs:
+                file = await client.download_media(file_id)
                 try:
-                    f_caption = CUSTOM_FILE_CAPTION.format(
-                        file_name='' if title is None else title, file_size='' if size is None else size, file_caption='')
+                    with open(file) as file_data:
+                        msgs = json.loads(file_data.read())
                 except:
-                    return
-            await msg.edit_caption(f_caption)
-            return
-        except:
-            pass
-    files = files_[0]
-    title = files.file_name
-    size = get_size(files.file_size)
-    f_caption = files.caption
-    if CUSTOM_FILE_CAPTION:
-        try:
-            f_caption = CUSTOM_FILE_CAPTION.format(
-                file_name='' if title is None else title, file_size='' if size is None else size, file_caption='' if f_caption is None else f_caption)
-        except Exception as e:
-            logger.exception(e)
-            f_caption = f_caption
-    if f_caption is None:
-        f_caption = f"{files.file_name}"
-    k = await client.send_cached_media(
-        chat_id=message.from_user.id,
-        file_id=file_id,
-        caption=f_caption,
-    )
+                    await sts.edit("FAILED")
+                    return await client.send_message(LOG_CHANNEL, "UNABLE TO OPEN FILE.")
+                os.remove(file)
+                BATCH_FILES[file_id] = msgs
+            for msg in msgs:
+                title = msg.get("title")
+                size = get_size(int(msg.get("size", 0)))
+                f_caption = msg.get("caption", "")
+                if BATCH_FILE_CAPTION:
+                    try:
+                        f_caption = BATCH_FILE_CAPTION.format(
+                            file_name='' if title is None else title, file_size='' if size is None else size, file_caption='' if f_caption is None else f_caption)
+                    except Exception as e:
+                        logger.exception(e)
+                        f_caption = f_caption
+                if f_caption is None:
+                    f_caption = f"{title}"
+                try:
+                    k = await client.send_cached_media(
+                        chat_id=message.from_user.id,
+                        file_id=msg.get("file_id"),
+                        caption=f_caption,
+                        protect_content=msg.get('protect', False),
+                    )
+                    sendmsglist.append(k)
+                    await add_sent_files(message.from_user.id, msg.get("file_id"))
+
+                except FloodWait as e:
+                    await asyncio.sleep(e.x)
+                    logger.warning(f"Floodwait of {e.x} sec.")
+                    k = await client.send_cached_media(
+                        chat_id=message.from_user.id,
+                        file_id=msg.get("file_id"),
+                        caption=f_caption,
+                        protect_content=msg.get('protect', False),
+                    )
+                    sendmsglist.append(k)
+                    await add_sent_files(message.from_user.id, msg.get("file_id"))
+
+                except Exception as e:
+                    logger.warning(e, exc_info=True)
+                    continue
+                await asyncio.sleep(2)
+            await sts.delete()
+            await message.reply("𝕋𝕙𝕒𝕟𝕜 𝕐𝕠𝕦 𝔽𝕠𝕣 𝕌𝕤𝕚𝕟𝕘 𝕄𝕖 \n\n⭐Rate Me: <a href='https://t.me/tlgrmcbot?start=spaciousuniversebot-review'>Here</a>")
+            kk = await client.send_message(
+                chat_id=message.from_user.id,
+                text="""
+                This Files Will delete in 10min Please Forward To Saved Messages folder before download. \n\nTurned On /notification for get new movie|tv Serieses
+                """)
+
+            await asyncio.sleep(600)
+
+            for k in sendmsglist:
+                await k.delete()
+            sendmsglist = []
+
+            return await kk.delete()
+
+        idstring = await get_ids(file_id)
+
+        if idstring:
+            await remove_inst(file_id)
+            idstring = idstring['links']
+            fileids = idstring.split("L_I_N_K")
+            sendmsglist = []
+            for file_id in fileids:
+                files_ = await get_file_details(file_id)
+                if not files_:
+                    try:
+                        msg = await client.send_cached_media(
+                            chat_id=message.from_user.id,
+                            file_id=file_id
+                        )
+                        filetype = msg.media
+                        file = getattr(msg, filetype)
+                        title = file.file_name
+                        size = get_size(file.file_size)
+                        f_caption = f"<code>{title}</code>"
+                        if CUSTOM_FILE_CAPTION:
+                            try:
+                                f_caption = CUSTOM_FILE_CAPTION.format(
+                                    file_name='' if title is None else title, file_size='' if size is None else size, file_caption='')
+                            except:
+                                return
+                        await msg.edit_caption(f_caption)
+                        return
+                    except:
+                        pass
+                files = files_[0]
+                title = files.file_name
+                size = get_size(files.file_size)
+                f_caption = files.caption
+                if CUSTOM_FILE_CAPTION:
+                    try:
+                        f_caption = CUSTOM_FILE_CAPTION.format(
+                            file_name='' if title is None else title, file_size='' if size is None else size, file_caption='' if f_caption is None else f_caption)
+                    except Exception as e:
+                        logger.exception(e)
+                        f_caption = f_caption
+                if f_caption is None:
+                    f_caption = f"{files.file_name}"
+                try:
+                    k = await client.send_cached_media(
+                        chat_id=message.from_user.id,
+                        file_id=file_id,
+                        caption=f_caption,
+                    )
+                except FloodWait as e:
+                    await asyncio.sleep(e.x)
+                    logger.warning(f"Floodwait of {e.x} sec.")
+                    k = await client.send_cached_media(
+                        chat_id=message.from_user.id,
+                        file_id=file_id,
+                        caption=f_caption,
+                    )
+                sendmsglist.append(k)
+                await add_sent_files(message.from_user.id, file_id)
+
+                await asyncio.sleep(2)
+
+            await message.reply('𝕋𝕙𝕒𝕟𝕜 𝕐𝕠𝕦 𝔽𝕠𝕣 𝕌𝕤𝕚𝕟𝕘 𝕄𝕖')
+            kk = await client.send_message(
+                chat_id=message.from_user.id,
+                text="""
+                This Files Will delete in 10min Please Forward To Saved Messages folder before download. \n\nTurned On /notification for get new movie|tv Serieses
+                """)
+
+            await asyncio.sleep(600)
+
+            for k in sendmsglist:
+                await k.delete()
+
+            sendmsglist = []
+
+            return await kk.delete()
+
+        files_ = await get_file_details(file_id)
+        if not files_:
+            try:
+                pre, file_id = ((base64.urlsafe_b64decode(
+                    data + "=" * (-len(data) % 4))).decode("ascii")).split("_", 1)
+                msg = await client.send_cached_media(
+                    chat_id=message.from_user.id,
+                    file_id=file_id,
+                    protect_content=True if pre == 'filep' else False,
+                )
+                filetype = msg.media
+                file = getattr(msg, filetype)
+                title = file.file_name
+                size = get_size(file.file_size)
+                f_caption = f"<code>{title}</code>"
+                if CUSTOM_FILE_CAPTION:
+                    try:
+                        f_caption = CUSTOM_FILE_CAPTION.format(
+                            file_name='' if title is None else title, file_size='' if size is None else size, file_caption='')
+                    except:
+                        return
+                await msg.edit_caption(f_caption)
+                return
+            except:
+                pass
+            return await message.reply('No such file exist.')
+        files = files_[0]
+        title = files.file_name
+        size = get_size(files.file_size)
+        f_caption = files.caption
+        if CUSTOM_FILE_CAPTION:
+            try:
+                f_caption = CUSTOM_FILE_CAPTION.format(
+                    file_name='' if title is None else title, file_size='' if size is None else size, file_caption='' if f_caption is None else f_caption)
+            except Exception as e:
+                logger.exception(e)
+                f_caption = f_caption
+        if f_caption is None:
+            f_caption = f"{files.file_name}"
+
+        k = await client.send_cached_media(
+            chat_id=message.from_user.id,
+            file_id=file_id,
+            caption=f_caption,
+            protect_content=True if pre == 'filep' else False,
+        )
+        sendmsglist = [k]
+        await add_sent_files(message.from_user.id, file_id)
+
+        files = await send_more_files(title)
+        if files:
+            for file in files[1:]:
+                try:
+                    k = await client.send_cached_media(
+                        chat_id=message.from_user.id,
+                        file_id=file.file_id,
+                        caption=f"<code>{file.file_name}</code>",
+                        protect_content=True if pre == 'filep' else False,
+                    )
+                except FloodWait as e:
+                    await asyncio.sleep(e.x)
+                    logger.warning(f"Floodwait of {e.x} sec.")
+                    k = await client.send_cached_media(
+                        chat_id=message.from_user.id,
+                        file_id=file.file_id,
+                        caption=f"<code>{file.file_name}</code>",
+                        protect_content=True if pre == 'filep' else False,
+                    )
+
+                sendmsglist.append(k)
+                await add_sent_files(message.from_user.id, file.file_id)
+                await asyncio.sleep(2)
+
+            await message.reply("𝕋𝕙𝕒𝕟𝕜 𝕐𝕠𝕦 𝔽𝕠𝕣 𝕌𝕤𝕚𝕟𝕘 𝕄𝕖 \n\n⭐Rate Me: <a href='https://t.me/tlgrmcbot?start=spaciousuniversebot-review'>Here</a>")
+            kk = await client.send_message(
+                chat_id=message.from_user.id,
+                text="""
+                This Files Will delete in 10min Please Forward To Saved Messages folder before download. \n\nTurned On /notification for get new movie|tv Serieses
+                """)
+
+            await asyncio.sleep(600)
+
+            for k in sendmsglist:
+                await k.delete()
+            sendmsglist = []
+
+            return await kk.delete()
 
 
-@Client.on_message(filters.command("add_api") & filters.incoming)
-async def api_adder(bot, message):
+@Client.on_message(filters.command("addseries") & filters.incoming & filters.user(ADMINS))
+async def tvseries_adder(bot, message):
     sts = await message.reply("Checking Your Request...")
     if " " not in message.text:
-        return await message.reply("Use correct format.<code>/add_api GROUP_ID YOUR_API</code>\n\n\nExample <code>/add_api -1001547683045 23smxlh32yq2ghfh27d9xyww259az578</code>.")
+        return await message.reply("Use correct format.<code>/addseries (name of series without space) (language eng/hindi/tamil/span) (quility 480/ 720/ 1080) (tv series batch links without space , use commas)</code>\n\n\nExample <code>/addseries strangerthings eng 480 https://tinyurl.com/23smxlh3,https://tinyurl.com/2yq2ghfh,https://tinyurl.com/27d9xyww,https://tinyurl.com/259az578</code>.")
     data = message.text.strip().split(" ")
     try:
-        cmd, userid, api = data
-        await add_api(userid, api)
-        await message.reply("your api added")
+        cmd, name, lang, quty, links = data
+        await add_tvseries_filter(name, lang, quty, links)
+        await message.reply("your series added")
 
     except:
-        return await message.reply("Sorry some error occuerd.")
+        return await message.reply("May Be Error is you puts space between links: \nUse correct format.<code>/addseries (name of series without space) (language eng/hindi/tamil/span) (quility 480/ 720/ 1080) (tv series batch links without space , use commas)</code>\n\n\nExample <code>/addseries strangerthings eng 480 https://tinyurl.com/23smxlh3,https://tinyurl.com/2yq2ghfh,https://tinyurl.com/27d9xyww,https://tinyurl.com/259az578</code>.")
     await sts.delete()
+
+
+@Client.on_message(filters.command("updateseries") & filters.incoming & filters.user(ADMINS))
+async def tvseries_updater(bot, message):
+    sts = await message.reply("Checking Your Request...")
+    if " " not in message.text:
+        return await message.reply("Use correct format.<code>/updateseries (name of series without space) (language eng/hindi/tamil/span) (quility 480/ 720/ 1080) (tv series batch links without space , use commas)</code>\n\n\nExample <code>/addseries strangerthings eng 480 https://tinyurl.com/23smxlh3,https://tinyurl.com/2yq2ghfh,https://tinyurl.com/27d9xyww,https://tinyurl.com/259az578</code>.")
+    data = message.text.strip().split(" ")
+    try:
+        cmd, name, lang, quty, links = data
+        await update_tvseries_filter(name, lang, quty, links)
+        await message.reply("your series added")
+
+    except:
+        return await message.reply("May Be Error is you puts space between links: \nUse correct format.<code>/addseries (name of series without space) (language eng/hindi/tamil/span) (quility 480/ 720/ 1080) (tv series batch links without space , use commas)</code>\n\n\nExample <code>/addseries strangerthings eng 480 https://tinyurl.com/23smxlh3,https://tinyurl.com/2yq2ghfh,https://tinyurl.com/27d9xyww,https://tinyurl.com/259az578</code>.")
+    await sts.delete()
+
+
+@Client.on_message(filters.command("removeseries") & filters.incoming & filters.user(ADMINS))
+async def tvseries_remover(bot, message):
+    sts = await message.reply("Checking Your Request...")
+    if " " not in message.text:
+        return await message.reply("Use correct format.<code>/removeseries (name of series without space)")
+    data = message.text.strip().split(" ")
+    try:
+        cmd, name = data
+        await remove_tvseries(name)
+        await message.reply("your series removed")
+
+    except:
+        return await message.reply("Not Found.")
+    await sts.delete()
+
+
+@Client.on_message(filters.command("alltvs") & filters.incoming)
+async def tvseries_get(bot, message):
+    k = await getlinks()
+    await message.reply(k)
 
 
 @Client.on_message(filters.command('channel') & filters.user(ADMINS))
@@ -216,6 +710,109 @@ async def channel_info(bot, message):
             f.write(text)
         await message.reply_document(file)
         os.remove(file)
+
+
+@Client.on_message(filters.command('dev') & filters.user(ADMINS))
+async def devve(bot, message):
+    try:
+        user_stats = await get_verification(message.from_user.id)
+        await message.reply_text(user_stats)
+    except Exception as e:
+        await message.reply(str(e))
+
+
+@Client.on_message((filters.command('notification') | filters.regex('Notification')) & filters.incoming)
+async def get_notification(bot, message):
+    await message.reply_text(
+        'Get Movies/ Tv series On realse Time 〽. Turned on notifications, you can change anytime',
+        reply_markup=InlineKeyboardMarkup(
+            [
+                [
+                    InlineKeyboardButton(
+                        text="On 🔛", callback_data="notification_on"
+                    ),
+                    InlineKeyboardButton(
+                        text="Off 📴", callback_data="notification_off"
+                    )
+                ]
+            ]
+        ),
+        quote=True,
+    )
+
+
+@Client.on_callback_query(filters.regex(r'^notification_on'))
+async def notification_on(bot, query):
+    user_id = query.from_user.id
+    userStatus = await find_notification(user_id)
+    if userStatus is None:
+        await add_notification(user_id, 'on')
+    else:
+        await update_notification(user_id, 'on')
+
+    return await query.message.edit('Succesfully Turned on notifications 💌. use /notification to change')
+
+
+@Client.on_callback_query(filters.regex(r'^notification_off'))
+async def notification_off(bot, query):
+    user_id = query.from_user.id
+    userStatus = await find_notification(user_id)
+    if userStatus is None:
+        await add_notification(user_id, 'off')
+    else:
+        await update_notification(user_id, 'off')
+    return await query.message.edit('Succesfully Turned off notifications 💌. use /notification to change')
+
+
+@Client.on_message(filters.command('sendnoti') & filters.user(ADMINS))
+async def sendnotifications(bot, message):
+    usersIdList = await find_allusers()
+    b_msg = message.reply_to_message
+    if not b_msg:
+        return await message.reply(f"Reply to message")
+    count = 0
+    msg = await message.reply("Processing...⏳", quote=True)
+    for usersId in usersIdList:
+        await broadcast_notification(int(usersId), b_msg)
+        await asyncio.sleep(2)
+        count += 1
+
+    await msg.delete()
+    return await message.reply(f"Succuesfully sended to {count} users")
+
+
+@Client.on_message(filters.command('tmwad') & filters.user(ADMINS))
+async def tmwad_update(bot, message):
+    updates = await get_update_msg()
+    if updates is not None:
+        await remove_update_msg()
+        prev_day_total_users = updates["totalUsers"]
+        prev_day_total_files = updates["files"]
+
+    else:
+        return
+
+    todaySentFiles = await count_sent_files()
+    total_users = await db.total_users_count()
+    files = await Media.count_documents()
+
+    todayUsers = int(total_users) - int(prev_day_total_users)
+    todayFiles = files - prev_day_total_files
+    t = time.localtime()
+    current_time = time.strftime("%D %H:%M:%S", t)
+
+    await add_update_msg(total_users, files)
+
+    try:
+        await bot.edit_message_text(
+            chat_id=str('TMWAD'),
+            message_id=int(49),
+            text=script.POST_TEXT.format(
+                todaySentFiles, todayUsers, todayFiles, total_users, files, current_time)
+        )
+        return await message.reply("Update Succusfully on @TMWAD")
+    except:
+        logger.exception('Some error occured!', exc_info=True)
 
 
 @Client.on_message(filters.command('logs') & filters.user(ADMINS))
