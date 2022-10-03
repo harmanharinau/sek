@@ -292,7 +292,7 @@ async def start(client, message):
         await add_verification(message.from_user.id, 'unverified', file_id, t)
         button = [[
             InlineKeyboardButton(
-                '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start=REAL-{data}'))
+                '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SunDisk_Search_Bot?start=REAL-{data}'))
         ]]
         return await message.reply(
             text="""
@@ -313,7 +313,7 @@ async def start(client, message):
             current_time = time.strftime("%D  %H:%M:%S", t)
             button = [[
                 InlineKeyboardButton(
-                    'Get Files', url=f'https://telegram.dog/SpaciousUniverseBot?start={file_id}')
+                    'Get Files', url=f'https://telegram.dog/SunDisk_Search_Bot?start={file_id}')
             ]]
             return await message.reply(
                 text=f"""
@@ -330,7 +330,7 @@ async def start(client, message):
             current_time = time.strftime("%D  %H:%M:%S", t)
             button = [[
                 InlineKeyboardButton(
-                    'Get Files', url=f'https://telegram.dog/SpaciousUniverseBot?start={file_id}')
+                    'Get Files', url=f'https://telegram.dog/SunDisk_Search_Bot?start={file_id}')
             ]]
             return await message.reply(
                 text=f"""
@@ -346,7 +346,7 @@ async def start(client, message):
             current_time = time.strftime("%D  %H:%M:%S", t)
             button = [[
                 InlineKeyboardButton(
-                    '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start=REAL-{data}'))
+                    '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SunDisk_Search_Bot?start=REAL-{data}'))
             ]]
             return await message.reply(
                 text=f"""
@@ -361,7 +361,7 @@ async def start(client, message):
         await add_verification(message.from_user.id, 'unverified', file_id, t)
         button = [[
             InlineKeyboardButton(
-                '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start=REAL-{data}'))
+                '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SunDisk_Search_Bot?start=REAL-{data}'))
         ]]
         return await message.reply(
             text="""
@@ -378,7 +378,7 @@ async def start(client, message):
         await add_verification(message.from_user.id, 'unverified', file_id, user_stats["updat_time"])
         button = [[
             InlineKeyboardButton(
-                '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SpaciousUniverseBot?start=REAL-{data}'))
+                '🔹 Verfiy 🔹', url=gen_url(f'https://telegram.dog/SunDisk_Search_Bot?start=REAL-{data}'))
         ]]
         return await message.reply(
             text="""

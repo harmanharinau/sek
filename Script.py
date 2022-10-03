@@ -127,7 +127,7 @@ And you need to update verification expire within 24 hours.
 
 Add Bae Suzy To Your Group & Enjoy 
 
-@SpaciousUniverseBot | @TMWAD
+@SunDisk_Search_Bot | @TMWAD
 
 Bot Stats:
 
