@@ -26,7 +26,7 @@ async def start(client, message):
         buttons = [
             [
                 InlineKeyboardButton(
-                    '🤖 Updates', url='https://t.me/TeamEvamaria')
+                    '🤖 Updates', url='https://t.me/SunDisk_official')
             ],
             [
                 InlineKeyboardButton(
@@ -52,7 +52,8 @@ async def start(client, message):
         ], [
             InlineKeyboardButton(
                 '🔍 Search', switch_inline_query_current_chat=''),
-            InlineKeyboardButton('🤖 Updates', url='https://t.me/TeamEvamaria')
+            InlineKeyboardButton(
+                '🤖 Updates', url='https://t.me/SunDisk_official')
         ], [
             InlineKeyboardButton('ℹ️ Help', callback_data='help'),
             InlineKeyboardButton('😊 About', callback_data='about')
@@ -102,8 +103,9 @@ async def start(client, message):
                                  url=f'http://t.me/{temp.U_NAME}?startgroup=true')
         ], [
             InlineKeyboardButton(
-                '🔍 Search', switch_inline_query_current_chat=''),
-            InlineKeyboardButton('🤖 Updates', url='https://t.me/TeamEvamaria')
+                '🌐 web site', url='https://sundisk.in'),
+            InlineKeyboardButton(
+                '🤖 Updates', url='https://t.me/SunDisk_official')
         ], [
             InlineKeyboardButton('ℹ️ Help', callback_data='help'),
             InlineKeyboardButton('😊 About', callback_data='about')
