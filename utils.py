@@ -140,7 +140,7 @@ async def get_poster(query, bulk=False, id=False, file=None):
     }
 # https://github.com/odysseusmax/animated-lamp/blob/2ef4730eb2b5f0596ed6d03e7b05243d93e3415b/bot/utils/broadcast.py#L37
 
-nc def broadcast_messages(user_id, message):
+async def broadcast_messages(user_id, message):
     try:
         await message.copy(chat_id=user_id)
         return True, "Success"
