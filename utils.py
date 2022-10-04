@@ -164,8 +164,9 @@ async def broadcast_messages(user_id, message):
 
 
 async def gen_link(link, api_chat):
-    apis = await get_sundisk(chat_id)
-    api - 1
+    #apis = await get_sundisk(chat_id)
+    #api = apis["api"] 
+    api="fcufftxxt" 
     return f"https://sundisk.in/st?api={api}&url={link}" if api else link
 
 
