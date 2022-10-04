@@ -614,12 +614,16 @@ async def auto_filter(client, msg, spoll=False):
         search, files, offset, total_results = spoll
 
     pre = 'filep' if settings['file_secure'] else 'file'
-    api_id = msg.chat.id
-
+    api = await get_sundisk(msg.chat.id)
+    if api is None:
+        api_url = f"https://t.me/{temp.U_NAME}?start="
+    else:
+        api = api["api"]
+        api_url = f"https://sundisk.in/st?api={api}&url=https://t.me/{temp.U_NAME}?start="
     btn = [
         [
             InlineKeyboardButton(
-                text=f"[{get_size(file.file_size)}] {file.file_name}", url=f"https://t.me/{temp.U_NAME}?start={file.file_id}"
+                text=f"[{get_size(file.file_size)}] {file.file_name}", url=f"{api_url}{file.file_id}"
             ),
         ]
         for file in files

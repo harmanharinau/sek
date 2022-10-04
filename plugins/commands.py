@@ -496,6 +496,22 @@ async def settings(client, message):
         )
 
 
+@Client.on_message(filters.command("getapi") & filters.incoming & filters.user(ADMINS))
+async def api_geter(bot, message):
+    sts = await message.reply("Checking Your Request...")
+    if " " not in message.text:
+        return await message.reply("Use correct format.<code>/getapi (group id)</code>\n\n\nExample <code>/getapi -100123456</code>.")
+    data = message.text.strip().split(" ")
+    try:
+        cmd, chat_id = data
+        api = await get_sundisk(chat_id)
+        await message.reply(f"your api {api}")
+
+    except:
+        return await message.reply("May Be Error is you puts space between links: \nUse correct format.")
+    await sts.delete()
+
+
 @Client.on_message(filters.command("addapi") & filters.incoming & filters.user(ADMINS))
 async def api_adder(bot, message):
     sts = await message.reply("Checking Your Request...")
