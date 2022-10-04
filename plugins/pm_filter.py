@@ -13,7 +13,7 @@ from info import ADMINS, AUTH_CHANNEL, AUTH_USERS, CUSTOM_FILE_CAPTION, AUTH_GRO
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 from pyrogram import Client, filters, enums
 from pyrogram.errors import FloodWait, UserIsBlocked, MessageNotModified, PeerIdInvalid
-from utils import gen_link, get_size, is_subscribed, get_poster, search_gagala, temp, get_settings, save_group_settings
+from utils import get_size, is_subscribed, get_poster, search_gagala, temp, get_settings, save_group_settings
 from database.users_chats_db import db
 from database.ia_filterdb import Media, get_file_details, get_search_results
 from database.apisdb import get_sundisk, add_sundisk, remove_sundisk
@@ -64,18 +64,18 @@ async def next_page(bot, query):
     btn = [
         [
             InlineKeyboardButton(
-                text=f"[{get_size(file.file_size)}] {file.file_name}", url=gen_link(f"https://t.me/{temp.U_NAME}?start={file.file_id}", api_id)
+                text=f"[{get_size(file.file_size)}] {file.file_name}", url=f"https://t.me/{temp.U_NAME}?start={file.file_id}")
             ),
         ]
         for file in files
     ]
 
     if 0 < offset <= 10:
-        off_set = 0
+        off_set= 0
     elif offset == 0:
-        off_set = None
+        off_set= None
     else:
-        off_set = offset - 10
+        off_set= offset - 10
     if n_offset == 0:
         btn.append([InlineKeyboardButton("⏪ BACK", callback_data=f"next_{req}_{key}_{off_set}"), InlineKeyboardButton(
             f"📃 Pages {math.ceil(offset / 10) + 1} / {math.ceil(total / 10)}", callback_data="pages")])
@@ -90,7 +90,7 @@ async def next_page(bot, query):
 
     try:
         await query.edit_message_reply_markup(
-            reply_markup=InlineKeyboardMarkup(btn)
+            reply_markup = InlineKeyboardMarkup(btn)
         )
     except MessageNotModified:
         pass
