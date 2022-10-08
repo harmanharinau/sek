@@ -11,10 +11,6 @@ Now Enjoy Your Profit 💸."""
     ABOUT_TXT = """
 Welcome To sundisk.in
 This is the free link Converter. Just sign up through our website and then login and short your link and Share your shorten links and earn money 💰.
-OUR BOTS
-Link Convertor  - @
-Files Store Bot - @
-Help And Support Bot - @
 To Use The Bots You Just Have to Login in sundisk.in  And Go To Devolopers Api Copy And send To Bot easy (. ❛ ᴗ ❛.)
 Also We Are Making Some More Awesome Bots To Make Your Hard Work Low 😉 Enjoy.
 Site Link - sundisk.in
@@ -23,12 +19,15 @@ To know more details visit our channel - @"""
     SOURCE_TXT = """
     NOTE:
 Current CPM - $1 (About 75-80Rs)
-More INFO - https://sundisk.in/member/dashboard
-Minimum Withdrawal Ammount Is 2-5$ For Defferent Withdrawal Types 
-Paypal - 5$ 
-UPI - 3$ 
-Mobile Recharge - 2$
-Tv Recharge -2$ 
+Minimum Withdrawal Ammount Is 2-5$ For Defferent Withdrawal Types
+
+UPI $1.0000
+Paytm $1.0000
+Phone Pe $1.0000
+GooglePay $1.0000
+Bank Transfer(INDIA) $1.0000
+PayPal $5.0000
+
 Other Payment Methods Comeing Soon 
 More INFO - https://sundisk.in/member/users/profile
 """
