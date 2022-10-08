@@ -51,9 +51,9 @@ async def start(client, message):
                                  url=f'http://t.me/{temp.U_NAME}?startgroup=true')
         ], [
             InlineKeyboardButton(
-                '🔍 Search', switch_inline_query_current_chat=''),
+                'Website 🌐', url='sundisk.in'),
             InlineKeyboardButton(
-                '🤖 Updates', url='https://t.me/SunDisk_official')
+                'Updates ⚡', url='https://t.me/SunDisk_official')
         ], [
             InlineKeyboardButton('ℹ️ Help', callback_data='help'),
             InlineKeyboardButton('😊 About', callback_data='about')
