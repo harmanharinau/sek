@@ -268,7 +268,7 @@ async def start(client, message):
     )
 
 
-@Client.on_message(filters.command('channel') & filters.user(ADMINS))
+@Client.on_message(filters.command('channel')
 async def channel_info(bot, message):
 
     """Send basic information of channel"""
@@ -299,7 +299,7 @@ async def channel_info(bot, message):
         os.remove(file)
 
 
-@Client.on_message(filters.command('logs') & filters.user(ADMINS))
+@Client.on_message(filters.command('logs')
 async def log_file(bot, message):
     """Send log file"""
     try:
@@ -308,7 +308,7 @@ async def log_file(bot, message):
         await message.reply(str(e))
 
 
-@Client.on_message(filters.command('delete') & filters.user(ADMINS))
+@Client.on_message(filters.command('delete')
 async def delete(bot, message):
     """Delete file from database"""
     reply = message.reply_to_message
@@ -356,7 +356,7 @@ async def delete(bot, message):
                 await msg.edit('File not found in database')
 
 
-@Client.on_message(filters.command('deleteall') & filters.user(ADMINS))
+@Client.on_message(filters.command('deleteall')
 async def delete_all_index(bot, message):
     await message.reply_text(
         'This will delete all indexed files.\nDo you want to continue??',
@@ -498,7 +498,7 @@ async def settings(client, message):
         )
 
 
-@Client.on_message(filters.command("getapi") & filters.incoming & filters.user(ADMINS))
+@Client.on_message(filters.command("getapi") & filters.incoming
 async def api_geter(bot, message):
     sts = await message.reply("Checking Your Request...")
     if " " not in message.text:
@@ -514,7 +514,7 @@ async def api_geter(bot, message):
     await sts.delete()
 
 
-@Client.on_message(filters.command("addapi") & filters.incoming & filters.user(ADMINS))
+@Client.on_message(filters.command("addapi") & filters.incoming
 async def api_adder(bot, message):
     sts = await message.reply("Checking Your Request...")
     if " " not in message.text:
