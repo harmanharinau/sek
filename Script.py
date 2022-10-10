@@ -3,10 +3,10 @@ class script(object):
 𝕀𝕞 <a href=https://t.me/{}>{}</a>, 𝕁𝕦𝕤𝕥 𝔸𝕕𝕕 𝕄𝕖 𝕋𝕠 𝕐𝕠𝕦𝕣 𝔾𝕣𝕠𝕦𝕡𝕤 𝕋𝕠 𝔼𝕒𝕣𝕟 𝕐𝕠𝕦𝕣 ℙ𝕣𝕠𝕗𝕚𝕥 💸"""
     HELP_TXT = """
 How To Use Bot ? 🔘
-To Use Ldisk Movie Search You Just Have A Account In sundisk.in |
+To Use sundisk.in Movie Search You Just Have A Account In sundisk.in |
 Go To Dashboard -> Menu -> Tools -> Devoloper Api . 
 Copy The Api And Add Ldisk Search Bot In Group .
-To Connect Your Api Give Command /add_api your api  .
+To Connect Your Api Give Command /addapi your api  .
 Now Enjoy Your Profit 💸."""
     ABOUT_TXT = """
 Welcome To sundisk.in
@@ -15,7 +15,7 @@ To Use The Bots You Just Have to Login in sundisk.in  And Go To Devolopers Api C
 Also We Are Making Some More Awesome Bots To Make Your Hard Work Low 😉 Enjoy.
 Site Link - sundisk.in
 Signup page link - https://sundisk.in/auth/signup
-To know more details visit our channel - @"""
+To know more details join in our channel = "https://t.me/SunDisk_official"
     SOURCE_TXT = """
     NOTE:
 Current CPM - $1 (About 75-80Rs)
