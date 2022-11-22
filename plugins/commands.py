@@ -268,34 +268,24 @@ async def start(client, message):
     )
 
 
-@Client.on_message(filters.command('channel')
+@Client.on_message(filters.command("channels") & filters.private & filters.chat(Config.BOT_OWNER))
+async def get_channels_list(c: Client, m: Message):
+    get_channel = await db.get_channel_count()
+    count = get_channel['count']
+    channels = get_channel['channels']
 
-    """Send basic information of channel"""
-    if isinstance(CHANNELS, (int, str)):
-        channels = [CHANNELS]
-    elif isinstance(CHANNELS, list):
-        channels = CHANNELS
-    else:
-        raise ValueError("Unexpected type of CHANNELS")
+    msg = f"""
+Total Chats: {count}
 
-    text = '📑 **Indexed channels/groups**\n'
-    for channel in channels:
-        chat = await bot.get_chat(channel)
-        if chat.username:
-            text += '\n@' + chat.username
-        else:
-            text += '\n' + chat.title or chat.first_name
+Chat List:
 
-    text += f'\n\n**Total:** {len(CHANNELS)}'
+"""
 
-    if len(text) < 4096:
-        await message.reply(text)
-    else:
-        file = 'Indexed channels.txt'
-        with open(file, 'w') as f:
-            f.write(text)
-        await message.reply_document(file)
-        os.remove(file)
+    for i, channel in enumerate(channels):
+        channel_id = channel['channel_id']
+        msg += f"{i+1}) `-100{channel_id}`\n"
+
+    return await m.reply(msg)
 
 
 @Client.on_message(filters.command('logs')
