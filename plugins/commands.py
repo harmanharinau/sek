@@ -268,24 +268,6 @@ async def start(client, message):
     )
 
 
-@Client.on_message(filters.command("channels") & filters.private & filters.chat(Config.BOT_OWNER))
-async def get_channels_list(c: Client, m: Message):
-    get_channel = await db.get_channel_count()
-    count = get_channel['count']
-    channels = get_channel['channels']
-
-    msg = f"""
-Total Chats: {count}
-
-Chat List:
-
-"""
-
-    for i, channel in enumerate(channels):
-        channel_id = channel['channel_id']
-        msg += f"{i+1}) `-100{channel_id}`\n"
-
-    return await m.reply(msg)
 
 
 @Client.on_message(filters.command('logs')
